@@ -79,10 +79,11 @@
                 <label class="block text-sm font-medium text-[#232360] mb-1">
                     Lokasi Usaha<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <div class="relative">
+                <div @click="goToKoordinatForm" class="relative cursor-pointer ">
                     <input type="text"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-[#00c48c]"
-                        readonly />
+                        readonly :value="lokasiLat && lokasiLng ? `${lokasiLat}, ${lokasiLng}` : ''"
+                        placeholder="Pilih Lokasi Usaha di Peta" />
                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
                 </div>
             </div>
@@ -104,17 +105,19 @@
                     Kontak Usaha<span class="text-[#ff5a5f]">*</span>
                 </label>
                 <div class="relative">
-                    <input type="text"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-[#00c48c]"
-                        readonly />
-                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                    <div @click="goToKontakForm" class="relative cursor-pointer">
+                        <input type="text"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-[#00c48c] bg-white cursor-pointer"
+                            readonly :value="kontakLabel" placeholder="Tambah Kontak Usaha" />
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                    </div>
                 </div>
             </div>
             <div>
                 <label class="block text-sm font-medium text-[#232360] mb-1">
                     Keterangan
                 </label>
-                <textarea
+                <textarea v-model="keterangan"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00c48c]"
                     rows="2" placeholder="Masukkan Keterangan ..."></textarea>
             </div>
@@ -145,6 +148,13 @@ const selectedBentuk = ref("")
 const namaUsaha = ref("")
 const keterangan = ref("")
 const alamat = ref("")
+const lokasiLat = ref("")
+const lokasiLng = ref("")
+const kontakLabel = ref("")
+
+function goToKontakForm() {
+    router.push({ name: 'kontak' })
+}
 
 onMounted(async () => {
     try {
@@ -167,7 +177,13 @@ onMounted(async () => {
         pemilikLabel.value = ''
     }
     alamat.value = formData.alamat || ""
-
+    lokasiLat.value = formData.lokasi_lat || ""
+    lokasiLng.value = formData.lokasi_lng || ""
+    if (formData.kontak && Array.isArray(formData.kontak) && formData.kontak.length > 0) {
+        kontakLabel.value = `${formData.kontak.length} Kontak`
+    } else {
+        kontakLabel.value = ''
+    }
     gambarUsahaLabel.value = formData.gambar_count && formData.gambar_count > 0 ? `${formData.gambar_count} Gambar Usaha` : ''
     keterangan.value = formData.keterangan || ""
 })
@@ -188,6 +204,10 @@ function goToImageUploader() {
 
 function goToPemilikForm() {
     router.push({ name: 'pemilik' })
+}
+
+function goToKoordinatForm() {
+    router.push({ name: 'koordinatumkm' })
 }
 
 const handleNext = () => {

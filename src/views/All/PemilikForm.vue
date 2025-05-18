@@ -15,7 +15,7 @@
           </svg>
         </div>
         <div class="font-semibold text-[#232360] mb-2">Daftar Warga</div>
-        <div class="flex flex-col gap-2 max-h-[350px] overflow-y-auto">
+        <div class="flex flex-col gap-2 max-h-[420px] overflow-y-auto">
           <div v-for="warga in filteredWarga" :key="warga.id"
             class="flex items-center px-2 py-2 rounded-lg hover:bg-[#f5f5f5] transition">
             <img :src="warga.foto_path || '/avatar-default.png'" alt="foto"
