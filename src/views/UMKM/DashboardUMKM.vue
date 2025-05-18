@@ -32,7 +32,8 @@
         </section>
         <section class="px-3 pt-4 pb-8">
             <div v-for="umkm in umkmList" :key="umkm.id"
-                class="flex bg-gray-100 rounded-xl mb-3 overflow-hidden shadow-sm">
+                class="flex bg-gray-100 rounded-xl mb-3 overflow-hidden shadow-sm cursor-pointer"
+                @click="goToUmkmDetail(umkm.id)">
                 <img :src="umkm.image || defaultImage" class="w-[90px] h-[90px] object-cover rounded-l-lg" />
                 <div class="flex-1 p-3 flex flex-col justify-center">
                     <div class="text-base font-semibold mb-0.5">{{ umkm.nama }}</div>
@@ -60,7 +61,9 @@ import { getAllUmkm, getUmkmDashboard } from "@/services/umkmService";
 import { getWargaById } from "@/services/wargaService";
 import { getUmkmMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const auth = useAuthStore();
 const warga = ref(null);
 const umkmList = ref([]);
@@ -129,6 +132,10 @@ onMounted(async () => {
         await fetchUmkm();
     }
 });
+
+function goToUmkmDetail(id) {
+    router.push({ name: "umkm-detail", params: { id } });
+}
 
 watch([selectedJenis, selectedBentuk], fetchUmkm);
 </script>

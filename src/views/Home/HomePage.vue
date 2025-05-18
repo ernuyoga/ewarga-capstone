@@ -53,7 +53,8 @@
       </p>
       <div class="flex flex-col">
         <div v-for="umkm in umkmList" :key="umkm.id"
-          class="flex items-start gap-3 p-3 bg-white rounded-xl shadow border mb-2 border-slate-100">
+          class="flex items-start gap-3 p-3 bg-white rounded-xl shadow border mb-2 border-slate-100 cursor-pointer"
+          @click="goToUmkmDetail(umkm.id)">
           <div class="bg-gray-200 rounded-lg w-12 h-12"></div>
           <div class="flex-1">
             <div class="font-semibold text-base text-gray-800">{{ umkm.nama }}</div>
@@ -151,6 +152,10 @@ function goToUmkmDashboard() {
 
 function goToWilayahDashboard() {
   router.push('/wilayah/dashboard')
+}
+
+function goToUmkmDetail(id) {
+  router.push({ name: "umkm-detail", params: { id } });
 }
 
 const handleLogout = () => {
