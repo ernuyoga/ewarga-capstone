@@ -13,6 +13,8 @@ import ProdukDetail from "@/views/UMKM/ProdukDetail.vue";
 import UploadViewPage from "@/views/UMKM/ImageUploader.vue";
 import AddUMKMPage from "@/views/UMKM/AddUMKM.vue";
 import AddPemilik from "@/views/All/PemilikForm.vue";
+import KoordinatUMKM from "@/views/UMKM/KoordinatForm.vue";
+import KontakForm from "@/views/UMKM/KontakForm.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -75,8 +77,15 @@ const routes = [
     component: AddPemilik,
   },
   {
-    path:"/"
-  }
+    path: "/koordinatumkm",
+    name: "koordinatumkm",
+    component: KoordinatUMKM
+  },
+  {
+    path: "/kontak",
+    name: "kontak",
+    component: KontakForm,
+  },
 ];
 
 const router = createRouter({
