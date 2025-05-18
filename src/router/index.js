@@ -8,6 +8,7 @@ import HomePage from "@/views/Home/HomePage.vue";
 import DashboardUMKM from "@/views/Umkm/DashboardUMKM.vue";
 import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
 import UMKMDetail from "@/views/UMKM/UMKMDetail.vue";
+import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -40,6 +41,12 @@ const routes = [
     path: "/umkm/:id",
     name: "umkm-detail",
     component: UMKMDetail,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/wilayah/:id",
+    name: "aset-detail",
+    component: AsetDetail,
     meta: { requiresAuth: true },
   },
 ];

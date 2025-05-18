@@ -31,26 +31,42 @@
             </div>
         </section>
         <section class="px-3 pt-4 pb-8">
-            <div v-for="umkm in umkmList" :key="umkm.id"
-                class="flex bg-gray-100 rounded-xl mb-3 overflow-hidden shadow-sm cursor-pointer"
-                @click="goToUmkmDetail(umkm.id)">
-                <img :src="umkm.image || defaultImage" class="w-[90px] h-[90px] object-cover rounded-l-lg" />
-                <div class="flex-1 p-3 flex flex-col justify-center">
-                    <div class="text-base font-semibold mb-0.5">{{ umkm.nama }}</div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="inline-block w-3 h-3 rounded-full"
-                            :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
-                        <span class="text-xs font-semibold"
-                            :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
-                            {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
-                        </span>
+            <!-- Skeleton Loader -->
+            <template v-if="loading">
+                <div v-for="n in 3" :key="n"
+                    class="flex bg-gray-100 rounded-xl mb-3 overflow-hidden shadow-sm animate-pulse">
+                    <div class="w-[90px] h-[90px] bg-gray-200 rounded-l-lg"></div>
+                    <div class="flex-1 p-3 flex flex-col justify-center">
+                        <div class="h-5 bg-gray-200 rounded w-1/2 mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3"></div>
                     </div>
-                    <div class="text-xs text-gray-600 leading-tight">{{ umkm.alamat || '-' }}</div>
                 </div>
-            </div>
-            <div v-if="loading" class="text-center text-gray-500 mt-6">Memuat data...</div>
-            <div v-if="!loading && umkmList.length === 0" class="text-center text-gray-500 mt-6">Data UMKM tidak
-                ditemukan.</div>
+            </template>
+            <!-- Daftar UMKM -->
+            <template v-else>
+                <div v-for="umkm in umkmList" :key="umkm.id"
+                    class="flex bg-gray-100 rounded-xl mb-3 overflow-hidden shadow-sm cursor-pointer"
+                    @click="goToUmkmDetail(umkm.id)">
+                    <img :src="umkm.image || defaultImage" class="w-[90px] h-[90px] object-cover rounded-l-lg" />
+                    <div class="flex-1 p-3 flex flex-col justify-center">
+                        <div class="text-base font-semibold mb-0.5">{{ umkm.nama }}</div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="inline-block w-3 h-3 rounded-full"
+                                :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
+                            <span class="text-xs font-semibold"
+                                :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
+                                {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
+                            </span>
+                        </div>
+                        <div class="text-xs text-gray-600 leading-tight">{{ umkm.alamat || '-' }}</div>
+                    </div>
+                </div>
+                <!-- Pesan hanya muncul jika loading sudah selesai, sudah pernah fetch, dan data kosong -->
+                <div v-if="!loading && hasFetched && umkmList.length === 0" class="text-center text-gray-500 mt-6">
+                    Data UMKM tidak ditemukan.
+                </div>
+            </template>
         </section>
     </div>
 </template>
@@ -70,6 +86,7 @@ const umkmList = ref([]);
 const totalUmkm = ref(0);
 const totalProduk = ref(0);
 const loading = ref(false);
+const hasFetched = ref(false); // Tambahan untuk UX pesan kosong
 const search = ref("");
 const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 const instansiId = ref(null);
@@ -107,9 +124,12 @@ async function fetchSummary() {
 }
 
 async function fetchUmkm() {
-    if (!instansiId.value) return;
     loading.value = true;
     try {
+        if (!instansiId.value) {
+            umkmList.value = [];
+            return;
+        }
         const params = { instansi_id: instansiId.value };
         if (search.value) params.nama = search.value;
         if (selectedJenis.value) params.jenis = selectedJenis.value;
@@ -118,8 +138,10 @@ async function fetchUmkm() {
         umkmList.value = Array.isArray(data.data) ? data.data : [];
     } catch (e) {
         umkmList.value = [];
+    } finally {
+        loading.value = false;
+        hasFetched.value = true;
     }
-    loading.value = false;
 }
 
 onMounted(async () => {

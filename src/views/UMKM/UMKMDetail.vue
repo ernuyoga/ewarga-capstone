@@ -6,8 +6,6 @@
                 <i class="icon-arrow-left"></i>
             </button>
             <h2 class="text-lg font-semibold flex-1 text-center">Detail Usaha</h2>
-            <span v-if="isEmpty" class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-lg">Tampilan data
-                Kosong</span>
             <button class="ml-2 text-gray-500"><i class="icon-more"></i></button>
         </header>
 

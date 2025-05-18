@@ -29,21 +29,41 @@
                 class="w-full border rounded-lg px-4 py-2" />
         </div>
 
-        <!-- List Aset -->
-        <div v-for="aset in dashboard.aset" :key="aset.id" class="bg-white rounded-lg shadow mb-4 flex">
-            <img :src="aset.foto" alt="foto aset" class="w-24 h-24 object-cover rounded-l-lg" />
-            <div class="p-3 flex-1">
-                <div class="font-semibold text-base">{{ aset.nama }}</div>
-                <div class="text-xs text-gray-500 mb-1">{{ aset.jenis }} | {{ aset.pemilik }}</div>
-                <div class="text-xs text-gray-500 mb-1">{{ aset.lokasi }}</div>
-                <div class="text-xs text-gray-400">{{ aset.alamat }}</div>
+        <!-- Skeleton Loader -->
+        <template v-if="loading">
+            <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow mb-4 flex animate-pulse">
+                <div class="w-24 h-24 bg-gray-200 rounded-l-lg"></div>
+                <div class="p-3 flex-1">
+                    <div class="h-5 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
             </div>
-        </div>
+        </template>
+
+        <!-- List Aset -->
+        <template v-else>
+            <div v-for="aset in dashboard.aset" :key="aset.id" class="bg-white rounded-lg shadow mb-4 flex"
+                @click="goToAsetDetail(aset.id)" style="cursor:pointer">
+                <img :src="aset.foto" alt="foto aset" class="w-24 h-24 object-cover rounded-l-lg" />
+                <div class="p-3 flex-1">
+                    <div class="font-semibold text-base">{{ aset.nama }}</div>
+                    <div class="text-xs text-gray-500 mb-1">{{ aset.jenis }} | {{ aset.pemilik }}</div>
+                    <div class="text-xs text-gray-500 mb-1">{{ aset.lokasi }}</div>
+                    <div class="text-xs text-gray-400">{{ aset.alamat }}</div>
+                </div>
+            </div>
+            <div v-if="!loading && hasFetched && dashboard.aset.length === 0" class="text-center text-gray-500 mt-6">
+                Data aset tidak ditemukan.
+            </div>
+        </template>
     </div>
 </template>
 
 <script>
 import { ref, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
 import { getWilayahDashboard, getAllAsetByInstansi, searchAsetByName } from "@/services/wilayahService";
 import { getWargaById } from "@/services/wargaService";
 import { useAuthStore } from "@/store/auth";
@@ -59,6 +79,9 @@ export default {
         const search = ref("");
         const instansiId = ref(null);
         const auth = useAuthStore();
+        const loading = ref(false);
+        const hasFetched = ref(false);
+        const router = useRouter();
 
         const fetchDashboard = async () => {
             try {
@@ -72,8 +95,12 @@ export default {
         };
 
         const fetchAset = async () => {
-            if (!instansiId.value) return;
+            loading.value = true;
             try {
+                if (!instansiId.value) {
+                    dashboard.value.aset = [];
+                    return;
+                }
                 const res = await getAllAsetByInstansi(instansiId.value);
                 dashboard.value.aset = (res.data.data || []).map(aset => ({
                     id: aset.id,
@@ -86,12 +113,19 @@ export default {
                 }));
             } catch (e) {
                 dashboard.value.aset = [];
+            } finally {
+                loading.value = false;
+                hasFetched.value = true;
             }
         };
 
         const fetchAsetByName = async (name) => {
-            if (!instansiId.value) return;
+            loading.value = true;
             try {
+                if (!instansiId.value) {
+                    dashboard.value.aset = [];
+                    return;
+                }
                 const res = await searchAsetByName(name, instansiId.value);
                 dashboard.value.aset = (res.data.data || []).map(aset => ({
                     id: aset.id,
@@ -104,6 +138,9 @@ export default {
                 }));
             } catch (e) {
                 dashboard.value.aset = [];
+            } finally {
+                loading.value = false;
+                hasFetched.value = true;
             }
         };
 
@@ -125,9 +162,16 @@ export default {
             }
         });
 
+        function goToAsetDetail(id) {
+            router.push({ name: "aset-detail", params: { id } });
+        }
+
         return {
             dashboard,
             search,
+            loading,
+            hasFetched,
+            goToAsetDetail,
         };
     },
 };
