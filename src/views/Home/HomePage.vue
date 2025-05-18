@@ -20,7 +20,7 @@
         Kec. {{ instansi.m_kecamatan?.nama }}, Kota {{ instansi.m_kota?.nama }}
       </div>
 
-      <!-- Main Services Section -->
+      <!-- Layanan Utama Section -->
       <h2 class="text-lg font-bold my-4 text-gray-800">Layanan Utama Kami</h2>
       <div class="flex gap-4 mb-6">
         <div
@@ -30,15 +30,14 @@
             <div class="font-semibold text-base text-[#37306B] mb-1">Pendataan UMKM</div>
             <div class="text-sm text-gray-400">UMKM di Wilayah Anda</div>
           </div>
-          <span class="text-2xl text-gray-400 ml-2">&rarr;</span>
         </div>
         <div
-          class="flex-1 flex items-center justify-between bg-white border border-gray-200 rounded-xl p-5 transition shadow-sm cursor-pointer hover:shadow-md hover:border-indigo-200">
+          class="flex-1 flex items-center justify-between bg-white border border-gray-200 rounded-xl p-5 transition shadow-sm cursor-pointer hover:shadow-md hover:border-indigo-200"
+          @click="goToWilayahDashboard">
           <div class="flex flex-col">
             <div class="font-semibold text-base text-[#37306B] mb-1">Pemetaan Wilayah</div>
             <div class="text-sm text-gray-400">Kelola Objek di Wilayah Anda</div>
           </div>
-          <span class="text-2xl text-gray-400 ml-2">&rarr;</span>
         </div>
       </div>
 
@@ -76,8 +75,8 @@
       <h2 class="text-lg font-bold my-4 text-gray-800 flex items-center justify-between">
         <span>Objek di Wilayah Anda</span>
         <button
-          class="bg-green-100 text-green-500 text-xs font-semibold px-4 py-1 rounded-lg transition hover:bg-green-200 border-none">Lihat
-          Semua</button>
+          class="bg-green-100 text-green-500 text-xs font-semibold px-4 py-1 rounded-lg transition hover:bg-green-200 border-none"
+          @click="goToWilayahDashboard">Lihat Semua</button>
       </h2>
       <p class="mb-2 text-gray-500 text-sm">
         Jelajahi dan cari tahu objek yang ada di sekitar wilayah Anda.
@@ -148,6 +147,10 @@ onMounted(async () => {
 
 function goToUmkmDashboard() {
   router.push('/umkm/dashboard')
+}
+
+function goToWilayahDashboard() {
+  router.push('/wilayah/dashboard')
 }
 
 const handleLogout = () => {

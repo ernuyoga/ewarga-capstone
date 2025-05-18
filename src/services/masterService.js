@@ -7,3 +7,11 @@ export const getUmkmMaster = () => {
         }
     });
 };
+
+export const getAsetMaster = () => {
+    return api.get("/aset/aset-master", {
+        params: {
+            data: "jenis,status"
+        }
+    });
+}

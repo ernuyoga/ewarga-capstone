@@ -14,7 +14,7 @@
             </div>
         </section>
         <section class="flex flex-col gap-2 px-3 pt-4">
-            <input type="text" placeholder="Cari nama toko..."
+            <input type="text" placeholder="Cari nama umkm..."
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" v-model="search"
                 @input="fetchUmkm" />
             <div class="flex gap-2">
@@ -56,11 +56,10 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { getAllUmkm, getUmkmDashboardSummary } from "@/services/umkmService";
+import { getAllUmkm, getUmkmDashboard } from "@/services/umkmService";
 import { getWargaById } from "@/services/wargaService";
 import { getUmkmMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
-
 
 const auth = useAuthStore();
 const warga = ref(null);
@@ -69,20 +68,13 @@ const totalUmkm = ref(0);
 const totalProduk = ref(0);
 const loading = ref(false);
 const search = ref("");
-const defaultImage = "https://via.placeholder.com/90x90?text=UMKM";
+const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 const instansiId = ref(null);
 
 const jenisList = ref([]);
 const bentukList = ref([]);
 const selectedJenis = ref("");
 const selectedBentuk = ref("");
-
-function modeClass(mode) {
-    if (!mode) return "offline";
-    if (mode.toLowerCase().includes("online")) return "online";
-    if (mode.toLowerCase().includes("hybrid")) return "hybrid";
-    return "offline";
-}
 
 async function fetchMaster() {
     try {
@@ -100,7 +92,7 @@ async function fetchMaster() {
 async function fetchSummary() {
     if (!instansiId.value) return;
     try {
-        const { data } = await getUmkmDashboardSummary({ instansi_id: instansiId.value });
+        const { data } = await getUmkmDashboard({ instansi_id: instansiId.value });
         if (data && data.data) {
             totalUmkm.value = data.data.total_umkm || 0;
             totalProduk.value = data.data.total_produk || 0;

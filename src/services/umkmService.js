@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 
-export function getUmkmDashboardSummary() {
+export function getUmkmDashboard() {
   return api.get("/umkm/dashboard/summary");
 }
 

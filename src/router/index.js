@@ -6,6 +6,7 @@ import RegisterPage from "@/views/Auth/RegisterPage.vue";
 import RegistrationFormPage from "@/views/Auth/RegistrationFormPage.vue";
 import HomePage from "@/views/Home/HomePage.vue";
 import DashboardUMKM from "@/views/Umkm/DashboardUMKM.vue";
+import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -26,6 +27,12 @@ const routes = [
     path: "/umkm/dashboard",
     name: "dashboard-umkm",
     component: DashboardUMKM,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/wilayah/dashboard",
+    name: "dashboard-wilayah",
+    component: DashboardWilayah,
     meta: { requiresAuth: true },
   },
 ];
