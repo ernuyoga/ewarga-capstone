@@ -9,6 +9,7 @@ import DashboardUMKM from "@/views/Umkm/DashboardUMKM.vue";
 import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
 import UMKMDetail from "@/views/UMKM/UMKMDetail.vue";
 import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
+import ProdukDetail from "@/views/UMKM/ProdukDetail.vue";
 import UploadViewPage from "@/views/UMKM/ImageUploader.vue";
 import AddUMKMPage from "@/views/UMKM/AddUMKM.vue";
 import AddPemilik from "@/views/All/PemilikForm.vue";
@@ -44,6 +45,12 @@ const routes = [
     path: "/umkm/:id",
     name: "umkm-detail",
     component: UMKMDetail,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/umkm/produk/:id",
+    name: "produk-detail",
+    component: ProdukDetail,
     meta: { requiresAuth: true },
   },
   {

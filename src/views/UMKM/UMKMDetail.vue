@@ -64,7 +64,8 @@
                 Tidak ada produk.
             </div>
             <div v-for="produk in filteredProduk" :key="produk.id"
-                class="flex items-center gap-3 bg-gray-50 rounded-xl mb-2 p-3">
+                class="flex items-center gap-3 bg-gray-50 rounded-xl mb-2 p-3 cursor-pointer hover:bg-gray-100 transition"
+                @click="goToProdukDetail(produk.id)">
                 <img :src="defaultImage" class="w-16 h-16 object-cover rounded-lg" />
                 <div class="flex-1">
                     <div class="font-semibold text-base">{{ produk.nama }}</div>
@@ -154,4 +155,8 @@ watch(umkm, (val) => {
         setTimeout(showMap, 200);
     }
 });
+
+function goToProdukDetail(id) {
+    router.push({ name: 'produk-detail', params: { id } });
+}
 </script>
