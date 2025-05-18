@@ -12,3 +12,20 @@ export function getUmkmById(id) {
   return api.get(`/umkm/${id}`);
 }
 
+const UMKM_FORM_KEY = 'umkm_form_data';
+
+export function getUmkmFormData() {
+  const data = localStorage.getItem(UMKM_FORM_KEY);
+  return data ? JSON.parse(data) : {};
+}
+
+export function setUmkmFormData(newData) {
+  const current = getUmkmFormData();
+  const updated = { ...current, ...newData };
+  localStorage.setItem(UMKM_FORM_KEY, JSON.stringify(updated));
+}
+
+export function clearUmkmFormData() {
+  localStorage.removeItem(UMKM_FORM_KEY);
+}
+
