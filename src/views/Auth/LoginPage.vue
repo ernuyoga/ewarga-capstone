@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="card">
-      <h1 class="title">Login - Test VPS 4</h1>
+      <h1 class="title">Login</h1>
 
       <div class="form-group">
         <input v-model="email" type="email" placeholder="Email" class="input" @keyup.enter="handleLogin" />
