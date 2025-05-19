@@ -1,57 +1,70 @@
 <template>
-    <div class="max-w-[400px] mx-auto font-inter bg-white min-h-screen">
+    <div class="min-h-screen bg-[#f6f6f6]">
         <!-- Header -->
-        <header class="flex items-center justify-between px-3 pt-4 pb-2 border-b border-gray-200">
-            <button @click="goBack" class="text-gray-500 mr-2">
-                <i class="icon-arrow-left"></i>
-            </button>
-            <h2 class="text-lg font-semibold flex-1 text-center">Detail Objek Wilayah</h2>
-            <button class="ml-2 text-gray-500">
-                <i class="icon-more"></i>
-            </button>
-        </header>
+        <HeaderForm title="Detail Objek Wilayah" @back="goBack">
+            <template #action>
+                <button>
+                    <!-- <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-8 h-8" /> -->
+                </button>
+            </template>
+        </HeaderForm>
 
-        <!-- Foto -->
-        <img :src="fotoUtama" class="w-full h-44 object-cover" />
+        <div class="bg-white rounded-xl shadow mx-24 my-4">
+            <!-- Foto -->
+            <img :src="fotoUtama" class="w-full h-72 rounded-t-xl object-cover" />
 
-        <!-- Informasi Aset -->
-        <section class="px-4 py-3">
-            <div class="text-xl font-bold mb-1">{{ aset.nama }}</div>
-            <div class="text-sm text-gray-600 font-medium mb-1">
-                {{ aset.jenis?.nama || '-' }} | {{ aset.warga?.nama || '-' }}
-            </div>
-            <div class="text-gray-500 text-sm truncate">{{ aset.alamat || '-' }}</div>
-        </section>
+            <div class="px-6 py-6">
+                <!-- Informasi Aset -->
+                <section class="px-2 py-2">
+                    <div class="text-xl font-bold mb-2">{{ aset.nama }}</div>
+                    <div class="text-base text-gray-600 font-semibold mb-2">
+                        {{ aset.jenis?.nama || '-' }} | {{ aset.warga?.nama || '-' }}
+                    </div>
+                    <div class="text-base text-gray-500 truncate">{{ aset.alamat || '-' }}</div>
+                </section>
 
-        <!-- Koordinat -->
-        <section class="px-4 mb-3">
-            <div class="font-semibold mb-1">Koordinat Objek</div>
-            <div class="rounded-lg overflow-hidden mb-1">
-                <div id="map" class="w-full h-32" style="height: 130px;"></div>
-            </div>
-            <div class="text-xs text-gray-500">
-                {{ aset.latitude }}, {{ aset.longitude }}
-            </div>
-        </section>
+                <!-- Garis pemisah -->
+                <div class="border-t border-gray-200 mt-4 mb-8"></div>
 
-        <!-- Penghuni -->
-        <section class="px-4 mb-6">
-            <div class="flex items-center justify-between mb-2">
-                <div class="font-semibold">Penghuni Objek</div>
-                <button class="text-green-600 text-sm" @click="lihatSemuaPenghuni">Lihat Semua</button>
-            </div>
-            <div v-if="penghuniList.length === 0" class="text-sm text-gray-400">Tidak ada penghuni.</div>
-            <div v-for="(penghuni, index) in penghuniList.slice(0, 3)" :key="index"
-                class="flex items-center gap-3 mb-2">
-                <!-- <img :src="penghuni.foto_path ? `${import.meta.env.VITE_API_BASE_URL || ''}/${penghuni.foto_path}` : fotoDefault"
-            class="w-10 h-10 rounded-full object-cover" /> -->
-                <div class="text-sm">
-                    <div class="font-semibold">{{ penghuni.nama }}</div>
-                    <div class="text-gray-500">{{ penghuni.status }}</div>
-                    <div class="text-blue-600">{{ penghuni.no_tlp || '—' }}</div>
+                <div class="flex flex-col md:flex-row gap-10">
+                    <div class="flex-1">
+                        <!-- Koordinat -->
+                        <section class="px-2 mb-4">
+                            <div class="font-bold text-lg mb-2">Koordinat Objek</div>
+                            <div class="rounded-lg overflow-hidden mb-2">
+                                <div id="map" class="w-full h-64"></div>
+                            </div>
+                            <div class="text-base text-gray-500">
+                                {{ aset.latitude }}, {{ aset.longitude }}
+                            </div>
+                        </section>
+                    </div>
+                    <div class="flex-1">
+                        <!-- Penghuni -->
+                        <section class="px-2 mb-8">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="font-bold text-lg">Penghuni Objek</div>
+                                <button
+                                    class="bg-green-100 text-green-500 text-sm font-bold px-2 py-1 rounded-lg hover:bg-green-200"
+                                    @click="lihatSemuaPenghuni">Lihat Semua</button>
+                            </div>
+                            <div v-if="penghuniList.length === 0" class="text-base text-gray-400">Tidak ada penghuni.
+                            </div>
+                            <div v-for="(penghuni, index) in penghuniList.slice(0, 3)" :key="index"
+                                class="flex items-center gap-4 mb-3 bg-[#ffffff] border rounded-lg px-4 py-3">
+                                <!-- <img :src="penghuni.foto_path ? `${import.meta.env.VITE_API_BASE_URL || ''}/${penghuni.foto_path}` : fotoDefault"
+                                    class="w-12 h-12 rounded-full object-cover" /> -->
+                                <div class="text-base">
+                                    <div class="font-semibold text-lg">{{ penghuni.nama }}</div>
+                                    <div class="text-gray-500">{{ penghuni.status }}</div>
+                                    <div class="text-blue-600">{{ penghuni.no_tlp || '—' }}</div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     </div>
 </template>
 
@@ -62,6 +75,7 @@ import { getAsetById } from '@/services/wilayahService';
 import { getPenghuniByAset } from '@/services/penghuniService'; // Import service penghuni
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import HeaderForm from '@/components/card/HeaderForm.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -73,7 +87,7 @@ const fotoUtama = computed(() => {
     if (aset.value.fotos && aset.value.fotos.length > 0) {
         return `${import.meta.env.VITE_API_BASE_URL || ''}/${aset.value.fotos[0].file_path}`;
     }
-    return 'https://source.unsplash.com/400x200/?house';
+    return 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80';
 });
 
 function goBack() {

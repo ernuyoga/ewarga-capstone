@@ -84,9 +84,9 @@
 
           <!-- UMKM Section -->
           <section class="bg-white rounded-xl shadow p-6">
-            <div class="flex justify-between items-center mb-5">
+            <div class="flex justify-between items-center">
               <h2 class="text-xl font-bold text-gray-800">UMKM Pilihan di Sekitar Anda</h2>
-              <button class="bg-green-100 text-green-500 text-base font-bold px-4 py-2 rounded hover:bg-green-200"
+              <button class="bg-green-100 text-green-500 text-sm font-bold px-2 py-1 rounded hover:bg-green-200"
                 @click="goToUmkmDashboard">Lihat Semua</button>
             </div>
             <p class="text-base text-gray-500 mb-5">Jelajahi pilihan produk dan layanan unggulan dari UMKM sekitar.</p>
@@ -112,9 +112,9 @@
 
           <!-- Wilayah Section -->
           <section class="bg-white rounded-xl shadow p-6">
-            <div class="flex justify-between items-center mb-5">
+            <div class="flex justify-between items-center">
               <h2 class="text-xl font-bold text-gray-800">Objek di Wilayah Anda</h2>
-              <button class="bg-green-100 text-green-500 text-base font-bold px-4 py-2 rounded hover:bg-green-200"
+              <button class="bg-green-100 text-green-500 text-sm font-bold px-2 py-1 rounded hover:bg-green-200"
                 @click="goToWilayahDashboard">Lihat Semua</button>
             </div>
             <p class="text-base text-gray-500 mb-5">Jelajahi dan cari tahu objek yang ada di sekitar wilayah Anda.</p>
@@ -180,7 +180,7 @@ onMounted(async () => {
 
       // Ambil Objek/Aset berdasarkan instansi
       const resAset = await getAllAsetByInstansi(warga.value.instansi_id)
-      asetList.value = (resAset.data.data || []).slice(0, 3)
+      asetList.value = (resAset.data.data || []).slice(0, 5)
     }
   }
   isLoading.value = false

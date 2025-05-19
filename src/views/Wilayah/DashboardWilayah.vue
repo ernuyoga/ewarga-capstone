@@ -29,7 +29,7 @@
 
         <!-- Search -->
         <div class="mx-24 my-4">
-            <input v-model="search" type="text" placeholder="Cari nama aset..."
+            <input v-model="search" type="text" placeholder="Cari nama objek..."
                 class="w-full border rounded-lg px-6 py-3 text-base" />
         </div>
 
