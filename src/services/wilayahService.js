@@ -17,3 +17,15 @@ export function searchAsetByName(name, instansiId) {
     params: { name, instansi_id: instansiId }
   });
 }
+
+export function createAset(data) {
+  return api.post("/wilayah/aset", data);
+}
+
+export function updateAset(id, data) {
+  return api.put(`/wilayah/aset/${id}`, data);
+}
+
+export function deleteAset(id) {
+  return api.delete(`/wilayah/aset/${id}`);
+}

@@ -12,6 +12,14 @@ export function getUmkmById(id) {
   return api.get(`/umkm/${id}`);
 }
 
+export function updateUmkm(id, data) {
+  return api.put(`/umkm/${id}`, data);
+}
+
+export function deleteUmkm(id) {
+  return api.delete(`/umkm/${id}`);
+}
+
 const UMKM_FORM_KEY = 'umkm_form_data';
 
 export function getUmkmFormData() {
