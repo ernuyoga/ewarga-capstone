@@ -38,12 +38,13 @@
         <section class="px-4 mb-6">
             <div class="flex items-center justify-between mb-2">
                 <div class="font-semibold">Penghuni Objek</div>
-                <button class="text-green-600 text-sm">Lihat Semua</button>
+                <button class="text-green-600 text-sm" @click="lihatSemuaPenghuni">Lihat Semua</button>
             </div>
             <div v-if="penghuniList.length === 0" class="text-sm text-gray-400">Tidak ada penghuni.</div>
-            <div v-for="(penghuni, index) in penghuniList" :key="index" class="flex items-center gap-3 mb-2">
+            <div v-for="(penghuni, index) in penghuniList.slice(0, 3)" :key="index"
+                class="flex items-center gap-3 mb-2">
                 <!-- <img :src="penghuni.foto_path ? `${import.meta.env.VITE_API_BASE_URL || ''}/${penghuni.foto_path}` : fotoDefault"
-                    class="w-10 h-10 rounded-full object-cover" /> -->
+            class="w-10 h-10 rounded-full object-cover" /> -->
                 <div class="text-sm">
                     <div class="font-semibold">{{ penghuni.nama }}</div>
                     <div class="text-gray-500">{{ penghuni.status }}</div>
@@ -120,4 +121,8 @@ onMounted(async () => {
 
     setTimeout(showMap, 300);
 });
+
+function lihatSemuaPenghuni() {
+    router.push({ name: 'penghuni-detail', params: { id: route.params.id } });
+}
 </script>

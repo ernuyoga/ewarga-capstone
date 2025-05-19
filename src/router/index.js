@@ -10,6 +10,7 @@ import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
 import UMKMDetail from "@/views/UMKM/UMKMDetail.vue";
 import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
 import ProdukDetail from "@/views/UMKM/ProdukDetail.vue";
+import PenghuniDetail from "@/views/Wilayah/PenghuniDetail.vue";
 import UploadViewPage from "@/views/UMKM/ImageUploader.vue";
 import AddUMKMPage from "@/views/UMKM/AddUMKM.vue";
 import AddPemilik from "@/views/All/PemilikForm.vue";
@@ -62,6 +63,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/wilayah/:id/penghuni",
+    name: "penghuni-detail",
+    component: PenghuniDetail,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/uploadView",
     name: "uploadView",
     component: UploadViewPage,
@@ -79,7 +86,7 @@ const routes = [
   {
     path: "/koordinatumkm",
     name: "koordinatumkm",
-    component: KoordinatUMKM
+    component: KoordinatUMKM,
   },
   {
     path: "/kontak",

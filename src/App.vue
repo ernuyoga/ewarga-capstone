@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-xs sm:max-w-sm bg-white">
+  <div class="min-h-screen flex w-full items-center justify-center bg-[#f6f6f6]">
+    <div class="w-full">
       <router-view />
     </div>
   </div>

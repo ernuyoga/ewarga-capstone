@@ -4,7 +4,11 @@ export default {
     './src/**/*.{vue,js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        geist: ['Geist', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
