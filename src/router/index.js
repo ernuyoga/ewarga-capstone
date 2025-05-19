@@ -5,7 +5,7 @@ import LoginPage from "@/views/Auth/LoginPage.vue";
 import RegisterPage from "@/views/Auth/RegisterPage.vue";
 import RegistrationFormPage from "@/views/Auth/RegistrationFormPage.vue";
 import HomePage from "@/views/Home/HomePage.vue";
-import DashboardUMKM from "@/views/Umkm/DashboardUMKM.vue";
+import DashboardUMKM from "@/views/UMKM/DashboardUMKM.vue";
 import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
 import UMKMDetail from "@/views/UMKM/UMKMDetail.vue";
 import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
