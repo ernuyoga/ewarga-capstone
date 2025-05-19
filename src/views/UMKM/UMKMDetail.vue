@@ -54,11 +54,14 @@
         <section class="px-4 mb-4">
             <div class="flex items-center justify-between mb-2">
                 <div class="font-semibold">Produk</div>
-                <div class="relative">
-                    <input v-model="searchProduk" type="text" placeholder="Cari nama produk..."
-                        class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm w-40" />
-                    <i class="icon-search absolute right-2 top-2 text-gray-400"></i>
-                </div>
+                <button @click="goToAddProduk" class="p-1">
+                    <img :src="tombolTambah" alt="Tambah Produk" class="w-6 h-6" />
+                </button>
+            </div>
+            <div class="relative mb-2">
+                <input v-model="searchProduk" type="text" placeholder="Cari nama produk..."
+                    class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm w-full" />
+                <i class="icon-search absolute right-2 top-2 text-gray-400"></i>
             </div>
             <div v-if="filteredProduk.length === 0" class="text-gray-400 text-sm text-center py-4">
                 Tidak ada produk.
@@ -83,6 +86,8 @@ import { useRoute, useRouter } from "vue-router";
 import { getUmkmById } from "@/services/umkmService";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import tombolTambah from '@/assets/tombol_tambah.png';
+import { setProdukFormData } from "@/services/produkService";
 
 const route = useRoute();
 const router = useRouter();
@@ -158,5 +163,10 @@ watch(umkm, (val) => {
 
 function goToProdukDetail(id) {
     router.push({ name: 'produk-detail', params: { id } });
+}
+
+function goToAddProduk() {
+    setProdukFormData({ umkm_id: umkm.value.id });
+    router.push({ name: 'addproduk' });
 }
 </script>

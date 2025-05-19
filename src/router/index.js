@@ -11,12 +11,15 @@ import UMKMDetail from "@/views/UMKM/UMKMDetail.vue";
 import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
 import ProdukDetail from "@/views/UMKM/ProdukDetail.vue";
 import PenghuniDetail from "@/views/Wilayah/PenghuniDetail.vue";
-import UploadViewPage from "@/views/UMKM/ImageUploader.vue";
-import AddUMKMPage from "@/views/UMKM/AddUMKM.vue";
-import AddPemilik from "@/views/All/PemilikForm.vue";
-import KoordinatUMKM from "@/views/UMKM/KoordinatForm.vue";
-import KontakForm from "@/views/UMKM/KontakForm.vue";
-import ConfirmationUmkm from "@/views/UMKM/ConfirmUMKM.vue";
+import UploadViewPage from "@/views/UMKM/UMKMImage.vue";
+import AddUMKMPage from "@/views/UMKM/UMKMAdd.vue";
+import AddPemilik from "@/views/UMKM/UMKMPemilik.vue";
+import KoordinatUMKM from "@/views/UMKM/UMKMKoordinat.vue";
+import KontakForm from "@/views/UMKM/UMKMKontak.vue";
+import ConfirmationUmkm from "@/views/UMKM/UMKMConfirm.vue";
+import AddProduk from "@/views/UMKM/ProdukAdd.vue";
+import ProdukImage from "@/views/UMKM/ProdukImage.vue";
+import ProdukConfirm from "@/views/UMKM/ProdukConfirm.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -98,6 +101,21 @@ const routes = [
     path: "/confirmation",
     name: "confirmation",
     component: ConfirmationUmkm
+  },
+  {
+    path: "/addproduk",
+    name: "addproduk",
+    component:AddProduk
+  },
+  {
+    path: "/produkimage",
+    name: "produkimage",
+    component: ProdukImage
+  },
+  {
+    path: "/produkconfirm",
+    name: "produkconfirm",
+    component: ProdukConfirm
   }
 ];
 
