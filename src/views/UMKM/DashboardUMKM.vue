@@ -1,8 +1,12 @@
 <template>
     <div class="max-w-[400px] mx-auto font-inter bg-white min-h-screen">
-        <header class="flex items-center justify-between px-3 pt-4 pb-2 border-b border-gray-200">
-            <h2 class="text-lg font-semibold m-0">Kelola UMKM</h2>
-        </header>
+        <HeaderForm title="Tambah Data" @back="goBack">
+            <template #action>
+                <button @click="handleAdd">
+                    <img :src="tombolTambah" alt="Tambah" class="w-6 h-6" />
+                </button>
+            </template>
+        </HeaderForm>
         <section class="flex gap-3 px-3 pt-4">
             <div class="flex-1 bg-gray-100 rounded-lg p-3 text-left">
                 <div class="text-xs text-gray-500">Total UMKM</div>
@@ -78,6 +82,8 @@ import { getWargaById } from "@/services/wargaService";
 import { getUmkmMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
+import tombolTambah from '@/assets/tombol_tambah.png';
+import HeaderForm from '@/components/card/HeaderForm.vue';
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -160,4 +166,12 @@ function goToUmkmDetail(id) {
 }
 
 watch([selectedJenis, selectedBentuk], fetchUmkm);
+
+function goBack() {
+    router.back()
+}
+
+function handleAdd() {
+    router.push({ name: "addumkm" });
+}
 </script>

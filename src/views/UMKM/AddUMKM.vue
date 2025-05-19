@@ -102,7 +102,7 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-[#232360] mb-1">
-                    Kontak Usaha<span class="text-[#ff5a5f]">*</span>
+                    Kontak Usaha
                 </label>
                 <div class="relative">
                     <div @click="goToKontakForm" class="relative cursor-pointer">
@@ -124,7 +124,7 @@
         </form>
 
         <!-- Tombol Selanjutnya -->
-        <SubmitButton @submit="handleNext" />
+        <SubmitButton label="SELANJUTNYA" @submit="handleNext" />
     </div>
 </template>
 
@@ -211,6 +211,22 @@ function goToKoordinatForm() {
 }
 
 const handleNext = () => {
-    localStorage.setItem('umkm_form_data', JSON.stringify([]));
+    // localStorage.setItem('umkm_form_data', JSON.stringify([]));
+    // Validasi field wajib
+    if (
+        !namaUsaha.value ||
+        !selectedJenis.value ||
+        !selectedBentuk.value ||
+        !pemilikLabel.value ||
+        !alamat.value ||
+        !lokasiLat.value ||
+        !lokasiLng.value ||
+        !gambarUsahaLabel.value
+    ) {
+        alert('Mohon lengkapi semua data wajib terlebih dahulu!');
+        return;
+    }
+    // Jika valid, arahkan ke halaman konfirmasi
+    router.push({ name: 'confirmation' });
 };
 </script>

@@ -16,6 +16,7 @@ import AddUMKMPage from "@/views/UMKM/AddUMKM.vue";
 import AddPemilik from "@/views/All/PemilikForm.vue";
 import KoordinatUMKM from "@/views/UMKM/KoordinatForm.vue";
 import KontakForm from "@/views/UMKM/KontakForm.vue";
+import ConfirmationUmkm from "@/views/UMKM/ConfirmUMKM.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -93,6 +94,11 @@ const routes = [
     name: "kontak",
     component: KontakForm,
   },
+  {
+    path: "/confirmation",
+    name: "confirmation",
+    component: ConfirmationUmkm
+  }
 ];
 
 const router = createRouter({

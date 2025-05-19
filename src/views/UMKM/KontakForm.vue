@@ -79,11 +79,9 @@ const inputKontak = ref("")
 const kontakList = ref([])
 
 onMounted(async () => {
-    // Ambil master tipe kontak
     const { data } = await getUmkmMaster({ data: "kontak" })
     tipeList.value = data?.data?.kontak || []
 
-    // Ambil kontak dari localStorage
     const formData = getUmkmFormData()
     kontakList.value = formData.kontak || []
 })

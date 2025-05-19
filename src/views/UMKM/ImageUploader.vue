@@ -69,31 +69,37 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-const handleFiles = (e) => {
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+const handleFiles = async (e) => {
   const files = Array.from(e.target.files);
   for (const file of files) {
     if (
       (file.type === 'image/jpeg' ||
-        file.type === 'image/png' ||
-        file.type === 'application/pdf') &&
+        file.type === 'image/png') &&
       file.size <= 1.5 * 1024 * 1024 &&
       images.value.length < 5
     ) {
-      const url = file.type === 'application/pdf'
-        ? ''
-        : URL.createObjectURL(file);
-      images.value.push({ file, url });
+      const base64 = await fileToBase64(file);
+      images.value.push({ file: { name: file.name, type: file.type }, url: base64 });
     }
   }
   setUmkmFormData({
-    fotos: images.value.map(img => img.file.name)
+    fotos: images.value
   });
   e.target.value = '';
 };
 
 const removeImage = (idx) => {
   images.value.splice(idx, 1);
-  setUmkmFormData({ gambar_count: images.value.length })
+  setUmkmFormData({ fotos: images.value });
 };
 
 onMounted(() => {
