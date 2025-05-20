@@ -97,7 +97,7 @@
               </p>
               <div class="space-y-5">
                 <div v-for="umkm in umkmList" :key="umkm.id"
-                  class="flex gap-4 bg-white rounded-xl border p-5 shadow cursor-pointer"
+                  class="flex gap-4 bg-white rounded-xl border p-5 shadow-sm hover:shadow-md cursor-pointer"
                   @click="goToUmkmDetail(umkm.id)">
                   <div class="bg-gray-200 w-20 h-20 rounded-lg"></div>
                   <div class="flex-1">
@@ -129,7 +129,7 @@
                 wilayah Anda.</p>
               <div class="flex gap-3 md:gap-4 overflow-x-auto pb-2 lg:justify-center">
                 <div v-for="aset in asetList" :key="aset.id"
-                  class="min-w-[140px] max-w-[180px] w-full bg-gray-100 p-3 md:p-4 rounded-lg flex-shrink-0 cursor-pointer"
+                  class="min-w-[140px] max-w-[180px] w-full bg-gray-100 p-3 md:p-4 rounded-lg flex-shrink-0 shadow-sm hover:shadow-md cursor-pointer"
                   @click="goToAsetDetail(aset.id)">
                   <div class="aspect-square bg-gray-300 rounded mb-2"></div>
                   <h3 class="text-xs md:text-sm lg:text-base font-bold text-[#37306B] truncate">{{ aset.nama }}</h3>

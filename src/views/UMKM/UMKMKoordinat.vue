@@ -1,11 +1,12 @@
 <!-- KoordinatForm.vue -->
 <template>
-  <div class="max-w-[430px] mx-auto min-h-screen bg-white flex flex-col">
+  <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
     <HeaderForm title="Tambah koordinat umkm" @back="handleBack" />
-    <div class="flex-1 flex flex-col">
-      <div id="map" class="w-full flex-1" style="height: 350px;"></div>
-      <div class="p-4">
-        <div class="mb-2 text-center text-gray-600">
+
+    <div class="flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24">
+      <div id="map" class="w-full flex-1 rounded-b-xl" style="height: 350px;"></div>
+      <div class="p-2 md:p-4">
+        <div class="mb-2 text-center text-gray-600 text-sm md:text-base">
           <div v-if="lat && lng">
             <span>Latitude: {{ lat }}</span> <br>
             <span>Longitude: {{ lng }}</span>
@@ -14,13 +15,7 @@
             Silakan pilih lokasi pada peta
           </div>
         </div>
-        <button
-          class="w-full bg-[#6c6c6c] text-white rounded-lg py-2 font-semibold"
-          :disabled="!lat || !lng"
-          @click="pilihLokasi"
-        >
-          PILIH LOKASI
-        </button>
+        <SubmitButton :label="'PILIH LOKASI'" :disabled="!lat || !lng" @submit="pilihLokasi" />
       </div>
     </div>
   </div>

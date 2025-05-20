@@ -1,5 +1,5 @@
 <template>
-    <header class="px-4 md:px-24 py-3 md:py-4 border-b border-gray-200 bg-white">
+    <header class="px-6 lg:px-24 py-3 lg:py-4 border-b border-gray-200 bg-white">
         <div class="flex items-center justify-between">
             <!-- Kiri: tombol back & judul -->
             <div class="flex items-center min-w-0">

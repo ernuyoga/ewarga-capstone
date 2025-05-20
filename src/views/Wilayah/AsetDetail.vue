@@ -4,7 +4,7 @@
         <HeaderForm title="Detail Objek Wilayah" @back="goBack">
             <template #action>
                 <button>
-                    <!-- <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-8 h-8" /> -->
+                    <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-6 h-6" />
                 </button>
             </template>
         </HeaderForm>
@@ -121,12 +121,12 @@ import { getPenghuniByAset } from '@/services/penghuniService';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import HeaderForm from '@/components/card/HeaderForm.vue';
+import tombolTitikTiga from '@/assets/titik_tiga.png';
 
 const route = useRoute();
 const router = useRouter();
 const aset = ref({});
 const penghuniList = ref([]);
-const fotoDefault = 'https://randomuser.me/api/portraits/men/32.jpg';
 const loading = ref(true);
 
 const fotoUtama = computed(() => {

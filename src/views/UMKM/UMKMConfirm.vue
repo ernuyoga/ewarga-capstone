@@ -2,28 +2,28 @@
     <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Konfirmasi Data UMKM" @back="handleBack" />
 
-        <div class="bg-white rounded-xl mx-4 mt-4 p-4 flex flex-col gap-4">
+        <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6 flex flex-col gap-4">
             <!-- Nama Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Nama Usaha</div>
-                <div class="font-semibold text-[#232360]">
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Nama Usaha</div>
+                <div class="font-semibold text-[#232360] text-base md:text-lg">
                     {{ formData.nama_usaha }}
                 </div>
             </div>
             <!-- Moda Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Moda Usaha</div>
-                <div>{{ getJenisNama(formData.umkm_m_jenis_id) }}</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Moda Usaha</div>
+                <div class="text-sm md:text-base">{{ getJenisNama(formData.umkm_m_jenis_id) }}</div>
             </div>
             <!-- Bentuk Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Bentuk Usaha</div>
-                <div>{{ getBentukNama(formData.umkm_m_bentuk_id) }}</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Bentuk Usaha</div>
+                <div class="text-sm md:text-base">{{ getBentukNama(formData.umkm_m_bentuk_id) }}</div>
             </div>
             <!-- Pemilik Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Pemilik Usaha</div>
-                <ul class="list-disc ml-5">
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Pemilik Usaha</div>
+                <ul class="list-disc ml-5 text-sm md:text-base">
                     <li v-for="(pemilik, idx) in pemilikNames" :key="idx">
                         {{ pemilik }}
                     </li>
@@ -31,18 +31,18 @@
             </div>
             <!-- Lokasi Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Lokasi Usaha</div>
-                <div class="rounded-xl overflow-hidden mb-2" style="height: 120px">
-                    <div v-if="formData.lokasi_lat && formData.lokasi_lng" style="height: 120px">
-                        <iframe :src="mapUrl" width="100%" height="120" style="border: 0" allowfullscreen=""
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Lokasi Usaha</div>
+                <div class="rounded-xl overflow-hidden mb-2" style="height: 200px">
+                    <div v-if="formData.lokasi_lat && formData.lokasi_lng" style="height: 200px">
+                        <iframe :src="mapUrl" width="100%" height="200" style="border: 0" allowfullscreen=""
                             loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
-                <div>{{ formData.alamat }}</div>
+                <div class="text-sm md:text-base">{{ formData.alamat }}</div>
             </div>
             <!-- Gambar Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Gambar Usaha</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Gambar Usaha</div>
                 <div class="flex gap-2 flex-wrap">
                     <div v-for="(foto, idx) in formData.fotos || []" :key="idx"
                         class="w-16 h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden cursor-pointer"
@@ -63,8 +63,8 @@
                         &times;
                     </button>
                     <img v-if="formData.fotos[previewIdx]?.url" :src="formData.fotos[previewIdx].url"
-                        class="max-w-full max-h-[80vh] rounded" :alt="formData.fotos[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`
-                            " />
+                        class="max-w-full max-h-[80vh] rounded"
+                        :alt="formData.fotos[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`" />
                     <div v-else class="w-64 h-64 flex items-center justify-center text-gray-400 text-4xl">
                         <i class="icon-image"></i>
                     </div>
@@ -77,25 +77,25 @@
             </div>
             <!-- Kontak Usaha -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Kontak Usaha</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Kontak Usaha</div>
                 <div>
-                    <ul>
+                    <ul class="text-sm md:text-base">
                         <li v-for="(kontak, idx) in formData.kontak || []" :key="idx">
-                            <b>{{ kontak.jenis }}</b> {{ kontak.kontak }}
+                            <b>- {{ kontak.jenis }}</b> {{ kontak.kontak }}
                         </li>
                     </ul>
                 </div>
             </div>
             <!-- Keterangan -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Keterangan</div>
-                <div class="whitespace-pre-line">{{ formData.keterangan }}</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Keterangan</div>
+                <div class="whitespace-pre-line text-sm md:text-base">{{ formData.keterangan }}</div>
             </div>
         </div>
 
-        <div class="flex gap-3 px-4 mt-8 mb-4">
+        <div class="flex gap-3 px-4 md:px-8 lg:px-16 xl:px-24 mt-8 mb-4">
             <button
-                class="flex-1 border border-[#00c48c] text-[#00c48c] font-semibold py-3 rounded-full text-center bg-white"
+                class="flex-1 font-semibold py-3 rounded-full text-center bg-white text-base md:text-lg border border-[#00c48c] text-[#00c48c] shadow-lg mt-4 mb-4"
                 @click="handleEdit">
                 UBAH
             </button>
