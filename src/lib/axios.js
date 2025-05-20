@@ -15,7 +15,7 @@ const gambar = axios.create({
   }
 })
 
-function getImageUrl(file_path) {
+export function getImageUrl(file_path) {
     return file_path
         ? `https://api.ewarga.rionaru.site/storage/${file_path}`
         : 'https://via.placeholder.com/150';

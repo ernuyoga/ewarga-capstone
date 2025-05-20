@@ -1,0 +1,173 @@
+<template>
+    <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
+        <HeaderForm title="Ubah Produk" @back="goBack" />
+
+        <!-- Stepper -->
+        <div class="flex items-center gap-3 bg-white rounded-xl mx-4 mt-4 p-4">
+            <div class="flex items-center">
+                <div
+                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500 font-bold text-lg">
+                    2</div>
+            </div>
+            <div>
+                <div class="font-semibold text-[#232360]">Konfirmasi Data</div>
+                <div class="text-xs text-gray-400">Selanjutnya : Selesai</div>
+            </div>
+        </div>
+
+        <!-- Card Konfirmasi -->
+        <div class="bg-white rounded-xl mx-4 mt-4 p-4 flex flex-col gap-3">
+            <!-- Nama Produk -->
+            <div>
+                <div class="text-xs text-gray-400 mb-1">Nama Produk</div>
+                <div class="font-semibold text-[#232360]">{{ produkData.nama }}</div>
+            </div>
+            <!-- Harga Produk -->
+            <div>
+                <div class="text-xs text-gray-400 mb-1">Harga Produk</div>
+                <div class="font-semibold text-[#232360]">Rp{{ Number(produkData.harga).toLocaleString('id-ID') }}</div>
+            </div>
+            <!-- Gambar Produk -->
+            <div>
+                <div class="text-xs text-gray-400 mb-1">Gambar Produk</div>
+                <div class="flex gap-2 flex-wrap">
+                    <div v-for="(foto, idx) in produkData.fotos || []" :key="idx"
+                        class="w-16 h-16 bg-green-50 rounded flex items-center justify-center overflow-hidden cursor-pointer"
+                        @click="openPreview(idx)">
+                        <img v-if="foto.url"
+                            :src="foto.url"
+                            class="object-cover w-full h-full"
+                            :alt="foto.file?.name || `Foto ${idx + 1}`" />
+                        <img v-else-if="foto.file_path"
+                            :src="getImageUrl(foto.file_path)"
+                            class="object-cover w-full h-full"
+                            :alt="foto.nama || `Foto ${idx + 1}`" />
+                        <span v-else class="text-green-400 text-2xl"><i class="icon-image"></i></span>
+                    </div>
+                </div>
+            </div>
+            <!-- Popup Preview -->
+            <div v-if="previewIdx !== null"
+                class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
+                    <button @click="closePreview"
+                        class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
+                        &times;
+                    </button>
+                    <img v-if="produkData.fotos[previewIdx]?.url"
+                        :src="produkData.fotos[previewIdx].url"
+                        class="max-w-full max-h-[80vh] rounded"
+                        :alt="produkData.fotos[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`" />
+                    <img v-else-if="produkData.fotos[previewIdx]?.file_path"
+                        :src="getImageUrl(produkData.fotos[previewIdx].file_path)"
+                        class="max-w-full max-h-[80vh] rounded"
+                        :alt="produkData.fotos[previewIdx]?.nama || `Foto ${previewIdx + 1}`" />
+                    <div v-else class="w-64 h-64 flex items-center justify-center text-gray-400 text-4xl">
+                        <i class="icon-image"></i>
+                    </div>
+                    <div class="mt-2 text-center text-sm text-gray-700">
+                        {{ produkData.fotos[previewIdx]?.file?.name || produkData.fotos[previewIdx]?.nama || `Foto ${previewIdx + 1}` }}
+                    </div>
+                </div>
+            </div>
+            <!-- Keterangan -->
+            <div>
+                <div class="text-xs text-gray-400 mb-1">Keterangan</div>
+                <div class="whitespace-pre-line">{{ produkData.keterangan || '-' }}</div>
+            </div>
+        </div>
+
+        <!-- Tombol Ubah & Simpan -->
+        <div class="flex gap-3 px-4 mt-8 mb-4">
+            <button
+                class="flex-1 border border-[#00c48c] text-[#00c48c] font-semibold py-3 rounded-full text-center bg-white"
+                @click="handleEdit">
+                UBAH
+            </button>
+            <button class="flex-1 bg-[#00c48c] text-white font-semibold py-3 rounded-full text-center"
+                @click="handleSubmit">
+                SIMPAN
+            </button>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import HeaderForm from '@/components/card/HeaderForm.vue'
+import { getEditProdukFormData, setEditProdukFormData, clearEditProdukFormData, putProduk } from '@/services/produkService'
+import { getImageUrl } from '@/lib/axios'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+const produkData = ref({})
+const previewIdx = ref(null)
+
+onMounted(() => {
+    produkData.value = getEditProdukFormData()
+})
+
+function goBack() {
+    router.back()
+}
+
+function handleEdit() {
+    router.push({ name: 'produkedit', params: { id: produkData.value.id } })
+}
+
+function openPreview(idx) {
+    previewIdx.value = idx;
+}
+function closePreview() {
+    previewIdx.value = null;
+}
+
+async function handleSubmit() {
+    const fd = new FormData()
+    fd.append('nama', produkData.value.nama)
+    fd.append('harga', produkData.value.harga)
+    fd.append('keterangan', produkData.value.keterangan || '')
+    fd.append('umkm_id', produkData.value.umkm_id)
+    fd.append('instansi_id', produkData.value.instansi_id)
+
+    // Tambahkan file baru
+    if (produkData.value.fotos && Array.isArray(produkData.value.fotos)) {
+        let fotoIdx = 0
+        for (let i = 0; i < produkData.value.fotos.length; i++) {
+            const fotoObj = produkData.value.fotos[i]
+            if (
+                fotoObj.url &&
+                fotoObj.file &&
+                fotoObj.file.name &&
+                fotoObj.file.type &&
+                fotoObj.url.startsWith('data:')
+            ) {
+                const res = await fetch(fotoObj.url)
+                const blob = await res.blob()
+                const file = new File([blob], fotoObj.file.name, { type: fotoObj.file.type })
+                fd.append(`fotos[${fotoIdx}]`, file)
+                fotoIdx++
+            }
+        }
+    }
+
+    if (produkData.value.hapus_foto && Array.isArray(produkData.value.hapus_foto)) {
+        produkData.value.hapus_foto.forEach((id, idx) => {
+            fd.append(`hapus_foto[${idx}]`, id)
+        })
+    }
+
+    try {
+        await putProduk(produkData.value.id, fd)
+        clearEditProdukFormData()
+        router.push({ name: 'produk-detail', params: { id: route.params.id } })
+    } catch (e) {
+        if (e.response && e.response.data) {
+            alert('Gagal menyimpan perubahan produk:\n' + JSON.stringify(e.response.data.errors || e.response.data, null, 2))
+        } else {
+            alert('Gagal menyimpan perubahan produk. Pastikan data sudah benar.')
+        }
+    }
+}
+</script>

@@ -26,6 +26,9 @@ import UMKMEditKoordinat from "@/views/UMKM/UMKMEditKoordinat.vue";
 import UMKMditImage from "@/views/UMKM/UMKMEditImage.vue";
 import UMKMEditKontak from "@/views/UMKM/UMKMEditKontak.vue";
 import UMKMEditConfirm from "@/views/UMKM/UMKMEditConfirm.vue";
+import ProdukEdit from "@/views/UMKM/ProdukEdit.vue";
+import ProdukEditImage from "@/views/UMKM/ProdukEditImage.vue";
+import ProdukEditConfirm from "@/views/UMKM/ProdukEditConfirm.vue"
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -152,6 +155,21 @@ const routes = [
     path: "/umkmedit/:id/confirmation",
     name: "umkmeditconfirmation",
     component: UMKMEditConfirm
+  },
+  {
+    path: "/produkedit/:id",
+    name: "produkedit",
+    component: ProdukEdit
+  },
+  {
+    path: "/produkedit/:id/image",
+    name: "produkeditimage",
+    component: ProdukEditImage
+  },
+  {
+    path: "/produkedit/:id/confirmation",
+    name: "produkeditconfirmation",
+    component: ProdukEditConfirm
   }
 ];
 

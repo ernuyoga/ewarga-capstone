@@ -1,9 +1,28 @@
 <template>
     <div class="bg-gray-100 min-h-screen">
-        <!-- Header -->
-        <div class="flex items-center px-4 py-3 bg-white shadow">
-            <h1 class="flex-1 text-lg font-semibold text-center">Detail Produk</h1>
-        </div>
+        <HeaderForm title="Tambah Data" @back="goBack">
+            <template #action>
+                <div class="relative inline-block">
+                    <button @click="toggleMenu">
+                        <img :src="titikTiga" alt="Menu" class="w-6 h-6" />
+                    </button>
+                    <div v-if="showMenu"
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50 border border-gray-100"
+                        @click.stop>
+                        <ul class="py-2">
+                            <li @click="handleEditProduk"
+                                class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-[#2e5eaa]">
+                                <span>✏️</span> Ubah Produk
+                            </li>
+                            <li @click="showDeleteModal = true"
+                                class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-red-500">
+                                <span>🗑️</span> Hapus Produk
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </template>
+        </HeaderForm>
 
         <!-- Gambar Produk -->
         <div v-if="produk && produk.fotos && produk.fotos.length"
@@ -29,15 +48,28 @@
             </div>
         </div>
     </div>
+    <Modal :show="showDeleteModal" @cancel="showDeleteModal = false" @confirm="confirmDeleteProduk">
+        <template #title>
+            <div class="text-lg font-bold mb-2">Hapus Produk</div>
+        </template>
+        <div>Apakah Anda yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.</div>
+    </Modal>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { getProdukById } from '@/services/produkService'
+import { useRoute, useRouter } from 'vue-router'
+import HeaderForm from '@/components/card/HeaderForm.vue'
+import Modal from '@/components/shared/Modal.vue'
+import { getProdukById, setEditProdukFormData, mapProdukDetailToForm, deleteProduk } from '@/services/produkService'
+import titikTiga from '@/assets/titik_tiga.png';
 
 const route = useRoute()
+const router = useRouter()
 const produk = ref(null)
+const showMenu = ref(false)
+const showDeleteModal = ref(false)
+const deleting = ref(false)
 
 // Ganti dengan base URL API Anda
 const BASE_IMAGE_URL = 'https://your-api-url.com/storage/'
@@ -62,4 +94,35 @@ onMounted(async () => {
         // Handle error
     }
 })
+
+function goBack() {
+    router.back();
+}
+
+function toggleMenu(e) {
+    e.stopPropagation();
+    showMenu.value = !showMenu.value;
+}
+
+async function handleEditProduk() {
+    showMenu.value = false;
+    const id = route.params.id;
+    const res = await getProdukById(id);
+    if (res.status && res.data) {
+        setEditProdukFormData(mapProdukDetailToForm(res.data));
+    }
+    router.push({ name: 'produkedit', params: { id } });
+}
+
+async function confirmDeleteProduk() {
+    deleting.value = true;
+    try {
+        await deleteProduk(produk.value.id);
+        showDeleteModal.value = false;
+        router.push({ name: "umkm-detail", params: { id: produk.value.umkm_id } });
+    } catch (e) {
+        alert("Gagal menghapus produk.");
+    }
+    deleting.value = false;
+}
 </script>
