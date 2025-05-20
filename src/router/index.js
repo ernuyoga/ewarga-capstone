@@ -20,6 +20,12 @@ import ConfirmationUmkm from "@/views/UMKM/UMKMConfirm.vue";
 import AddProduk from "@/views/UMKM/ProdukAdd.vue";
 import ProdukImage from "@/views/UMKM/ProdukImage.vue";
 import ProdukConfirm from "@/views/UMKM/ProdukConfirm.vue";
+import UMKMEdit from "@/views/UMKM/UMKMEdit.vue";
+import UMKMEditPemilik from "@/views/UMKM/UMKMEditPemilik.vue";
+import UMKMEditKoordinat from "@/views/UMKM/UMKMEditKoordinat.vue";
+import UMKMditImage from "@/views/UMKM/UMKMEditImage.vue";
+import UMKMEditKontak from "@/views/UMKM/UMKMEditKontak.vue";
+import UMKMEditConfirm from "@/views/UMKM/UMKMEditConfirm.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -105,7 +111,7 @@ const routes = [
   {
     path: "/addproduk",
     name: "addproduk",
-    component:AddProduk
+    component: AddProduk
   },
   {
     path: "/produkimage",
@@ -116,6 +122,36 @@ const routes = [
     path: "/produkconfirm",
     name: "produkconfirm",
     component: ProdukConfirm
+  },
+  {
+    path: "/umkmedit/:id",
+    name: "umkmedit",
+    component: UMKMEdit
+  },
+  {
+    path: "/umkmedit/:id/pemilik",
+    name: "umkmeditpemilik",
+    component: UMKMEditPemilik
+  },
+  {
+    path: "/umkmedit/:id/koordinat",
+    name: "umkmeditkoordinat",
+    component: UMKMEditKoordinat
+  },
+  {
+    path: "/umkmedit/:id/image",
+    name: "umkmeditimage",
+    component: UMKMditImage
+  },
+  {
+    path: "/umkmedit/:id/kontak",
+    name: "umkmeditkontak",
+    component: UMKMEditKontak
+  },
+  {
+    path: "/umkmedit/:id/confirmation",
+    name: "umkmeditconfirmation",
+    component: UMKMEditConfirm
   }
 ];
 

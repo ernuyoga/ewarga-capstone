@@ -8,9 +8,21 @@ const api = axios.create({
   }
 })
 
-// Optional: Tambah interceptor untuk Authorization
+const gambar = axios.create({
+  baseURL: 'https://api.ewarga.rionaru.site/storage',
+  headers: {
+    'Content-Type': 'application/json',
+  }
+})
+
+function getImageUrl(file_path) {
+    return file_path
+        ? `https://api.ewarga.rionaru.site/storage/${file_path}`
+        : 'https://via.placeholder.com/150';
+}
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token') // atau dari Pinia
+  const token = localStorage.getItem('token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

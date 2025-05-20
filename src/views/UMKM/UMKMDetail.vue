@@ -1,13 +1,33 @@
 <template>
     <div class="max-w-[400px] mx-auto font-inter bg-white min-h-screen">
         <!-- Header -->
-        <header class="flex items-center justify-between px-3 pt-4 pb-2 border-b border-gray-200">
-            <button @click="goBack" class="text-gray-500 mr-2">
-                <i class="icon-arrow-left"></i>
-            </button>
-            <h2 class="text-lg font-semibold flex-1 text-center">Detail Usaha</h2>
-            <button class="ml-2 text-gray-500"><i class="icon-more"></i></button>
-        </header>
+        <HeaderForm title="Tambah Data" @back="goBack">
+            <template #action>
+                <div class="relative inline-block">
+                    <button @click="toggleMenu">
+                        <img :src="titikTiga" alt="Menu" class="w-6 h-6" />
+                    </button>
+                    <div v-if="showMenu"
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50 border border-gray-100"
+                        @click.stop>
+                        <ul class="py-2">
+                            <li @click="handleTambahProduk"
+                                class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-green-600 font-medium">
+                                <span>+</span> Tambah Produk
+                            </li>
+                            <li @click="handleEditUmkm"
+                                class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-[#2e5eaa]">
+                                <span>✏️</span> Ubah UMKM
+                            </li>
+                            <li @click="handleEditUmkm"
+                                class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-red-500">
+                                <span>🗑️</span> Hapus UMKM
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </template>
+        </HeaderForm>
 
         <!-- Foto UMKM -->
         <img :src="fotoUtama" class="w-full h-44 object-cover" />
@@ -81,13 +101,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getUmkmById } from "@/services/umkmService";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import tombolTambah from '@/assets/tombol_tambah.png';
 import { setProdukFormData } from "@/services/produkService";
+import titikTiga from '@/assets/titik_tiga.png';
+import HeaderForm from '@/components/card/HeaderForm.vue';
+import { setEditUmkmFormData } from '@/services/umkmService'
 
 const route = useRoute();
 const router = useRouter();
@@ -96,6 +119,59 @@ const produkList = ref([]);
 const loading = ref(true);
 const searchProduk = ref("");
 const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
+const showMenu = ref(false);
+
+function toggleMenu(e) {
+    e.stopPropagation();
+    showMenu.value = !showMenu.value;
+}
+function closeMenu() {
+    showMenu.value = false;
+}
+function handleTambahProduk() {
+    setProdukFormData({ umkm_id: umkm.value.id });
+    router.push({ name: 'addproduk' });
+    closeMenu();
+}
+
+async function handleEditUmkm() {
+    // Mapping data API ke localStorage
+    const umkmData = umkm.value
+    let gambarArr = []
+    if (Array.isArray(umkmData.fotos)) {
+        gambarArr = umkmData.fotos.map((f, idx) => ({
+            id: f.id,
+            nama: f.nama,
+            file_path: f.file_path,
+            file: { name: f.nama || `Foto ${idx + 1}`, type: 'image/png' }
+        }))
+    }
+    setEditUmkmFormData({
+        nama_usaha: umkmData.nama || "",
+        instansi_id: umkmData.instansi_id || 1,
+        umkm_m_jenis_id: umkmData.umkm_m_jenis_id || "",
+        umkm_m_bentuk_id: umkmData.umkm_m_bentuk_id || "",
+        alamat: umkmData.alamat || "",
+        lokasi_lat: umkmData.lokasi_point?.latitude || "",
+        lokasi_lng: umkmData.lokasi_point?.longitude || "",
+        keterangan: umkmData.keterangan || "",
+        pemilik: Array.isArray(umkmData.umkm_wargas) ? umkmData.umkm_wargas.map(w => w.warga_id) : [],
+        gambar: gambarArr,
+        kontak: Array.isArray(umkmData.kontaks) ? umkmData.kontaks.map(k => ({
+            umkm_m_kontak_id: k.umkm_m_kontak_id,
+            kontak: k.kontak,
+            jenis: k.jenis_kontak || ''
+        })) : [],
+    })
+    router.push({ name: 'umkmedit', params: { id: umkm.value.id } });
+}
+
+onMounted(() => {
+    document.addEventListener('click', closeMenu);
+});
+onUnmounted(() => {
+    document.removeEventListener('click', closeMenu);
+});
 
 const fotoUtama = computed(() => {
     if (umkm.value.fotos && umkm.value.fotos.length > 0) {
@@ -168,5 +244,9 @@ function goToProdukDetail(id) {
 function goToAddProduk() {
     setProdukFormData({ umkm_id: umkm.value.id });
     router.push({ name: 'addproduk' });
+}
+
+function handleAdd() {
+    router.push({ name: "addumkm" });
 }
 </script>
