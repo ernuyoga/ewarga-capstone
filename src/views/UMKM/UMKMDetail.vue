@@ -19,7 +19,7 @@
                                 class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-[#2e5eaa]">
                                 <span>✏️</span> Ubah UMKM
                             </li>
-                            <li @click="handleEditUmkm"
+                            <li @click="handleHapusUmkm"
                                 class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer text-red-500">
                                 <span>🗑️</span> Hapus UMKM
                             </li>
@@ -31,7 +31,12 @@
 
         <!-- Foto UMKM -->
         <img :src="fotoUtama" class="w-full h-44 object-cover" />
-
+        <Modal :show="showDeleteModal" @cancel="showDeleteModal = false" @confirm="confirmDeleteUmkm">
+            <template #title>
+                <div class="text-lg font-bold mb-2">Hapus UMKM</div>
+            </template>
+            <div>Apakah Anda yakin ingin menghapus UMKM ini? Tindakan ini tidak dapat dibatalkan.</div>
+        </Modal>
         <!-- Info UMKM -->
         <section class="px-4 py-3">
             <div class="text-xl font-bold mb-1">{{ umkm.nama }}</div>
@@ -111,31 +116,77 @@ import { setProdukFormData } from "@/services/produkService";
 import titikTiga from '@/assets/titik_tiga.png';
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import { setEditUmkmFormData } from '@/services/umkmService'
+import Modal from '@/components/shared/Modal.vue'; // Tambahkan ini
+import { deleteUmkm } from "@/services/umkmService"; // Tambahkan ini
 
+const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 const route = useRoute();
 const router = useRouter();
 const umkm = ref({});
 const produkList = ref([]);
 const loading = ref(true);
 const searchProduk = ref("");
-const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 const showMenu = ref(false);
+const showDeleteModal = ref(false);
+const deleting = ref(false);
 
-function toggleMenu(e) {
-    e.stopPropagation();
-    showMenu.value = !showMenu.value;
-}
-function closeMenu() {
-    showMenu.value = false;
-}
+onMounted(() => {
+    document.addEventListener('click', closeMenu);
+});
+
+onMounted(async () => {
+    const id = route.params.id;
+    if (!id) return;
+    loading.value = true;
+    try {
+        const { data } = await getUmkmById(id);
+        if (data && data.data) {
+            umkm.value = data.data;
+            produkList.value = data.data.produks || [];
+        }
+    } catch (e) {
+        umkm.value = {};
+        produkList.value = [];
+    }
+    loading.value = false;
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', closeMenu);
+});
+
 function handleTambahProduk() {
     setProdukFormData({ umkm_id: umkm.value.id });
     router.push({ name: 'addproduk' });
     closeMenu();
 }
 
+function closeMenu() {
+    showMenu.value = false;
+}
+
+function toggleMenu(e) {
+    e.stopPropagation();
+    showMenu.value = !showMenu.value;
+}
+
+const fotoUtama = computed(() => {
+    if (umkm.value.fotos && umkm.value.fotos.length > 0) {
+        return `${import.meta.env.VITE_API_BASE_URL || ''}/${umkm.value.fotos[0].file_path}`;
+    }
+    return defaultImage;
+});
+
+const isEmpty = computed(() => !umkm.value || Object.keys(umkm.value).length === 0);
+
+const filteredProduk = computed(() => {
+    if (!searchProduk.value) return produkList.value;
+    return produkList.value.filter(p =>
+        p.nama?.toLowerCase().includes(searchProduk.value.toLowerCase())
+    );
+});
+
 async function handleEditUmkm() {
-    // Mapping data API ke localStorage
     const umkmData = umkm.value
     let gambarArr = []
     if (Array.isArray(umkmData.fotos)) {
@@ -166,50 +217,9 @@ async function handleEditUmkm() {
     router.push({ name: 'umkmedit', params: { id: umkm.value.id } });
 }
 
-onMounted(() => {
-    document.addEventListener('click', closeMenu);
-});
-onUnmounted(() => {
-    document.removeEventListener('click', closeMenu);
-});
-
-const fotoUtama = computed(() => {
-    if (umkm.value.fotos && umkm.value.fotos.length > 0) {
-        // Ganti dengan base url file jika ada
-        return `${import.meta.env.VITE_API_BASE_URL || ''}/${umkm.value.fotos[0].file_path}`;
-    }
-    return defaultImage;
-});
-
-const isEmpty = computed(() => !umkm.value || Object.keys(umkm.value).length === 0);
-
-const filteredProduk = computed(() => {
-    if (!searchProduk.value) return produkList.value;
-    return produkList.value.filter(p =>
-        p.nama?.toLowerCase().includes(searchProduk.value.toLowerCase())
-    );
-});
-
 function goBack() {
     router.back();
 }
-
-onMounted(async () => {
-    const id = route.params.id;
-    if (!id) return;
-    loading.value = true;
-    try {
-        const { data } = await getUmkmById(id);
-        if (data && data.data) {
-            umkm.value = data.data;
-            produkList.value = data.data.produks || [];
-        }
-    } catch (e) {
-        umkm.value = {};
-        produkList.value = [];
-    }
-    loading.value = false;
-});
 
 function showMap() {
     if (!umkm.value.lokasi_point?.latitude || !umkm.value.lokasi_point?.longitude) return;
@@ -248,5 +258,22 @@ function goToAddProduk() {
 
 function handleAdd() {
     router.push({ name: "addumkm" });
+}
+
+function handleHapusUmkm() {
+    showDeleteModal.value = true;
+    closeMenu();
+}
+
+async function confirmDeleteUmkm() {
+    deleting.value = true;
+    try {
+        await deleteUmkm(umkm.value.id);
+        showDeleteModal.value = false;
+        router.push({ name: "dashboard-umkm" });
+    } catch (e) {
+        alert("Gagal menghapus UMKM.");
+    }
+    deleting.value = false;
 }
 </script>
