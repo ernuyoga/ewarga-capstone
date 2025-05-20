@@ -4,8 +4,8 @@
       <!-- Skeleton Loader -->
       <div v-if="isLoading">
         <!-- Skeleton Header -->
-        <div class="bg-white shadow w-full">
-          <div class="flex justify-between items-center px-8 py-4">
+        <div class="bg-white shadow w-full px-4 md:px-8 lg:px-16 xl:px-24">
+          <div class="flex justify-between items-center py-4">
             <div class="flex-1">
               <div class="h-7 w-44 bg-gray-200 rounded mb-2"></div>
               <div class="h-5 w-60 bg-gray-200 rounded"></div>
@@ -17,7 +17,7 @@
           </div>
         </div>
         <!-- Skeleton Content -->
-        <div class="animate-pulse space-y-7 py-10 px-5">
+        <div class="animate-pulse space-y-7 py-10 px-4 md:px-8 lg:px-16 xl:px-24">
           <div class="h-9 bg-gray-200 rounded w-2/3"></div>
           <div class="h-7 bg-gray-200 rounded w-1/2"></div>
           <div class="flex gap-4">
@@ -42,97 +42,108 @@
       <!-- Content -->
       <div v-else>
         <!-- Header -->
-        <div class="bg-white shadow px-24 py-4 w-full">
+        <div class="bg-white shadow px-4 md:px-8 lg:px-16 xl:px-24 py-4 w-full">
           <div class="flex justify-between items-center">
             <div>
-              <h1 class="text-2xl font-bold text-[#03BF8C]">
+              <h1 class="text-xl lg:text-2xl font-bold text-[#03BF8C]">
                 {{ wargaStatus }}
                 <template v-if="instansi">
                   <span class="text-[#3A3361]">- RW {{ instansi.rw }} RT {{ instansi.rt }}</span>
                 </template>
               </h1>
-              <p v-if="instansi" class="text-base text-gray-500">
+              <p v-if="instansi" class="text-sm lg:text-base text-gray-500">
                 Kec. {{ instansi.m_kecamatan?.nama }}, Kota {{ instansi.m_kota?.nama }}
               </p>
             </div>
             <div class="flex items-center gap-4">
-              <i class="icon-notification text-xl"></i>
-              <i class="icon-user text-xl"></i>
+              <i class="icon-notification text-lg lg:text-xl"></i>
+              <i class="icon-user text-lg lg:text-xl"></i>
             </div>
           </div>
         </div>
 
-        <div class="space-y-8 py-8 px-24">
+        <div class="space-y-4 py-4 px-4 md:px-8 lg:px-16 lg:py-6 xl:px-24">
           <!-- Layanan Section -->
           <section class="bg-white rounded-xl shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-5">Layanan Utama Kami</h2>
+            <h2 class="text-lg lg:text-xl font-bold text-gray-800 mb-5">Layanan Utama Kami</h2>
             <div class="flex flex-col gap-5">
               <div
                 class="flex-1 bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer"
                 @click="goToUmkmDashboard">
-                <h3 class="text-lg font-bold text-[#37306B] mb-2">Pendataan UMKM</h3>
-                <p class="text-base text-gray-400">UMKM di Wilayah Anda</p>
+                <h3 class="text-base lg:text-lg font-bold text-[#37306B] mb-2">Pendataan UMKM</h3>
+                <p class="text-sm lg:text-base text-gray-400">UMKM di Wilayah Anda</p>
               </div>
               <div
                 class="flex-1 bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer"
                 @click="goToWilayahDashboard">
-                <h3 class="text-lg font-bold text-[#37306B] mb-2">Pemetaan Wilayah</h3>
-                <p class="text-base text-gray-400">Kelola Objek di Wilayah Anda</p>
+                <h3 class="text-base lg:text-lg font-bold text-[#37306B] mb-2">Pemetaan Wilayah</h3>
+                <p class="text-sm lg:text-base text-gray-400">Kelola Objek di Wilayah Anda</p>
               </div>
             </div>
           </section>
 
-          <!-- UMKM Section -->
-          <section class="bg-white rounded-xl shadow p-6">
-            <div class="flex justify-between items-center">
-              <h2 class="text-xl font-bold text-gray-800">UMKM Pilihan di Sekitar Anda</h2>
-              <button class="bg-green-100 text-green-500 text-sm font-bold px-2 py-1 rounded hover:bg-green-200"
-                @click="goToUmkmDashboard">Lihat Semua</button>
-            </div>
-            <p class="text-base text-gray-500 mb-5">Jelajahi pilihan produk dan layanan unggulan dari UMKM sekitar.</p>
-            <div class="space-y-5">
-              <div v-for="umkm in umkmList" :key="umkm.id"
-                class="flex gap-4 bg-white rounded-xl border p-5 shadow cursor-pointer"
-                @click="goToUmkmDetail(umkm.id)">
-                <div class="bg-gray-200 w-20 h-20 rounded-lg"></div>
-                <div class="flex-1">
-                  <h3 class="text-lg font-bold text-gray-800">{{ umkm.nama }}</h3>
-                  <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full"
-                      :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
-                    <span class="text-sm font-bold" :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
-                      {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
-                    </span>
+          <!-- Informasi Section -->
+          <div class="flex flex-col gap-4 lg:grid lg:py-2 lg:grid-cols-2 lg:gap-8">
+            <!-- UMKM Section -->
+            <section class="bg-white rounded-xl shadow p-6">
+              <div class="flex justify-between items-center">
+                <h2 class="text-lg lg:text-xl font-bold text-gray-800">UMKM Pilihan di Sekitar Anda</h2>
+                <button
+                  class="bg-green-100 text-green-500 text-xs lg:text-sm font-bold px-2 py-1 rounded hover:bg-green-200"
+                  @click="goToUmkmDashboard">Lihat Semua</button>
+              </div>
+              <p class="text-sm lg:text-base text-gray-500 mb-5">Jelajahi pilihan produk dan layanan unggulan dari UMKM
+                sekitar.
+              </p>
+              <div class="space-y-5">
+                <div v-for="umkm in umkmList" :key="umkm.id"
+                  class="flex gap-4 bg-white rounded-xl border p-5 shadow cursor-pointer"
+                  @click="goToUmkmDetail(umkm.id)">
+                  <div class="bg-gray-200 w-20 h-20 rounded-lg"></div>
+                  <div class="flex-1">
+                    <h3 class="text-base lg:text-lg font-bold text-gray-800">{{ umkm.nama }}</h3>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full"
+                        :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
+                      <span class="text-xs lg:text-sm font-bold"
+                        :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
+                        {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
+                      </span>
+                    </div>
+                    <p class="text-xs lg:text-sm text-gray-400">{{ umkm.alamat }}</p>
                   </div>
-                  <p class="text-sm text-gray-400">{{ umkm.alamat }}</p>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <!-- Wilayah Section -->
-          <section class="bg-white rounded-xl shadow p-6">
-            <div class="flex justify-between items-center">
-              <h2 class="text-xl font-bold text-gray-800">Objek di Wilayah Anda</h2>
-              <button class="bg-green-100 text-green-500 text-sm font-bold px-2 py-1 rounded hover:bg-green-200"
-                @click="goToWilayahDashboard">Lihat Semua</button>
-            </div>
-            <p class="text-base text-gray-500 mb-5">Jelajahi dan cari tahu objek yang ada di sekitar wilayah Anda.</p>
-            <div class="flex gap-5 overflow-x-auto pb-2">
-              <div v-for="aset in asetList" :key="aset.id"
-                class="min-w-[200px] max-w-[240px] w-full bg-gray-100 p-5 rounded-xl flex-shrink-0 cursor-pointer"
-                @click="goToAsetDetail(aset.id)">
-                <div class="aspect-square bg-gray-300 rounded-lg mb-3"></div>
-                <h3 class="text-base font-bold text-[#37306B] truncate">{{ aset.nama }}</h3>
-                <p class="text-sm text-gray-400 truncate">{{ aset.jenis?.nama }} | {{ aset.warga?.nama }}</p>
-                <p class="text-sm text-gray-400 truncate">{{ aset.alamat }}</p>
+            <!-- Wilayah Section -->
+            <section class="bg-white rounded-xl shadow p-4 md:p-5">
+              <div class="flex justify-between items-center">
+                <h2 class="text-lg lg:text-xl font-bold text-gray-800">Objek di Wilayah Anda</h2>
+                <button
+                  class="bg-green-100 text-green-500 text-xs lg:text-sm font-bold px-2 py-1 rounded hover:bg-green-200"
+                  @click="goToWilayahDashboard">Lihat Semua</button>
               </div>
-            </div>
-          </section>
+              <p class="text-sm lg:text-base text-gray-500 mb-4 md:mb-5">Jelajahi dan cari tahu objek yang ada di
+                sekitar
+                wilayah Anda.</p>
+              <div class="flex gap-3 md:gap-4 overflow-x-auto pb-2 lg:justify-center">
+                <div v-for="aset in asetList" :key="aset.id"
+                  class="min-w-[140px] max-w-[180px] w-full bg-gray-100 p-3 md:p-4 rounded-lg flex-shrink-0 cursor-pointer"
+                  @click="goToAsetDetail(aset.id)">
+                  <div class="aspect-square bg-gray-300 rounded mb-2"></div>
+                  <h3 class="text-xs md:text-sm lg:text-base font-bold text-[#37306B] truncate">{{ aset.nama }}</h3>
+                  <p class="text-[10px] md:text-xs lg:text-sm text-gray-400 truncate">{{ aset.jenis?.nama }} | {{
+                    aset.warga?.nama }}</p>
+                  <p class="text-[10px] md:text-xs lg:text-sm text-gray-400 truncate">{{ aset.alamat }}</p>
+                </div>
+              </div>
+            </section>
+          </div>
 
           <!-- Logout Button -->
           <button @click="handleLogout"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-lg font-bold text-white py-3 rounded-lg transition">Logout</button>
+            class="w-full bg-blue-600 hover:bg-blue-700 text-base lg:text-lg font-bold text-white py-3 rounded-lg transition">Logout</button>
         </div>
       </div>
     </div>
@@ -176,11 +187,11 @@ onMounted(async () => {
 
       // Ambil UMKM berdasarkan instansi
       const resUmkm = await getAllUmkm({ instansi_id: warga.value.instansi_id })
-      umkmList.value = (resUmkm.data.data || []).slice(0, 3)
+      umkmList.value = (resUmkm.data.data || []).slice(0, 2)
 
       // Ambil Objek/Aset berdasarkan instansi
       const resAset = await getAllAsetByInstansi(warga.value.instansi_id)
-      asetList.value = (resAset.data.data || []).slice(0, 5)
+      asetList.value = (resAset.data.data || []).slice(0, 3)
     }
   }
   isLoading.value = false

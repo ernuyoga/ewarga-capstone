@@ -1,39 +1,33 @@
 <template>
-    <div class="max-w-[400px] mx-auto font-inter bg-white min-h-screen">
+    <div class="min-h-screen bg-[#f6f6f6]">
         <!-- Header -->
-        <header class="flex items-center justify-between px-3 pt-4 pb-2 border-b border-gray-200">
-            <button @click="goBack" class="text-gray-500 mr-2">
-                <i class="icon-arrow-left"></i>
-            </button>
-            <h2 class="text-lg font-semibold flex-1 text-center">Penghuni Objek</h2>
-            <button class="ml-2 text-gray-500">
-                <i class="icon-more"></i>
-            </button>
-        </header>
+        <HeaderForm title="Penghuni Objek" @back="goBack" />
 
-        <!-- Search -->
-        <div class="px-4 py-2">
-            <div class="relative">
-                <input v-model="search" type="text" placeholder="Cari Nama ..."
-                    class="w-full border rounded-lg py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-200" />
-                <i class="icon-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <!-- Container -->
+        <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24">
+            <!-- Search -->
+            <div class="py-4">
+                <div class="relative">
+                    <input v-model="search" type="text" placeholder="Cari Nama ..."
+                        class="w-full border rounded-lg px-6 py-3 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-gray-100" />
+                    <i class="icon-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
             </div>
-        </div>
 
-        <!-- List Penghuni -->
-        <div class="px-4">
-            <div class="bg-gray-50 rounded-xl p-3 mt-2">
+            <!-- List Penghuni -->
+            <div class="bg-white rounded-xl shadow px-4 md:px-8 py-4">
                 <div v-for="(penghuni, index) in filteredPenghuni" :key="index"
                     class="flex items-center gap-3 mb-4 last:mb-0">
                     <!-- <img :src="penghuni.foto_path ? `${import.meta.env.VITE_API_BASE_URL || ''}/${penghuni.foto_path}` : fotoDefault"
-                        class="w-10 h-10 rounded-full object-cover" /> -->
-                    <div class="text-sm">
-                        <div class="font-semibold">{{ penghuni.nama }}</div>
+                        class="w-10 lg:w-12 h-10 lg:h-12 rounded-full object-cover" /> -->
+                    <div class="text-sm lg:text-base">
+                        <div class="font-semibold text-base lg:text-lg">{{ penghuni.nama }}</div>
                         <div class="text-gray-500">{{ penghuni.status }}</div>
                         <div class="text-blue-600">{{ penghuni.no_tlp || '—' }}</div>
                     </div>
                 </div>
-                <div v-if="filteredPenghuni.length === 0" class="text-center text-gray-400 py-6">Tidak ada penghuni.
+                <div v-if="filteredPenghuni.length === 0" class="text-center text-gray-400 py-6 text-sm lg:text-base">
+                    Tidak ada penghuni.
                 </div>
             </div>
         </div>
@@ -44,6 +38,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getPenghuniByAset } from '@/services/penghuniService';
+import HeaderForm from '@/components/card/HeaderForm.vue';
 
 const route = useRoute();
 const router = useRouter();
