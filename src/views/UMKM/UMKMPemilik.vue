@@ -19,7 +19,7 @@
           <div v-for="warga in filteredWarga" :key="warga.id"
             class="flex items-center px-2 md:px-4 py-2 md:py-3 rounded-lg hover:bg-[#f5f5f5] transition cursor-pointer select-none"
             @click="toggleWarga(warga)">
-            <img :src="warga.foto_path || '/avatar-default.png'" alt="foto"
+            <img :src="warga.foto_path || profileDefault" alt="foto"
               class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover mr-3 border" />
             <div class="flex-1">
               <div class="font-medium text-[#232360] text-sm md:text-base">{{ warga.nama }}</div>
@@ -35,7 +35,6 @@
                 </svg>
               </div>
             </label>
-
           </div>
         </div>
       </div>
@@ -55,6 +54,7 @@ import SubmitButton from '../../components/card/SubmitButton.vue'
 import { useRouter } from 'vue-router'
 import { getAllWarga } from '@/services/wargaService'
 import { setUmkmFormData, getUmkmFormData } from '@/services/umkmService'
+import profileDefault from '@/assets/profile.jpg' // Tambahkan ini
 
 const router = useRouter()
 const search = ref('')

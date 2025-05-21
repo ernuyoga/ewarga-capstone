@@ -97,21 +97,22 @@
               </p>
               <div class="space-y-5">
                 <template v-if="umkmList.length === 0">
-                  <div class="text-gray-400 italic text-center py-6">UMKM belum ditambahkan</div>
+                  <div class="text-gray-400 italic text-center py-6">Data UMKM tidak ditemukan.</div>
                 </template>
                 <template v-else>
                   <div v-for="umkm in umkmList" :key="umkm.id"
                     class="flex gap-4 bg-white rounded-xl border p-5 shadow-sm hover:shadow-md cursor-pointer"
                     @click="goToUmkmDetail(umkm.id)">
-                    <div class="bg-gray-200 w-20 h-20 rounded-lg"></div>
+                    <img :src="getImageUrl(umkm.fotos && umkm.fotos.length > 0 ? umkm.fotos[0].file_path : null)"
+                      alt="Foto UMKM" class="bg-gray-200 w-20 h-20 rounded-lg object-cover" />
                     <div class="flex-1">
                       <h3 class="text-base lg:text-lg font-bold text-gray-800">{{ umkm.nama }}</h3>
                       <div class="flex items-center gap-2">
                         <span class="w-3 h-3 rounded-full"
-                          :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
+                          :class="umkm.jenis?.id === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
                         <span class="text-xs lg:text-sm font-bold"
-                          :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
-                          {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
+                          :class="umkm.jenis?.id === 1 ? 'text-green-500' : 'text-gray-500'">
+                          {{ umkm.jenis?.nama || '-' }}
                         </span>
                       </div>
                       <p class="text-xs lg:text-sm text-gray-400">{{ umkm.alamat }}</p>
@@ -134,7 +135,7 @@
                 wilayah Anda.</p>
               <div class="flex gap-3 md:gap-4 overflow-x-auto pb-2 lg:justify-center">
                 <template v-if="asetList.length === 0">
-                  <div class="text-gray-400 italic text-center py-6 w-full">Objek belum ditambahkan</div>
+                  <div class="text-gray-400 italic text-center py-6 w-full">Data Objek tidak ditemukan.</div>
                 </template>
                 <template v-else>
                   <div v-for="aset in asetList" :key="aset.id"
@@ -168,6 +169,7 @@ import { getInstansiById } from '@/services/instansiService'
 import { getWargaById } from '@/services/wargaService'
 import { getAllUmkm } from '@/services/umkmService'
 import { getAllAsetByInstansi } from '@/services/wilayahService' // Tambahkan ini
+import { getImageUrl } from '@/lib/axios' // Tambahkan ini
 
 const auth = useAuthStore()
 const router = useRouter()

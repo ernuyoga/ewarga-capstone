@@ -25,9 +25,9 @@
         </HeaderForm>
 
         <!-- Gambar Produk -->
-        <div v-if="produk && produk.fotos && produk.fotos.length"
-            class="w-full h-48 bg-gray-200 flex items-center justify-center">
-            <img :src="getImageUrl(produk.fotos[0].file_path)" alt="Foto Produk" class="object-cover w-full h-full" />
+        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+            <img :src="produk && produk.fotos && produk.fotos.length > 0 ? getImageUrl(produk.fotos[0].file_path) : defaultImage"
+                alt="Foto Produk" class="object-cover w-full h-full" />
         </div>
 
         <!-- Card Detail Produk -->
@@ -62,7 +62,8 @@ import { useRoute, useRouter } from 'vue-router'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import Modal from '@/components/shared/Modal.vue'
 import { getProdukById, setEditProdukFormData, mapProdukDetailToForm, deleteProduk } from '@/services/produkService'
-import titikTiga from '@/assets/titik_tiga.png';
+import titikTiga from '@/assets/titik_tiga.png'
+import { getImageUrl } from '@/lib/axios' // gunakan helper ini
 
 const route = useRoute()
 const router = useRouter()
@@ -70,13 +71,7 @@ const produk = ref(null)
 const showMenu = ref(false)
 const showDeleteModal = ref(false)
 const deleting = ref(false)
-
-// Ganti dengan base URL API Anda
-const BASE_IMAGE_URL = 'https://your-api-url.com/storage/'
-
-function getImageUrl(path) {
-    return BASE_IMAGE_URL + path
-}
+const defaultImage = "https://via.placeholder.com/400x300?text=Foto+Produk"
 
 function formatRupiah(value) {
     if (!value) return ''

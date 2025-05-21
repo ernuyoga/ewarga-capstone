@@ -63,16 +63,16 @@
                 <div v-for="umkm in umkmList" :key="umkm.id"
                     class="bg-white rounded-lg my-4 flex cursor-pointer overflow-hidden shadow-sm hover:shadow-md"
                     @click="goToUmkmDetail(umkm.id)">
-                    <img :src="umkm.image || defaultImage"
-                        class="w-28 lg:w-32 h-28 lg:h-32 object-cover rounded-l-lg" />
+                    <img :src="getImageUrl(umkm.fotos && umkm.fotos.length > 0 ? umkm.fotos[0].file_path : null)"
+                        class="w-28 lg:w-32 h-28 lg:h-32 object-cover rounded-l-lg" alt="Foto UMKM" />
                     <div class="p-4 flex-1 flex flex-col justify-center">
                         <div class="font-semibold text-base lg:text-lg mb-1">{{ umkm.nama }}</div>
                         <div class="flex items-center gap-2 mb-1">
                             <span class="inline-block w-3 h-3 rounded-full"
-                                :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
+                                :class="umkm.jenis?.id === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
                             <span class="text-xs lg:text-sm font-semibold"
-                                :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
-                                {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
+                                :class="umkm.jenis?.id === 1 ? 'text-green-500' : 'text-gray-500'">
+                                {{ umkm.jenis?.nama || '-' }}
                             </span>
                         </div>
                         <div class="text-xs lg:text-sm text-gray-600 leading-tight">{{ umkm.alamat || '-' }}</div>
@@ -96,6 +96,7 @@ import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
 import tombolTambah from '@/assets/tombol_tambah.png';
 import HeaderForm from '@/components/card/HeaderForm.vue';
+import { getImageUrl } from '@/lib/axios'; // Tambahkan ini
 
 const router = useRouter();
 const auth = useAuthStore();
