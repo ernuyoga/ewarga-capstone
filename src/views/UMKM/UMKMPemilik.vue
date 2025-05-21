@@ -54,7 +54,7 @@ import SubmitButton from '../../components/card/SubmitButton.vue'
 import { useRouter } from 'vue-router'
 import { getAllWarga } from '@/services/wargaService'
 import { setUmkmFormData, getUmkmFormData } from '@/services/umkmService'
-import profileDefault from '@/assets/profile.jpg' // Tambahkan ini
+import profileDefault from '@/assets/default_profile.jpg' // Tambahkan ini
 
 const router = useRouter()
 const search = ref('')
