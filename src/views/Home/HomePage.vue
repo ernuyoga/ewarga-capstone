@@ -96,23 +96,28 @@
                 sekitar.
               </p>
               <div class="space-y-5">
-                <div v-for="umkm in umkmList" :key="umkm.id"
-                  class="flex gap-4 bg-white rounded-xl border p-5 shadow-sm hover:shadow-md cursor-pointer"
-                  @click="goToUmkmDetail(umkm.id)">
-                  <div class="bg-gray-200 w-20 h-20 rounded-lg"></div>
-                  <div class="flex-1">
-                    <h3 class="text-base lg:text-lg font-bold text-gray-800">{{ umkm.nama }}</h3>
-                    <div class="flex items-center gap-2">
-                      <span class="w-3 h-3 rounded-full"
-                        :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
-                      <span class="text-xs lg:text-sm font-bold"
-                        :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
-                        {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
-                      </span>
+                <template v-if="umkmList.length === 0">
+                  <div class="text-gray-400 italic text-center py-6">UMKM belum ditambahkan</div>
+                </template>
+                <template v-else>
+                  <div v-for="umkm in umkmList" :key="umkm.id"
+                    class="flex gap-4 bg-white rounded-xl border p-5 shadow-sm hover:shadow-md cursor-pointer"
+                    @click="goToUmkmDetail(umkm.id)">
+                    <div class="bg-gray-200 w-20 h-20 rounded-lg"></div>
+                    <div class="flex-1">
+                      <h3 class="text-base lg:text-lg font-bold text-gray-800">{{ umkm.nama }}</h3>
+                      <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full"
+                          :class="umkm.jenis === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
+                        <span class="text-xs lg:text-sm font-bold"
+                          :class="umkm.jenis === 1 ? 'text-green-500' : 'text-gray-500'">
+                          {{ umkm.jenis === 1 ? 'Usaha Offline' : 'Usaha Online' }}
+                        </span>
+                      </div>
+                      <p class="text-xs lg:text-sm text-gray-400">{{ umkm.alamat }}</p>
                     </div>
-                    <p class="text-xs lg:text-sm text-gray-400">{{ umkm.alamat }}</p>
                   </div>
-                </div>
+                </template>
               </div>
             </section>
 
@@ -128,15 +133,20 @@
                 sekitar
                 wilayah Anda.</p>
               <div class="flex gap-3 md:gap-4 overflow-x-auto pb-2 lg:justify-center">
-                <div v-for="aset in asetList" :key="aset.id"
-                  class="min-w-[140px] max-w-[180px] w-full bg-gray-100 p-3 md:p-4 rounded-lg flex-shrink-0 shadow-sm hover:shadow-md cursor-pointer"
-                  @click="goToAsetDetail(aset.id)">
-                  <div class="aspect-square bg-gray-300 rounded mb-2"></div>
-                  <h3 class="text-xs md:text-sm lg:text-base font-bold text-[#37306B] truncate">{{ aset.nama }}</h3>
-                  <p class="text-[10px] md:text-xs lg:text-sm text-gray-400 truncate">{{ aset.jenis?.nama }} | {{
-                    aset.warga?.nama }}</p>
-                  <p class="text-[10px] md:text-xs lg:text-sm text-gray-400 truncate">{{ aset.alamat }}</p>
-                </div>
+                <template v-if="asetList.length === 0">
+                  <div class="text-gray-400 italic text-center py-6 w-full">Objek belum ditambahkan</div>
+                </template>
+                <template v-else>
+                  <div v-for="aset in asetList" :key="aset.id"
+                    class="min-w-[140px] max-w-[180px] w-full bg-gray-100 p-3 md:p-4 rounded-lg flex-shrink-0 shadow-sm hover:shadow-md cursor-pointer"
+                    @click="goToAsetDetail(aset.id)">
+                    <div class="aspect-square bg-gray-300 rounded mb-2"></div>
+                    <h3 class="text-xs md:text-sm lg:text-base font-bold text-[#37306B] truncate">{{ aset.nama }}</h3>
+                    <p class="text-[10px] md:text-xs lg:text-sm text-gray-400 truncate">{{ aset.jenis?.nama }} | {{
+                      aset.warga?.nama }}</p>
+                    <p class="text-[10px] md:text-xs lg:text-sm text-gray-400 truncate">{{ aset.alamat }}</p>
+                  </div>
+                </template>
               </div>
             </section>
           </div>
@@ -186,12 +196,20 @@ onMounted(async () => {
       instansi.value = resInstansi.data.data
 
       // Ambil UMKM berdasarkan instansi
-      const resUmkm = await getAllUmkm({ instansi_id: warga.value.instansi_id })
-      umkmList.value = (resUmkm.data.data || []).slice(0, 2)
+      try {
+        const resUmkm = await getAllUmkm({ instansi_id: warga.value.instansi_id })
+        umkmList.value = (resUmkm.data.data || []).slice(0, 2)
+      } catch (e) {
+        umkmList.value = []
+      }
 
       // Ambil Objek/Aset berdasarkan instansi
-      const resAset = await getAllAsetByInstansi(warga.value.instansi_id)
-      asetList.value = (resAset.data.data || []).slice(0, 3)
+      try {
+        const resAset = await getAllAsetByInstansi(warga.value.instansi_id)
+        asetList.value = (resAset.data.data || []).slice(0, 3)
+      } catch (e) {
+        asetList.value = []
+      }
     }
   }
   isLoading.value = false
