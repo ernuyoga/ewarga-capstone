@@ -4,31 +4,39 @@ import { useAuthStore } from "@/store/auth";
 import LoginPage from "@/views/Auth/LoginPage.vue";
 import RegisterPage from "@/views/Auth/RegisterPage.vue";
 import RegistrationFormPage from "@/views/Auth/RegistrationFormPage.vue";
+
 import HomePage from "@/views/Home/HomePage.vue";
 import DashboardUMKM from "@/views/UMKM/DashboardUMKM.vue";
 import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
+
 import UMKMDetail from "@/views/UMKM/UMKMDetail.vue";
-import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
-import ProdukDetail from "@/views/UMKM/ProdukDetail.vue";
-import PenghuniDetail from "@/views/Wilayah/PenghuniDetail.vue";
-import UploadViewPage from "@/views/UMKM/UMKMImage.vue";
-import AddUMKMPage from "@/views/UMKM/UMKMAdd.vue";
-import AddPemilik from "@/views/UMKM/UMKMPemilik.vue";
-import KoordinatUMKM from "@/views/UMKM/UMKMKoordinat.vue";
-import KontakForm from "@/views/UMKM/UMKMKontak.vue";
-import ConfirmationUmkm from "@/views/UMKM/UMKMConfirm.vue";
-import AddProduk from "@/views/UMKM/ProdukAdd.vue";
-import ProdukImage from "@/views/UMKM/ProdukImage.vue";
-import ProdukConfirm from "@/views/UMKM/ProdukConfirm.vue";
+import UMKMAdd from "@/views/UMKM/UMKMAdd.vue";
+import UMKMPemilik from "@/views/UMKM/UMKMPemilik.vue";
+import UMKMKoordinat from "@/views/UMKM/UMKMKoordinat.vue";
+import UMKMImage from "@/views/UMKM/UMKMImage.vue";
+import UMKMKontak from "@/views/UMKM/UMKMKontak.vue";
+import UMKMConfirm from "@/views/UMKM/UMKMConfirm.vue";
 import UMKMEdit from "@/views/UMKM/UMKMEdit.vue";
 import UMKMEditPemilik from "@/views/UMKM/UMKMEditPemilik.vue";
 import UMKMEditKoordinat from "@/views/UMKM/UMKMEditKoordinat.vue";
-import UMKMditImage from "@/views/UMKM/UMKMEditImage.vue";
+import UMKMEditImage from "@/views/UMKM/UMKMEditImage.vue";
 import UMKMEditKontak from "@/views/UMKM/UMKMEditKontak.vue";
 import UMKMEditConfirm from "@/views/UMKM/UMKMEditConfirm.vue";
+
+import ProdukDetail from "@/views/UMKM/ProdukDetail.vue";
+import ProdukAdd from "@/views/UMKM/ProdukAdd.vue";
+import ProdukImage from "@/views/UMKM/ProdukImage.vue";
+import ProdukConfirm from "@/views/UMKM/ProdukConfirm.vue";
 import ProdukEdit from "@/views/UMKM/ProdukEdit.vue";
 import ProdukEditImage from "@/views/UMKM/ProdukEditImage.vue";
 import ProdukEditConfirm from "@/views/UMKM/ProdukEditConfirm.vue"
+
+import AsetDetail from "@/views/Wilayah/AsetDetail.vue";
+import PenghuniDetail from "@/views/Wilayah/PenghuniDetail.vue";
+import AsetAdd from "@/views/Wilayah/AsetAdd.vue"
+import AsetPemilik from "@/views/Wilayah/AsetPemilik.vue"
+import AsetImage from "@/views/Wilayah/AsetImage.vue"
+import AsetConfirm from "@/views/Wilayah/AsetConfirm.vue"
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -64,67 +72,34 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/umkm/produk/:id",
-    name: "produk-detail",
-    component: ProdukDetail,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/wilayah/:id",
-    name: "aset-detail",
-    component: AsetDetail,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/wilayah/:id/penghuni",
-    name: "penghuni-detail",
-    component: PenghuniDetail,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/uploadView",
-    name: "uploadView",
-    component: UploadViewPage,
-  },
-  {
     path: "/addumkm",
     name: "addumkm",
-    component: AddUMKMPage,
+    component: UMKMAdd,
   },
   {
     path: "/pemilik",
     name: "pemilik",
-    component: AddPemilik,
+    component: UMKMPemilik,
   },
   {
     path: "/koordinatumkm",
     name: "koordinatumkm",
-    component: KoordinatUMKM,
+    component: UMKMKoordinat,
+  },
+  {
+    path: "/uploadView",
+    name: "uploadView",
+    component: UMKMImage,
   },
   {
     path: "/kontak",
     name: "kontak",
-    component: KontakForm,
+    component: UMKMKontak,
   },
   {
     path: "/confirmation",
     name: "confirmation",
-    component: ConfirmationUmkm
-  },
-  {
-    path: "/addproduk",
-    name: "addproduk",
-    component: AddProduk
-  },
-  {
-    path: "/produkimage",
-    name: "produkimage",
-    component: ProdukImage
-  },
-  {
-    path: "/produkconfirm",
-    name: "produkconfirm",
-    component: ProdukConfirm
+    component: UMKMConfirm
   },
   {
     path: "/umkmedit/:id",
@@ -144,7 +119,7 @@ const routes = [
   {
     path: "/umkmedit/:id/image",
     name: "umkmeditimage",
-    component: UMKMditImage
+    component: UMKMEditImage
   },
   {
     path: "/umkmedit/:id/kontak",
@@ -155,6 +130,27 @@ const routes = [
     path: "/umkmedit/:id/confirmation",
     name: "umkmeditconfirmation",
     component: UMKMEditConfirm
+  },
+  {
+    path: "/umkm/produk/:id",
+    name: "produk-detail",
+    component: ProdukDetail,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/addproduk",
+    name: "addproduk",
+    component: ProdukAdd
+  },
+  {
+    path: "/produkimage",
+    name: "produkimage",
+    component: ProdukImage
+  },
+  {
+    path: "/produkconfirm",
+    name: "produkconfirm",
+    component: ProdukConfirm
   },
   {
     path: "/produkedit/:id",
@@ -170,6 +166,38 @@ const routes = [
     path: "/produkedit/:id/confirmation",
     name: "produkeditconfirmation",
     component: ProdukEditConfirm
+  },
+  {
+    path: "/wilayah/:id",
+    name: "aset-detail",
+    component: AsetDetail,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/wilayah/:id/penghuni",
+    name: "penghuni-detail",
+    component: PenghuniDetail,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/asetadd",
+    name: "asetadd",
+    component: AsetAdd
+  },
+  {
+    path: "/asetpemilik",
+    name: "asetpemilik",
+    component: AsetPemilik
+  },
+  {
+    path: "/asetimage",
+    name: "asetimage",
+    component: AsetImage
+  },
+  {
+    path: "/asetconfirm",
+    name: "asetconfirm",
+    component: AsetConfirm
   }
 ];
 

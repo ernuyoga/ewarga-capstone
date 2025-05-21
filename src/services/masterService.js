@@ -9,9 +9,9 @@ export const getUmkmMaster = () => {
 };
 
 export const getAsetMaster = () => {
-    return api.get("/aset/aset-master", {
+    return api.get("/wilayah/aset-master", {
         params: {
             data: "jenis,status"
         }
     });
-}
+};

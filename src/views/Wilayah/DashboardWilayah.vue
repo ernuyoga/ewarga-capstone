@@ -3,7 +3,7 @@
         <!-- Header -->
         <HeaderForm title="Pemetaan Wilayah" @back="goBack">
             <template #action>
-                <button>
+                <button @click="goToAsetAdd">
                     <img :src="tombolTambah" alt="Tambah" class="w-6 h-6" />
                 </button>
             </template>
@@ -174,6 +174,10 @@ watch(search, async (val) => {
 
 function goToAsetDetail(id) {
     router.push({ name: "aset-detail", params: { id } });
+}
+
+function goToAsetAdd() {
+    router.push({ name: "asetadd" });
 }
 
 function goBack() {
