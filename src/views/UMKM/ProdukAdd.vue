@@ -104,7 +104,9 @@ watch([nama, harga, keterangan], ([vNama, vHarga, vKeterangan]) => {
 })
 
 function goBack() {
-    router.back()
+    const produkData = getProdukFormData();
+    const umkmId = produkData.umkm_id;
+    router.push({ name: 'umkm-detail', params: { id: umkmId } });
 }
 
 function handleNext() {

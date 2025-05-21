@@ -77,7 +77,6 @@ const gambarProdukLabel = ref("")
 const fotos = ref([])
 
 onMounted(() => {
-    // Ambil data dari localStorage edit_produk_form_data
     const formData = getEditProdukFormData();
     namaProduk.value = formData.nama || "";
     harga.value = formData.harga || "";
@@ -86,7 +85,6 @@ onMounted(() => {
     gambarProdukLabel.value = fotos.value.length ? `${fotos.value.length} Gambar` : "";
 });
 
-// Simpan ke localStorage setiap field berubah
 watch([namaProduk, harga, keterangan, fotos], () => {
     setEditProdukFormData({
         nama: namaProduk.value,
@@ -109,6 +107,8 @@ function handleNext() {
 }
 
 function goBack() {
-    router.push({ name: 'produk-detail', params: { id: route.params.id } })
+    const produkData = getEditProdukFormData();
+    const umkmId = produkData.umkm_id;
+    router.push({ name: 'umkm-detail', params: { id: umkmId } });
 }
 </script>

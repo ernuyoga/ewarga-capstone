@@ -96,7 +96,8 @@ import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
 import tombolTambah from '@/assets/tombol_tambah.png';
 import HeaderForm from '@/components/card/HeaderForm.vue';
-import { getImageUrl } from '@/lib/axios'; // Tambahkan ini
+import { getImageUrl } from '@/lib/axios';
+import {clearUmkmFormData} from '@/services/umkmService';
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -189,6 +190,7 @@ function goBack() {
 }
 
 function handleAdd() {
+    clearUmkmFormData();
     router.push({ name: "addumkm" });
 }
 </script>
