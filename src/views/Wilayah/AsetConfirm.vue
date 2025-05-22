@@ -24,7 +24,11 @@
                 </div>
                 <div>
                     <div class="text-xs text-gray-400 mb-1">Jenis Objek</div>
-                    <div class="font-semibold text-gray-800">{{ form.jenis || '-' }}</div>
+                    <div class="font-semibold text-gray-800">
+                        {{
+                            jenisList.find(j => j.id == form.jenis_id)?.nama || '-'
+                        }}
+                    </div>
                 </div>
                 <div>
                     <div class="text-xs text-gray-400 mb-1">Alamat Objek</div>
@@ -97,7 +101,25 @@ import { ref, onMounted } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import { postAset, getAsetFormData, clearAsetFormData } from '@/services/asetservice'
 import { useRouter } from 'vue-router'
+import { getAsetMaster } from "@/services/masterService";
+
 const previewIdx = ref(null);
+const jenisList = ref([]);
+
+onMounted(async () => {
+    const saved = getAsetFormData();
+    Object.assign(form.value, saved);
+
+    // Ambil master jenis aset
+    try {
+        const { data } = await getAsetMaster();
+        if (data && data.data) {
+            jenisList.value = data.data.jenis || [];
+        }
+    } catch (e) {
+        jenisList.value = [];
+    }
+});
 
 function openPreview(idx) {
     previewIdx.value = idx;
@@ -115,11 +137,6 @@ const form = ref({
     gambar: [],
 })
 
-onMounted(() => {
-    const saved = getAsetFormData()
-    Object.assign(form.value, saved)
-})
-
 function handleEdit() {
     router.push({ name: 'asetadd' })
 }
@@ -130,12 +147,24 @@ function handleBack() {
 
 async function handleSubmit() {
     try {
-        await postAset(form.value);
+        // Konversi gambar base64 ke File (jika perlu)
+        const fotos = [];
+        if (form.value.gambar && Array.isArray(form.value.gambar)) {
+            for (let i = 0; i < form.value.gambar.length; i++) {
+                const img = form.value.gambar[i];
+                if (img.url && img.file && img.file.name && img.file.type && img.url.startsWith('data:')) {
+                    const res = await fetch(img.url);
+                    const blob = await res.blob();
+                    const file = new File([blob], img.file.name, { type: img.file.type });
+                    fotos.push({ rawFile: file });
+                }
+            }
+        }
+        await postAset({ ...form.value, fotos });
         clearAsetFormData();
         router.push({ name: 'dashboard-wilayah' });
     } catch (e) {
         alert(e?.response?.data?.message || e?.message || 'Gagal menyimpan data aset!');
-        // Untuk debug detail:
         console.error(e?.response?.data || e);
     }
 }

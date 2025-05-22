@@ -3,9 +3,35 @@
         <!-- Header -->
         <HeaderForm title="Detail Objek Wilayah" @back="goBack">
             <template #action>
-                <button>
-                    <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-6 h-6" />
-                </button>
+                <div class="relative">
+                    <button @click="toggleMenu">
+                        <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-6 h-6" />
+                    </button>
+                    <!-- Popup Menu -->
+                    <div v-if="showMenu" ref="menuRef"
+                        class="absolute right-0 mt-2 z-50 bg-white rounded-xl shadow-lg py-2 w-48" @mousedown.stop>
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#00c48c] font-semibold"
+                            @click="handleUbah">
+                            <span class="material-icons text-base">edit</span> Ubah
+                        </button>
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#4f4f8f] font-semibold"
+                            @click="handleAturKoordinat">
+                            <span class="material-icons text-base">my_location</span> Atur Koordinat
+                        </button>
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#4f4f8f] font-semibold"
+                            @click="handleAturPenghuni">
+                            <span class="material-icons text-base">groups</span> Atur Penghuni
+                        </button>
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#ff4d4f] font-semibold"
+                            @click="handleHapus">
+                            <span class="material-icons text-base">delete</span> Hapus
+                        </button>
+                    </div>
+                </div>
             </template>
         </HeaderForm>
 
@@ -114,20 +140,33 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAsetById } from '@/services/wilayahService';
-import { getPenghuniByAset } from '@/services/penghuniService';
+import { getPenghuniByAset, setAsetPenghuniData, clearAsetPenghuniData } from '@/services/penghuniService';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import tombolTitikTiga from '@/assets/titik_tiga.png';
+import { setAsetEditFormData } from '@/services/asetservice'
 
 const route = useRoute();
 const router = useRouter();
 const aset = ref({});
 const penghuniList = ref([]);
 const loading = ref(true);
+const showMenu = ref(false);
+const menuRef = ref(null);
+
+function toggleMenu() {
+    showMenu.value = !showMenu.value;
+}
+
+function handleClickOutside(event) {
+    if (showMenu.value && menuRef.value && !menuRef.value.contains(event.target)) {
+        showMenu.value = false;
+    }
+}
 
 const fotoUtama = computed(() => {
     if (aset.value.fotos && aset.value.fotos.length > 0) {
@@ -158,6 +197,7 @@ function showMap() {
 }
 
 onMounted(async () => {
+    document.addEventListener('mousedown', handleClickOutside);
     loading.value = true;
     const id = route.params.id;
     if (!id) return;
@@ -169,11 +209,13 @@ onMounted(async () => {
         }
         // Ambil penghuni aset
         const penghuniRes = await getPenghuniByAset(id);
-        if (penghuniRes && penghuniRes.data) {
+        if (penghuniRes && Array.isArray(penghuniRes.data)) {
             penghuniList.value = penghuniRes.data.map(item => ({
                 ...item.warga,
                 status: item.status?.nama || '-'
             }));
+        } else {
+            penghuniList.value = [];
         }
     } catch (error) {
         console.error(error);
@@ -182,7 +224,74 @@ onMounted(async () => {
     setTimeout(showMap, 300);
 });
 
+onBeforeUnmount(() => {
+    document.removeEventListener('mousedown', handleClickOutside);
+});
+
 function lihatSemuaPenghuni() {
     router.push({ name: 'penghuni-detail', params: { id: route.params.id } });
+}
+
+function handleUbah() {
+    showMenu.value = false;
+    let gambarArr = []
+    if (Array.isArray(aset.value.fotos)) {
+        gambarArr = aset.value.fotos.map((f, idx) => ({
+            id: f.id,
+            nama: f.nama,
+            file_path: f.file_path,
+            file: { name: f.nama || `Foto ${idx + 1}`, type: 'image/png' }
+        }))
+    }
+    setAsetEditFormData({
+        nama: aset.value.nama || "",
+        jenis_id: aset.value.aset_m_jenis_id || "",
+        alamat: aset.value.alamat || "",
+        pemilik: aset.value.warga?.nama || "",
+        pemilik_id: aset.value.warga_id || "",
+        instansi_id: aset.value.instansi_id || "",
+        fotos: gambarArr,
+    })
+    router.push({ name: 'asetedit', params: { id: aset.value.id } });
+}
+
+function handleAturKoordinat() {
+    showMenu.value = false;
+    router.push({ name: 'asetkoordinat', params: { id: aset.value.id } });
+}
+
+async function handleAturPenghuni() {
+    showMenu.value = false;
+    try {
+        const penghuniRes = await getPenghuniByAset(aset.value.id);
+        let penghuniArr = [];
+        if (penghuniRes && Array.isArray(penghuniRes.data)) {
+            penghuniArr = penghuniRes.data.map(item => ({
+                warga_id: item.warga_id,
+                nama: item.warga?.nama,
+                aset_m_status_id: item.aset_m_status_id,
+                status_nama: item.status?.nama
+            }));
+            setAsetPenghuniData(penghuniArr);
+        } else {
+            clearAsetPenghuniData();
+        }
+        router.push({ name: 'penghunisettings', params: { id: aset.value.id } });
+    } catch (e) {
+        if (
+            e.response &&
+            e.response.data &&
+            e.response.data.message === "Data penghuni tidak ditemukan"
+        ) {
+            clearAsetPenghuniData();
+            router.push({ name: 'penghunisettings', params: { id: aset.value.id } });
+        } else {
+            alert('Gagal mengambil data penghuni');
+        }
+    }
+}
+
+function handleHapus() {
+    showMenu.value = false;
 }
 </script>

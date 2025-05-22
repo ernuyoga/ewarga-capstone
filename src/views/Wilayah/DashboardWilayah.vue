@@ -80,6 +80,7 @@ import { getWargaById } from "@/services/wargaService";
 import { useAuthStore } from "@/store/auth";
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import tombolTambah from '@/assets/tombol_tambah.png';
+import { clearAsetFormData } from "@/services/asetservice";
 
 const dashboard = ref({
     totalObjek: 0,
@@ -177,6 +178,7 @@ function goToAsetDetail(id) {
 }
 
 function goToAsetAdd() {
+    clearAsetFormData();
     router.push({ name: "asetadd" });
 }
 

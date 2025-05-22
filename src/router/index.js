@@ -37,6 +37,13 @@ import AsetAdd from "@/views/Wilayah/AsetAdd.vue"
 import AsetPemilik from "@/views/Wilayah/AsetPemilik.vue"
 import AsetImage from "@/views/Wilayah/AsetImage.vue"
 import AsetConfirm from "@/views/Wilayah/AsetConfirm.vue"
+import AsetEdit from "@/views/Wilayah/AsetEdit.vue"
+import AsetEditPemilik from "@/views/Wilayah/AsetEditPemilik.vue"
+import AsetEditImage from "@/views/Wilayah/AsetEditImage.vue"
+import AsetEditConfirm from "@/views/Wilayah/AsetEditConfirm.vue"
+import AsetKoordinat from "@/views/Wilayah/AsetKoordinat.vue"
+import PenghuniSettings from "@/views/Wilayah/PenghuniSettings.vue";
+import PenghuniAdd from "@/views/Wilayah/PenghuniAdd.vue";
 
 const routes = [
   { path: "/login", name: "login", component: LoginPage },
@@ -198,6 +205,41 @@ const routes = [
     path: "/asetconfirm",
     name: "asetconfirm",
     component: AsetConfirm
+  },
+  {
+    path: "/asetedit/:id",
+    name: "asetedit",
+    component: AsetEdit
+  },
+  {
+    path: "/asetedit/:id/pemilik",
+    name: "aseteditpemilik",
+    component: AsetEditPemilik
+  },
+  {
+    path: "/asetedit/:id/image",
+    name: "aseteditimage",
+    component: AsetEditImage
+  },
+  {
+    path: "/asetedit/:id/confirmation",
+    name: "aseteditconfirmation",
+    component: AsetEditConfirm
+  },
+  {
+    path: "/asetkoordinat/:id",
+    name: "asetkoordinat",
+    component: AsetKoordinat
+  },
+  {
+    path: "/penghunisettings/:id",
+    name: "penghunisettings",
+    component: PenghuniSettings
+  },
+  {
+    path: "/penghuniadd/:id",
+    name: "penghuniadd",
+    component: PenghuniAdd
   }
 ];
 

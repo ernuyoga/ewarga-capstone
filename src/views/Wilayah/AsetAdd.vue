@@ -69,8 +69,8 @@
                         @click="selectGambar">
                         <span class="truncate">
                             <!-- Ubah label jika gambar sudah dipilih -->
-                            <template v-if="form.gambar && Array.isArray(form.gambar) && form.gambar.length">
-                                {{ `${form.gambar.length} Gambar Aset` }}
+                            <template v-if="form.fotos && Array.isArray(form.fotos) && form.fotos.length">
+                                {{ `${form.fotos.length} Gambar Aset` }}
                             </template>
                             <template v-else>
                                 Pilih Gambar
@@ -118,7 +118,7 @@ const form = ref({
     pemilik: '',
     pemilik_id: '',
     instansi_id: '',
-    gambar: [],
+    fotos: [],
 })
 
 onMounted(async () => {
@@ -149,7 +149,7 @@ watch(form, (val) => {
 }, { deep: true })
 
 function handleSubmit() {
-    if (!form.value.nama || !form.value.jenis || !form.value.alamat) {
+    if (!form.value.nama || !form.value.jenis_id || !form.value.alamat) {
         alert('Mohon lengkapi data wajib!')
         return
     }

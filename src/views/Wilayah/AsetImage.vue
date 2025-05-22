@@ -97,9 +97,7 @@ const handleFiles = async (e) => {
       })
     }
   }
-  setAsetFormData({
-    gambar: images.value
-  })
+  setAsetFormData({ fotos: images.value })
   e.target.value = ''
 }
 
@@ -110,8 +108,8 @@ const removeImage = (idx) => {
 
 onMounted(() => {
   const formData = getAsetFormData()
-  if (formData.gambar && Array.isArray(formData.gambar)) {
-    images.value = formData.gambar
+  if (formData.fotos && Array.isArray(formData.fotos)) {
+    images.value = formData.fotos
   } else {
     images.value = []
   }
