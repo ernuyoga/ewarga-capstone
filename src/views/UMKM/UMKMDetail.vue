@@ -152,7 +152,7 @@ import { useRoute, useRouter } from "vue-router";
 import { getUmkmById } from "@/services/umkmService";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import tombolTambah from '@/assets/tombol_tambah.png';
+import tombolTambah from '@/assets/tombol_tambah.svg';
 import { setProdukFormData } from "@/services/produkService";
 import titikTiga from '@/assets/titik_tiga.png';
 import HeaderForm from '@/components/card/HeaderForm.vue';

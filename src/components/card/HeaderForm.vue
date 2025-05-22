@@ -4,7 +4,7 @@
             <!-- Kiri: tombol back & judul -->
             <div class="flex items-center min-w-0">
                 <button @click="$emit('back')" class="mr-3 md:mr-4 p-0 bg-transparent border-none flex-shrink-0">
-                    <img :src="tombolKembali" alt="Back" class="w-6 h-6 md:w-8 md:h-8" />
+                    <img :src="tombolKembali" alt="Back" class="w-4 h-4" />
                 </button>
                 <h2 class="text-lg lg:text-xl font-bold text-gray-800 truncate">
                     {{ title }}
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import tombolKembali from '@/assets/tombol_kembali.png';
+import tombolKembali from '@/assets/tombol_kembali.svg';
 defineProps({ title: String });
 defineEmits(['back']);
 </script>

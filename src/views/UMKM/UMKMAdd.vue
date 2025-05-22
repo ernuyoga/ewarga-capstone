@@ -1,24 +1,13 @@
 <!-- AddUMKM.vue -->
 <template>
-    <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
+    <div class="min-h-screen bg-[#f6f6f6]">
         <!-- Header -->
         <HeaderForm title="Tambah UMKM Baru" @back="goToUmkmDashboard" />
 
         <!-- Container Responsive -->
         <div>
             <!-- Stepper & Judul -->
-            <div
-                class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6 flex items-center justify-between">
-                <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full bg-[#a8f0ce] flex items-center justify-center">
-                        <span class="text-xl font-semibold text-[#00c48c]">1/2</span>
-                    </div>
-                </div>
-                <div class="flex-1 ml-4 flex flex-col items-end">
-                    <div class="text-lg lg:text-xl font-semibold text-[#232360]">Pengisian Data</div>
-                    <div class="text-sm lg:text-base text-gray-400">Selanjutnya : Konfirmasi Data</div>
-                </div>
-            </div>
+            <StepperHeader step-label="1/2" title="Pengisian Data" subtitle="Selanjutnya: Konfirmasi Data" />
 
             <!-- Form -->
             <form class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6 flex flex-col gap-3">
@@ -27,20 +16,23 @@
                         Nama Usaha<span class="text-[#ff5a5f]">*</span>
                     </label>
                     <input type="text" v-model="namaUsaha"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c]" />
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]" />
                 </div>
                 <div>
                     <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                         Moda Usaha<span class="text-[#ff5a5f]">*</span>
                     </label>
                     <div class="relative">
-                        <select v-model="selectedJenis"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#00c48c]">
-                            <option disabled value="">Pilih Moda Usaha</option>
-                            <option v-for="j in jenisList" :key="j.id" :value="j.id">{{ j.nama }}</option>
+                        <select v-model="selectedJenis" :class="[
+                            'w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]',
+                            selectedJenis ? 'text-[#232360]' : 'text-gray-400'
+                        ]">
+                            <option disabled value="" class="text-gray-400">Pilih Moda Usaha</option>
+                            <option v-for="j in jenisList" :key="j.id" :value="j.id" class="text-[#232360]">{{ j.nama }}
+                            </option>
                         </select>
-                        <span
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">&#9662;</span>
+                        <img src="@/assets/v_hitam.svg" alt="dropdown icon"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                     </div>
                 </div>
                 <div>
@@ -48,13 +40,16 @@
                         Bentuk Usaha<span class="text-[#ff5a5f]">*</span>
                     </label>
                     <div class="relative">
-                        <select v-model="selectedBentuk"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#00c48c]">
-                            <option disabled value="">Pilih Bentuk Usaha</option>
-                            <option v-for="b in bentukList" :key="b.id" :value="b.id">{{ b.nama }}</option>
+                        <select v-model="selectedBentuk" :class="[
+                            'w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]',
+                            selectedBentuk ? 'text-[#232360]' : 'text-gray-400'
+                        ]">
+                            <option disabled value="" class="text-gray-400">Pilih Bentuk Usaha</option>
+                            <option v-for="b in bentukList" :key="b.id" :value="b.id" class="text-[#232360]">{{ b.nama
+                            }}</option>
                         </select>
-                        <span
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">&#9662;</span>
+                        <img src="@/assets/v_hitam.svg" alt="dropdown icon"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                     </div>
                 </div>
                 <div>
@@ -64,9 +59,10 @@
                     <div class="relative">
                         <div @click="goToPemilikForm" class="relative cursor-pointer">
                             <input type="text"
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c] bg-white cursor-pointer"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-white cursor-pointer"
                                 readonly :value="pemilikLabel" placeholder="Pilih Pemilik Usaha" />
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                            <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                         </div>
                     </div>
                 </div>
@@ -75,7 +71,7 @@
                         Alamat Usaha<span class="text-[#ff5a5f]">*</span>
                     </label>
                     <input type="text" v-model="alamat"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c]"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                         placeholder="Masukkan Alamat Usaha" />
                 </div>
                 <div>
@@ -84,10 +80,11 @@
                     </label>
                     <div @click="goToKoordinatForm" class="relative cursor-pointer ">
                         <input type="text"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c]"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                             readonly :value="lokasiLat && lokasiLng ? `${lokasiLat}, ${lokasiLng}` : ''"
                             placeholder="Pilih Lokasi Usaha di Peta" />
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                        <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                     </div>
                 </div>
                 <div>
@@ -97,9 +94,10 @@
                     <div class="relative">
                         <div @click="goToImageUploader" class="relative cursor-pointer">
                             <input type="text"
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c] bg-white cursor-pointer"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-white cursor-pointer"
                                 readonly :value="gambarUsahaLabel" placeholder="Pilih Gambar Usaha" />
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                            <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                         </div>
                     </div>
                 </div>
@@ -110,9 +108,10 @@
                     <div class="relative">
                         <div @click="goToKontakForm" class="relative cursor-pointer">
                             <input type="text"
-                                class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c] bg-white cursor-pointer"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-white cursor-pointer"
                                 readonly :value="kontakLabel" placeholder="Tambah Kontak Usaha" />
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                            <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                         </div>
                     </div>
                 </div>
@@ -121,7 +120,7 @@
                         Keterangan
                     </label>
                     <textarea v-model="keterangan"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c]"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                         rows="2" placeholder="Masukkan Keterangan ..."></textarea>
                 </div>
             </form>
@@ -142,6 +141,7 @@ import SubmitButton from '@/components/card/SubmitButton.vue'
 import { useRouter } from 'vue-router'
 import { getUmkmMaster } from "@/services/masterService"
 import { setUmkmFormData, clearUmkmFormData, getUmkmFormData } from "@/services/umkmService"
+import StepperHeader from '@/components/card/StepperHeader.vue'
 
 const router = useRouter()
 const gambarUsahaLabel = ref('')
@@ -186,7 +186,7 @@ onMounted(async () => {
     lokasiLat.value = formData.lokasi_lat || ""
     lokasiLng.value = formData.lokasi_lng || ""
     if (formData.kontak && Array.isArray(formData.kontak) && formData.kontak.length > 0) {
-        kontakLabel.value = `${formData.kontak.length} Kontak`
+        kontakLabel.value = `${formData.kontak.length} Kontak Usaha`
     } else {
         kontakLabel.value = ''
     }

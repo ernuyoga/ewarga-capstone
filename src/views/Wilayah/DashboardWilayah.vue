@@ -79,7 +79,7 @@ import { getWilayahDashboard, getAllAsetByInstansi, searchAsetByName } from "@/s
 import { getWargaById } from "@/services/wargaService";
 import { useAuthStore } from "@/store/auth";
 import HeaderForm from '@/components/card/HeaderForm.vue';
-import tombolTambah from '@/assets/tombol_tambah.png';
+import tombolTambah from '@/assets/tombol_tambah.svg';
 import { clearAsetFormData } from "@/services/asetservice";
 
 const dashboard = ref({

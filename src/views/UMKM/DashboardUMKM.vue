@@ -4,7 +4,7 @@
         <HeaderForm title="Dashboard UMKM" @back="goToHomePage">
             <template #action>
                 <button @click="handleAdd">
-                    <img :src="tombolTambah" alt="Tambah" class="w-6 h-6" />
+                    <img :src="tombolTambah" alt="Tambah" class="w-4 h-4 lg:w-5 lg:h-5" />
                 </button>
             </template>
         </HeaderForm>
@@ -12,12 +12,13 @@
         <!-- Container Responsive -->
         <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24">
             <!-- Statistik -->
-            <div class="flex items-start justify-center bg-white rounded-xl shadow px-8 py-4 my-4">
-                <div class="flex flex-col items-start justify-center mr-8">
+            <div class="flex items-center justify-center bg-white rounded-xl shadow px-8 py-4 my-4 gap-16">
+                <div class="flex-1 flex flex-col items-center">
                     <div class="text-xs lg:text-sm text-gray-500 mb-1">Total UMKM:</div>
                     <div class="text-3xl lg:text-4xl font-bold">{{ totalUmkm }}</div>
                 </div>
-                <div class="flex flex-col items-end justify-center">
+                <div class="h-12 w-px bg-gray-200"></div>
+                <div class="flex-1 flex flex-col items-center">
                     <div class="text-xs lg:text-sm text-gray-500 mb-1">Total Produk:</div>
                     <div class="text-3xl lg:text-4xl font-bold">{{ totalProduk }}</div>
                 </div>
@@ -25,32 +26,49 @@
 
             <!-- Search & Filter -->
             <div class="my-4">
-                <div class="flex flex-col gap-2">
-                    <input type="text" placeholder="Cari nama umkm..."
-                        class="w-full border rounded-lg px-6 py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#00c48c]"
-                        v-model="search" @input="fetchUmkm" />
-                    <div class="flex gap-2">
-                        <select
-                            class="flex-1 px-2 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00c48c]"
-                            v-model="selectedJenis">
-                            <option value="">Moda Usaha</option>
-                            <option v-for="j in jenisList" :key="j.id" :value="j.id">{{ j.nama }}</option>
-                        </select>
-                        <select
-                            class="flex-1 px-2 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00c48c]"
-                            v-model="selectedBentuk">
-                            <option value="">Bentuk Usaha</option>
-                            <option v-for="b in bentukList" :key="b.id" :value="b.id">{{ b.nama }}</option>
-                        </select>
+                <div class="flex flex-col gap-3">
+                    <div class="relative">
+                        <input type="text" placeholder="Cari nama UMKM..."
+                            class="w-full border rounded-lg px-6 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] pr-12"
+                            v-model="search" @input="fetchUmkm" />
+                        <img src="@/assets/search_icon.svg" alt="Search"
+                            class="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400 pointer-events-none" />
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <button @click="selectedJenis = ''; selectedBentuk = ''; fetchUmkm()"
+                            class="p-2 mr-1 lg:mr-2 rounded-full bg-white hover:shadow transition" title="Reset Filter"
+                            type="button">
+                            <img src="@/assets/x_icon.svg" alt="Reset" class="w-4 h-4" />
+                        </button>
+                        <div class="relative flex-1">
+                            <select
+                                class="w-full px-2 py-2 pl-4 border border-[#03BF8C] rounded-full bg-gray-50 text-sm text-[#03BF8C] appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+                                v-model="selectedJenis">
+                                <option value="" class="text-gray-500">Moda Usaha</option>
+                                <option v-for="j in jenisList" :key="j.id" :value="j.id" class="text-gray-800">{{ j.nama }}
+                                </option>
+                            </select>
+                            <img src="@/assets/v_hijau.svg" alt="Dropdown" class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4" />
+                        </div>
+                        <div class="relative flex-1">
+                            <select
+                                class="w-full px-2 py-2 pl-4 border border-[#03BF8C] rounded-full bg-gray-50 text-sm text-[#03BF8C] appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+                                v-model="selectedBentuk">
+                                <option value="" class="text-gray-500">Bentuk Usaha</option>
+                                <option v-for="b in bentukList" :key="b.id" :value="b.id" class="text-gray-800">{{ b.nama }}
+                                </option>
+                            </select>
+                            <img src="@/assets/v_hijau.svg" alt="Dropdown" class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4" />
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Skeleton Loader -->
             <template v-if="loading">
-                <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow my-4 flex animate-pulse">
-                    <div class="w-28 lg:w-32 bg-gray-200 rounded-l-lg"></div>
-                    <div class="p-4 flex-1">
+                <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow my-4 flex animate-pulse overflow-hidden">
+                    <div class="w-28 lg:w-32 h-28 lg:h-32 bg-gray-200 rounded-l-lg"></div>
+                    <div class="p-4 flex-1 flex flex-col justify-center">
                         <div class="h-5 lg:h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
                         <div class="h-3 lg:h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
                         <div class="h-3 lg:h-4 bg-gray-200 rounded w-2/3"></div>
@@ -94,10 +112,10 @@ import { getWargaById } from "@/services/wargaService";
 import { getUmkmMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
-import tombolTambah from '@/assets/tombol_tambah.png';
+import tombolTambah from '@/assets/tombol_tambah.svg';
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import { getImageUrl } from '@/lib/axios';
-import {clearUmkmFormData} from '@/services/umkmService';
+import { clearUmkmFormData } from '@/services/umkmService';
 
 const router = useRouter();
 const auth = useAuthStore();

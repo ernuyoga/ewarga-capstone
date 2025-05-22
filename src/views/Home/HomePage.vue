@@ -16,25 +16,57 @@
           </div>
         </div>
         <!-- Skeleton Content -->
-        <div class="animate-pulse space-y-7 py-10 px-4 md:px-8 lg:px-16 xl:px-24">
-          <div class="h-9 bg-gray-200 rounded w-2/3"></div>
-          <div class="h-7 bg-gray-200 rounded w-1/2"></div>
-          <div class="flex gap-4">
-            <div class="h-24 bg-gray-200 rounded-xl flex-1"></div>
-            <div class="h-24 bg-gray-200 rounded-xl flex-1"></div>
+        <div class="space-y-4 py-4 px-4 md:px-8 lg:px-16 lg:py-6 xl:px-24 animate-pulse">
+          <!-- Skeleton Layanan Section -->
+          <div class="bg-white rounded-xl shadow p-4">
+            <div class="h-6 w-1/3 bg-gray-200 rounded mb-4"></div>
+            <div class="flex flex-row gap-5">
+              <div class="flex-1 h-24 bg-gray-200 rounded-xl"></div>
+              <div class="flex-1 h-24 bg-gray-200 rounded-xl"></div>
+            </div>
           </div>
-          <div class="h-7 bg-gray-200 rounded w-2/3"></div>
-          <div class="space-y-3">
-            <div class="h-14 bg-gray-200 rounded-xl"></div>
-            <div class="h-14 bg-gray-200 rounded-xl"></div>
-            <div class="h-14 bg-gray-200 rounded-xl"></div>
+          <!-- Skeleton Informasi Section -->
+          <div class="flex flex-col gap-4 lg:grid lg:py-2 lg:grid-cols-2 lg:gap-8">
+            <!-- Skeleton UMKM Section -->
+            <div class="bg-white rounded-xl shadow p-4 flex flex-col" style="height: 377px;">
+              <div class="flex justify-between items-start mb-2">
+                <div class="h-6 w-1/2 bg-gray-200 rounded"></div>
+                <div class="h-6 w-20 bg-gray-200 rounded"></div>
+              </div>
+              <div class="h-4 w-2/3 bg-gray-200 rounded mb-5"></div>
+              <div class="flex-1 space-y-3 overflow-y-auto pr-2">
+                <div v-for="i in 3" :key="i" class="flex items-center gap-3">
+                  <div class="bg-gray-200 w-16 h-16 lg:w-20 lg:h-20 rounded"></div>
+                  <div class="flex-1 space-y-2">
+                    <div class="h-4 w-2/3 bg-gray-200 rounded"></div>
+                    <div class="h-3 w-1/3 bg-gray-200 rounded"></div>
+                    <div class="h-3 w-1/2 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Skeleton Wilayah Section -->
+            <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+              <div class="flex justify-between items-start mb-2">
+                <div class="h-6 w-1/2 bg-gray-200 rounded"></div>
+                <div class="h-6 w-20 bg-gray-200 rounded"></div>
+              </div>
+              <div class="h-4 w-2/3 bg-gray-200 rounded mb-5"></div>
+              <div class="flex gap-4 overflow-x-auto pb-2">
+                <div v-for="i in 3" :key="i"
+                  class="w-[170px] max-w-[170px] min-w-[170px] bg-gray-200 rounded-xl flex-shrink-0 flex flex-col items-center p-2">
+                  <div class="bg-gray-300 w-[150px] h-[150px] rounded mb-2"></div>
+                  <div class="w-full space-y-2">
+                    <div class="h-4 w-3/4 bg-gray-300 rounded"></div>
+                    <div class="h-3 w-2/3 bg-gray-300 rounded"></div>
+                    <div class="h-3 w-full bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="h-7 bg-gray-200 rounded w-2/3"></div>
-          <div class="flex gap-4 overflow-x-auto">
-            <div class="h-36 bg-gray-200 rounded-xl w-1/3 flex-shrink-0"></div>
-            <div class="h-36 bg-gray-200 rounded-xl w-1/3 flex-shrink-0"></div>
-            <div class="h-36 bg-gray-200 rounded-xl w-1/3 flex-shrink-0"></div>
-          </div>
+          <!-- Skeleton Logout Button -->
+          <div class="w-full h-12 bg-gray-200 rounded-lg"></div>
         </div>
       </div>
 
@@ -101,7 +133,7 @@
           <!-- Informasi Section -->
           <div class="flex flex-col gap-4 lg:grid lg:py-2 lg:grid-cols-2 lg:gap-8">
             <!-- UMKM Section -->
-            <section class="bg-white rounded-xl shadow p-4 flex flex-col" style="height: 361px;">
+            <section class="bg-white rounded-xl shadow p-4 flex flex-col" style="height: 377px;">
               <div class="flex justify-between items-start">
                 <h2 class="text-lg lg:text-xl font-bold text-gray-800">UMKM Pilihan di Sekitar Anda</h2>
                 <button
@@ -145,45 +177,42 @@
             <!-- Wilayah Section -->
             <section class="bg-white rounded-xl shadow p-4">
               <div class="flex justify-between items-start">
-              <h2 class="text-lg lg:text-xl font-bold text-gray-800">Objek di Wilayah Anda</h2>
-              <button
-                class="bg-[#E6FFF8] text-[#03BF8C] text-xs lg:text-sm font-bold px-2 py-1 rounded-md min-w-[87.35px] text-center"
-                @click="goToWilayahDashboard">Lihat Semua</button>
+                <h2 class="text-lg lg:text-xl font-bold text-gray-800">Objek di Wilayah Anda</h2>
+                <button
+                  class="bg-[#E6FFF8] text-[#03BF8C] text-xs lg:text-sm font-bold px-2 py-1 rounded-md min-w-[87.35px] text-center"
+                  @click="goToWilayahDashboard">Lihat Semua</button>
               </div>
               <p class="text-sm lg:text-base text-gray-500 mb-5">Jelajahi dan cari tahu objek yang ada di sekitar
-              wilayah Anda.
+                wilayah Anda.
               </p>
               <div>
-              <template v-if="asetList.length === 0">
-                <div class="text-gray-400 italic text-center py-6">Data Objek tidak ditemukan.</div>
-              </template>
-              <template v-else>
-                <div class="flex gap-4 overflow-x-auto pb-2">
-                <div v-for="aset in asetList" :key="aset.id"
-                  class="w-[170px] max-w-[170px] min-w-[170px] bg-white rounded-xl hover:bg-gray-50 transition cursor-pointer flex-shrink-0 flex flex-col items-center p-2"
-                  @click="goToAsetDetail(aset.id)">
-                  <div class="bg-gray-200 w-[150px] h-[150px] rounded flex items-center justify-center mb-2 overflow-hidden">
-                  <img
-                    v-if="aset.fotos && aset.fotos.length > 0"
-                    :src="getImageUrl(aset.fotos[0].file_path)"
-                    alt="Foto Aset"
-                    class="object-cover w-full h-full rounded"
-                  />
-                  <span v-else class="text-gray-400 text-xs">No Image</span>
+                <template v-if="asetList.length === 0">
+                  <div class="text-gray-400 italic text-center py-6">Data Objek tidak ditemukan.</div>
+                </template>
+                <template v-else>
+                  <div class="flex gap-4 overflow-x-auto pb-2">
+                    <div v-for="aset in asetList" :key="aset.id"
+                      class="w-[170px] max-w-[170px] min-w-[170px] bg-white rounded-xl hover:bg-gray-50 transition cursor-pointer flex-shrink-0 flex flex-col items-center p-2"
+                      @click="goToAsetDetail(aset.id)">
+                      <div
+                        class="bg-gray-200 w-[150px] h-[150px] rounded flex items-center justify-center mb-2 overflow-hidden">
+                        <img v-if="aset.fotos && aset.fotos.length > 0" :src="getImageUrl(aset.fotos[0].file_path)"
+                          alt="Foto Aset" class="object-cover w-full h-full rounded" />
+                        <span v-else class="text-gray-400 text-xs">No Image</span>
+                      </div>
+                      <div class="p-1 pb-0 w-full">
+                        <h3 class="text-base font-bold text-gray-800 truncate w-full text-left">{{ aset.nama }}</h3>
+                        <p class="text-xs text-gray-500 truncate w-full text-left">
+                          {{ aset.jenis?.nama || '-' }} | {{ aset.warga?.nama || '-' }}
+                        </p>
+                        <p class="text-xs text-gray-400 w-full text-left max-w-[150px] break-words line-clamp-2"
+                          style="line-clamp:2; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;">
+                          {{ aset.alamat }}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div class="p-1 pb-0 w-full">
-                  <h3 class="text-base font-bold text-gray-800 truncate w-full text-left">{{ aset.nama }}</h3>
-                  <p class="text-xs text-gray-500 truncate w-full text-left">
-                    {{ aset.jenis?.nama || '-' }} | {{ aset.warga?.nama || '-' }}
-                  </p>
-                  <p class="text-xs text-gray-400 w-full text-left max-w-[150px] break-words line-clamp-2"
-                    style="line-clamp:2; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;">
-                    {{ aset.alamat }}
-                  </p>
-                  </div>
-                </div>
-                </div>
-              </template>
+                </template>
               </div>
             </section>
           </div>

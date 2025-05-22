@@ -5,13 +5,10 @@
     <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24 flex flex-col flex-1 justify-between">
       <div>
         <div class="bg-white rounded-xl mt-4 p-4 md:p-6">
-          <div class="bg-[#eaf4ff] rounded-xl px-4 py-3 flex items-start gap-2 mb-4">
-            <img src="/Info-Circle.svg" alt="info" class="w-5 h-5 mt-1" />
-            <span class="text-sm md:text-base text-[#2e5eaa] leading-snug">
-              Gambar dapat ditambahkan dalam format JPG, JPEG, PNG, atau PDF, dengan ukuran maksimal 1,5 MB per file.
-              Dapat menambahkan maksimal 5 gambar. Gambar yang ditambahkan pertama akan menjadi gambar profil usaha.
-            </span>
-          </div>
+          <InfoAlert>
+            Gambar dapat ditambahkan dalam format JPG, JPEG, dan PNG, dengan ukuran maksimal 1,5 MB per file.
+            Dapat menambahkan maksimal 5 gambar. Gambar yang ditambahkan pertama akan menjadi gambar profil usaha.
+          </InfoAlert>
 
           <!-- Daftar file yang diupload -->
           <div v-for="(img, idx) in images" :key="idx"
@@ -37,12 +34,12 @@
           <!-- Tombol tambah gambar -->
           <div class="flex justify-center mt-2">
             <button @click="triggerFileInput"
-              class="flex items-center gap-2 text-[#00c48c] font-medium bg-transparent border-none py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-[#e6faf5] transition text-base md:text-lg"
+              class="flex items-center gap-2 text-[#03BF8C] font-medium bg-transparent border-none p-1 rounded-lg transition text-base md:text-lg"
               :disabled="images.length >= 5">
               <span class="text-xl md:text-2xl">+</span> Tambah Gambar
             </button>
-            <input ref="fileInput" type="file" accept="image/png, image/jpeg, application/pdf" multiple
-              style="display: none" @change="handleFiles" />
+            <input ref="fileInput" type="file" accept="image/png, image/jpeg" multiple style="display: none"
+              @change="handleFiles" />
           </div>
         </div>
       </div>
@@ -59,6 +56,7 @@ import HeaderForm from '../../components/card/HeaderForm.vue';
 import SubmitButton from '../../components/card/SubmitButton.vue';
 import { useRouter } from 'vue-router'
 import { setUmkmFormData, getUmkmFormData } from '@/services/umkmService'
+import InfoAlert from '@/components/card/InfoAlert.vue'
 
 const router = useRouter()
 const images = ref([])
