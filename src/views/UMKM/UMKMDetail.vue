@@ -13,34 +13,30 @@
         <!-- Header -->
         <HeaderForm v-else title="Detail UMKM" @back="goToDashboardUmkm">
             <template #action>
-            <div class="inline-block relative">
-                <button @click="toggleMenu">
-                <img :src="titikTiga" alt="Menu" class="w-6 h-6 mt-1" />
-                </button>
-                <div v-if="showMenu"
-                class="absolute right-0 mt-2 z-50 bg-white rounded-b-xl shadow-lg py-2 w-48"
-                style="max-width: 320px;">
-                <button
-                    class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100"
-                    @click="handleTambahProduk">
-                    <img src="@/assets/tambah_hijau.svg" alt="Tambah Produk" class="w-5 h-5 mr-1" />
-                    Tambah Produk
-                </button>
-                <div class="border-t border-gray-200"></div>
-                <button
-                    class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100"
-                    @click="handleEditUmkm">
-                    <img src="@/assets/edit_icon.svg" alt="Edit UMKM" class="w-5 h-5 mr-1" />
-                    Ubah UMKM
-                </button>
-                <button
-                    class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
-                    @click="handleHapusUmkm">
-                    <img src="@/assets/delete_icon.svg" alt="Hapus UMKM" class="w-5 h-5 mr-1" />
-                    Hapus UMKM
-                </button>
+                <div class="inline-block relative">
+                    <button @click="toggleMenu">
+                        <img :src="titikTiga" alt="Menu" class="w-6 h-6 mt-1" />
+                    </button>
+                    <div v-if="showMenu" class="absolute right-0 mt-2 z-50 bg-white rounded-b-xl shadow-lg py-2 w-48"
+                        style="max-width: 320px;">
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100"
+                            @click="handleTambahProduk">
+                            <img src="@/assets/tambah_hijau.svg" alt="Tambah Produk" class="w-5 h-5 mr-1" />
+                            Tambah Produk
+                        </button>
+                        <div class="border-t border-gray-200"></div>
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100"
+                            @click="handleEditUmkm">
+                            <img src="@/assets/edit_icon.svg" alt="Edit UMKM" class="w-5 h-5 mr-1" />
+                            Ubah UMKM
+                        </button>
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
+                            @click="handleHapusUmkm">
+                            <img src="@/assets/delete_icon.svg" alt="Hapus UMKM" class="w-5 h-5 mr-1" />
+                            Hapus UMKM
+                        </button>
+                    </div>
                 </div>
-            </div>
             </template>
         </HeaderForm>
 
@@ -138,7 +134,9 @@
                             <section class="px-1 lg:px-2 mb-4">
                                 <div class="font-bold text-base lg:text-lg mb-2">Koordinat Objek</div>
                                 <div class="rounded-lg overflow-hidden mb-2">
-                                    <div id="map" class="w-full h-40 lg:h-64" :style="{ zIndex: previewIdx === null ? 10 : 0 }"></div>
+                                    <div id="map" class="w-full h-40 lg:h-64"
+                                        :style="{ zIndex: previewIdx === null ? 10 : 0 }">
+                                    </div>
                                 </div>
                                 <div class="text-xs lg:text-sm text-gray-500">
                                     {{ umkm.lokasi_point?.latitude }}, {{ umkm.lokasi_point?.longitude }}
@@ -231,12 +229,12 @@
         </div>
 
         <!-- Modal Hapus -->
-        <Modal :show="showDeleteModal" @cancel="showDeleteModal = false" @confirm="confirmDeleteUmkm">
+        <ModalHapus :show="showDeleteModal" @cancel="showDeleteModal = false" @confirm="confirmDeleteUmkm">
             <template #title>
-                <div class="text-lg font-bold mb-2">Hapus UMKM</div>
             </template>
-            <div>Apakah Anda yakin ingin menghapus UMKM ini? Tindakan ini tidak dapat dibatalkan.</div>
-        </Modal>
+            <div class="text-center">Apakah Anda yakin ingin menghapus UMKM ini? Tindakan ini tidak dapat dibatalkan.
+            </div>
+        </ModalHapus>
     </div>
 </template>
 
@@ -249,9 +247,9 @@ import { setProdukFormData } from "@/services/produkService";
 import titikTiga from '@/assets/titik_tiga.png';
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import { setEditUmkmFormData } from '@/services/umkmService'
-import Modal from '@/components/shared/Modal.vue';
 import { deleteUmkm } from "@/services/umkmService";
 import { getImageUrl } from '@/lib/axios'; // Tambahkan ini
+import ModalHapus from "../../components/shared/ModalHapus.vue";
 
 const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 const route = useRoute();
@@ -263,6 +261,7 @@ const searchProduk = ref("");
 const showMenu = ref(false);
 const showDeleteModal = ref(false);
 const deleting = ref(false);
+const previewIdx = computed(() => showDeleteModal.value ? 1 : null);
 
 onMounted(() => {
     document.addEventListener('click', closeMenu);

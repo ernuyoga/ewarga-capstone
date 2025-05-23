@@ -1,64 +1,65 @@
 <template>
-    <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
+    <div class="min-h-screen bg-[#f6f6f6] flex flex-col">
+        <!-- Header -->
         <HeaderForm title="Ubah Produk" @back="goBack" />
 
-        <!-- Stepper & Judul -->
-        <div class="bg-white rounded-xl mx-4 mt-4 p-4 flex items-center justify-between">
-            <div class="flex flex-col items-center">
-                <div class="w-12 h-12 rounded-full bg-[#a8f0ce] flex items-center justify-center">
-                    <span class="text-xl font-semibold text-[#00c48c]">1/2</span>
-                </div>
-            </div>
-            <div class="flex-1 ml-4 flex flex-col items-end">
-                <div class="text-lg font-semibold text-[#232360]">Pengisian Data</div>
-                <div class="text-sm text-gray-400">Selanjutnya : Konfirmasi Data</div>
-            </div>
-        </div>
+        <!-- StepperHeader -->
+        <StepperHeader step-label="1/2" title="Pengisian Data" subtitle="Selanjutnya: Konfirmasi Data" />
 
         <!-- Form Produk -->
-        <form class="bg-white rounded-xl mx-4 mt-4 p-4 flex flex-col gap-3">
+        <form class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6 flex flex-col gap-3">
+            <!-- Nama Produk -->
             <div>
-                <label class="block text-sm font-medium text-[#232360] mb-1">
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Nama Produk<span class="text-[#ff5a5f]">*</span>
                 </label>
                 <input type="text" v-model="namaProduk"
-                    class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00c48c]" />
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+                    required />
             </div>
+            <!-- Harga Produk -->
             <div>
-                <label class="block text-sm font-medium text-[#232360] mb-1">
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Harga Produk<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <input type="number" v-model="harga"
-                    class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00c48c]" />
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">Rp</span>
+                    <input type="number" v-model="harga" min="0"
+                        class="w-full border border-gray-200 rounded-lg px-9 py-2 lg:px-9 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C] hide-number-arrow"
+                        required />
+                </div>
             </div>
+            <!-- Gambar Produk -->
             <div>
-                <label class="block text-sm font-medium text-[#232360] mb-1">
-                    Keterangan
-                </label>
-                <textarea v-model="keterangan"
-                    class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00c48c]"
-                    rows="2" placeholder="Masukkan Keterangan ..."></textarea>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-[#232360] mb-1">
-                    Gambar Produk
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
+                    Gambar Produk<span class="text-[#ff5a5f]">*</span>
                 </label>
                 <div class="relative">
                     <div @click="goToImageUploader" class="relative cursor-pointer">
                         <input type="text"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-[#00c48c] bg-white cursor-pointer"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-white cursor-pointer"
                             readonly :value="gambarProdukLabel" placeholder="Pilih Gambar Produk" />
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">&#8250;</span>
+                        <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                     </div>
                 </div>
+            </div>
+            <!-- Keterangan -->
+            <div>
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">Keterangan</label>
+                <textarea v-model="keterangan"
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+                    rows="3" placeholder="Masukkan Keterangan ..."></textarea>
             </div>
         </form>
 
         <!-- Tombol Selanjutnya -->
-        <button @click="handleNext"
-            class="mx-4 mt-4 mb-6 py-3 rounded-xl bg-[#00c48c] text-white font-bold text-lg shadow hover:bg-[#00b07b] transition">
-            SELANJUTNYA
-        </button>
+        <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-auto mb-4">
+            <button @click="handleNext"
+                class="w-full bg-[#03BF8C] text-white font-semibold py-3 rounded-full text-center text-base lg:text-lg hover:bg-[#029e71] transition-all">
+                SELANJUTNYA
+            </button>
+        </div>
     </div>
 </template>
 
@@ -66,6 +67,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import HeaderForm from '@/components/card/HeaderForm.vue'
+import StepperHeader from '@/components/card/StepperHeader.vue'
 import { getEditProdukFormData, setEditProdukFormData } from '@/services/produkService'
 
 const route = useRoute()
@@ -82,7 +84,7 @@ onMounted(() => {
     harga.value = formData.harga || "";
     keterangan.value = formData.keterangan || "";
     fotos.value = formData.fotos || [];
-    gambarProdukLabel.value = fotos.value.length ? `${fotos.value.length} Gambar` : "";
+    gambarProdukLabel.value = fotos.value.length ? `${fotos.value.length} Gambar Produk` : "";
 });
 
 watch([namaProduk, harga, keterangan, fotos], () => {
@@ -99,8 +101,8 @@ function goToImageUploader() {
 }
 
 function handleNext() {
-    if (!namaProduk.value || !harga.value) {
-        alert('Mohon lengkapi semua data wajib terlebih dahulu!');
+    if (!namaProduk.value || !harga.value || fotos.value.length === 0) {
+        alert('Nama produk, harga produk, dan gambar produk wajib diisi!');
         return;
     }
     router.push({ name: 'produkeditconfirmation', params: { id: route.params.id } });

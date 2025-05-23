@@ -2,41 +2,33 @@
     <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Tambah Produk Baru" @back="goBack" />
 
-        <!-- Stepper -->
-        <div class="flex items-center gap-3 bg-white rounded-xl mx-4 mt-4 p-4">
-            <div class="flex items-center">
-                <div
-                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500 font-bold text-lg">
-                    2</div>
-            </div>
-            <div>
-                <div class="font-semibold text-[#232360]">Konfirmasi Data</div>
-                <div class="text-xs text-gray-400">Selanjutnya : Selesai</div>
-            </div>
-        </div>
+        <!-- StepperHeader -->
+        <StepperHeader step-label="2/2" title="Konfirmasi Data" subtitle="Selanjutnya: Selesai" />
 
         <!-- Card Konfirmasi -->
-        <div class="bg-white rounded-xl mx-4 mt-4 p-4 flex flex-col gap-3">
+        <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6 flex flex-col gap-4">
             <!-- Nama Produk -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Nama Produk</div>
-                <div class="font-semibold text-[#232360]">{{ produkData.nama }}</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Nama Produk</div>
+                <div class="font-semibold text-[#232360] text-base md:text-lg">{{ produkData.nama }}</div>
             </div>
             <!-- Harga Produk -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Harga Produk</div>
-                <div class="font-semibold text-[#232360]">Rp{{ Number(produkData.harga).toLocaleString('id-ID') }}</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Harga Produk</div>
+                <div class="font-semibold text-[#232360] text-base md:text-lg">
+                    Rp{{ Number(produkData.harga).toLocaleString('id-ID') }}
+                </div>
             </div>
             <!-- Gambar Produk -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Gambar Produk</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Gambar Produk</div>
                 <div class="flex gap-2 flex-wrap">
                     <div v-for="(foto, idx) in produkData.fotos || []" :key="idx"
-                        class="w-16 h-16 bg-green-50 rounded flex items-center justify-center overflow-hidden cursor-pointer"
+                        class="w-14 h-14 lg:w-16 lg:h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden cursor-pointer"
                         @click="openPreview(idx)">
                         <img v-if="foto.url" :src="foto.url" class="object-cover w-full h-full"
                             :alt="foto.file?.name || `Foto ${idx + 1}`" />
-                        <span v-else class="text-green-400 text-2xl"><i class="icon-image"></i></span>
+                        <span v-else class="text-gray-400 text-2xl"><i class="icon-image"></i></span>
                     </div>
                 </div>
             </div>
@@ -61,19 +53,20 @@
             </div>
             <!-- Keterangan -->
             <div>
-                <div class="text-xs text-gray-400 mb-1">Keterangan</div>
-                <div class="whitespace-pre-line">{{ produkData.keterangan || '-' }}</div>
+                <div class="text-xs md:text-sm text-gray-400 mb-1">Keterangan</div>
+                <div class="whitespace-pre-line text-sm md:text-base">{{ produkData.keterangan || '-' }}</div>
             </div>
         </div>
 
         <!-- Tombol Ubah & Simpan -->
-        <div class="flex gap-3 px-4 mt-8 mb-4">
+        <div class="flex gap-3 px-4 md:px-8 lg:px-16 xl:px-24 mt-4 mb-4">
             <button
-                class="flex-1 border border-[#00c48c] text-[#00c48c] font-semibold py-3 rounded-full text-center bg-white"
+                class="flex-1 font-semibold py-3 rounded-full text-center bg-white text-base md:text-lg border border-[#00c48c] text-[#00c48c] shadow-lg"
                 @click="handleEdit">
                 UBAH
             </button>
-            <button class="flex-1 bg-[#00c48c] text-white font-semibold py-3 rounded-full text-center"
+            <button
+                class="flex-1 bg-[#00c48c] text-white font-semibold py-3 rounded-full text-center text-base md:text-lg hover:bg-[#029e71] transition-all"
                 @click="handleSubmit">
                 SIMPAN
             </button>
@@ -84,6 +77,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
+import StepperHeader from '@/components/card/StepperHeader.vue'
 import { useRouter } from 'vue-router'
 import { getProdukFormData, setProdukFormData, clearProdukFormData, postProduk } from '@/services/produkService'
 import { getWargaById } from "@/services/wargaService";
