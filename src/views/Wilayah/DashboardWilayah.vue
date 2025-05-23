@@ -3,7 +3,7 @@
         <!-- Header -->
         <HeaderForm title="Pemetaan Wilayah" @back="goBack">
             <template #action>
-                <button @click="goToAsetAdd">
+                <button v-if="auth.user?.is_pengurus" @click="goToAsetAdd">
                     <img :src="tombolTambah" alt="Tambah" class="w-6 h-6" />
                 </button>
             </template>

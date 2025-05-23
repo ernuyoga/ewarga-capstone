@@ -3,7 +3,7 @@
         <!-- Header -->
         <HeaderForm title="Detail Objek Wilayah" @back="goBack">
             <template #action>
-                <div class="relative">
+                <div v-if="auth.user?.is_pengurus" class="relative">
                     <button @click="toggleMenu">
                         <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-6 h-6" />
                     </button>
@@ -148,7 +148,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import tombolTitikTiga from '@/assets/titik_tiga.png';
-import { setAsetEditFormData } from '@/services/asetservice'
+import { setAsetEditFormData } from '@/services/asetservice';
+import { useAuthStore } from "@/store/auth";
+const auth = useAuthStore();
 
 const route = useRoute();
 const router = useRouter();
