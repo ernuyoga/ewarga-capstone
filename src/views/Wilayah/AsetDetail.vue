@@ -143,7 +143,7 @@
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAsetById } from '@/services/wilayahService';
-import { getPenghuniByAset, setAsetPenghuniData, clearAsetPenghuniData } from '@/services/penghuniService';
+import { getPenghuniByAset, setAsetPenghuniData, clearAsetPenghuniData, deleteAset } from '@/services/penghuniService';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import HeaderForm from '@/components/card/HeaderForm.vue';
@@ -291,7 +291,15 @@ async function handleAturPenghuni() {
     }
 }
 
-function handleHapus() {
+async function handleHapus() {
     showMenu.value = false;
+    if (confirm('Yakin ingin menghapus aset ini?')) {
+        try {
+            await deleteAset(aset.value.id);
+            router.push({ name: 'dashboard-wilayah' });
+        } catch (e) {
+            alert('Gagal menghapus aset');  
+        }
+    }
 }
 </script>

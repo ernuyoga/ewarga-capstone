@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen bg-[#f6f6f6]">
+    <HeaderForm :title="'Tambah Penghuni'" @back="router.back" />
     <div class="bg-white rounded-xl mx-4 mt-4 p-4">
       <div class="mb-4">
         <input
@@ -50,6 +51,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getAllWarga } from '@/services/wargaService';
 import { setAsetPenghuniData, getAsetPenghuniData } from '@/services/penghuniService';
+import HeaderForm from '@/components/card/HeaderForm.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -60,7 +62,6 @@ const search = ref('');
 onMounted(async () => {
     const { data } = await getAllWarga();
     wargaList.value = data?.data || [];
-    // Tandai yang sudah jadi penghuni
     const existing = getAsetPenghuniData().map(p => p.warga_id);
     selected.value = [...existing];
 });
@@ -88,7 +89,7 @@ function pilih() {
             penghuni.push({ warga_id: id, nama: warga?.nama, aset_m_status_id: null });
         }
     });
-    // Hapus yang tidak dipilih
+    
     penghuni = penghuni.filter(p => selected.value.includes(p.warga_id));
     setAsetPenghuniData(penghuni);
     router.back();

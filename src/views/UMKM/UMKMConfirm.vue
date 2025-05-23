@@ -36,7 +36,7 @@
             <div>
                 <div class="text-xs md:text-sm text-gray-400 mb-1">Lokasi Usaha</div>
                 <div class="rounded-xl overflow-hidden mb-2" style="height: 200px">
-                    <div id="map" style="height: 200px"></div>
+                    <div id="map" style="height: 200px" :style="{ zIndex: previewIdx === null ? 10 : 0 }"></div>
                 </div>
                 <div class="text-sm md:text-base">{{ formData.alamat }}</div>
             </div>

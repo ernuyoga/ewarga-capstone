@@ -6,6 +6,7 @@ import RegisterPage from "@/views/Auth/RegisterPage.vue";
 import RegistrationFormPage from "@/views/Auth/RegistrationFormPage.vue";
 
 import HomePage from "@/views/Home/HomePage.vue";
+import ProfilePage from "@/views/Profile/ProfilePage.vue";
 import DashboardUMKM from "@/views/UMKM/DashboardUMKM.vue";
 import DashboardWilayah from "@/views/Wilayah/DashboardWilayah.vue";
 
@@ -59,6 +60,11 @@ const routes = [
     name: "home",
     component: HomePage,
     meta: { requiresAuth: true },
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: ProfilePage,
   },
   {
     path: "/umkm/dashboard",

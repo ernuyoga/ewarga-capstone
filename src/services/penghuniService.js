@@ -14,6 +14,10 @@ export async function updateAsetPenghuni(id, penghuniArr) {
   });
 }
 
+export const deleteAset = async (asetId) => {
+  return api.delete(`/wilayah/aset/${asetId}`);
+};
+
 const ASET_PENGHUNI_KEY = 'aset_penghuni_data';
 
 export function setAsetPenghuniData(data) {

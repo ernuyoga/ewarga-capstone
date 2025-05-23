@@ -87,8 +87,10 @@
               </p>
             </div>
             <div class="flex items-center gap-4">
-              <img src="@/assets/icon_profile.svg" alt="Profile"
-                class="w-8 h-8 lg:w-10 lg:h-10 rounded-full hover:shadow-xl cursor-pointer" />
+              <button @click="goToProfile" class="focus:outline-none" title="Lihat Profil">
+                <img :src="warga?.foto_path ? getImageUrl(warga.foto_path) : profileIcon" alt="Profile"
+                  class="w-8 h-8 lg:w-10 lg:h-10 rounded-full hover:ring-2 hover:ring-[#03BF8C] transition cursor-pointer object-cover bg-gray-100" />
+              </button>
             </div>
           </div>
         </div>
@@ -235,6 +237,7 @@ import { getWargaById } from '@/services/wargaService'
 import { getAllUmkm } from '@/services/umkmService'
 import { getAllAsetByInstansi } from '@/services/wilayahService' // Tambahkan ini
 import { getImageUrl } from '@/lib/axios' // Tambahkan ini
+import profileIcon from '@/assets/icon_profile.svg'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -281,6 +284,10 @@ onMounted(async () => {
   }
   isLoading.value = false
 })
+
+function goToProfile() {
+  router.push('/profile')
+}
 
 function goToUmkmDashboard() {
   router.push('/umkm/dashboard')
