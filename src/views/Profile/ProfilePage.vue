@@ -2,7 +2,7 @@
   <HeaderForm :title="'Profil Warga'" @back="goBack" />
   <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
   <PopupMessage :show="showSuccess" type="success" title="Profile berhasil diperbarui" :text="changedFields"
-    @close="showSuccess = false" />
+    listLabel="Data yang diperbarui:" @close="showSuccess = false" />
 
   <div class="max-w-xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
     <h2 class="text-2xl font-bold text-center mb-6 text-[#03BF8C]">Profil Warga</h2>

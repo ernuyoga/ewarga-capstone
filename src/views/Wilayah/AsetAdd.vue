@@ -3,7 +3,7 @@
         <!-- Header -->
         <HeaderForm title="Tambah Objek" @back="$router.back()" />
         <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
-            @close="showWarning = false" />
+            listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
         <!-- Stepper -->
         <div class="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-4 mx-4 mt-4 md:mx-auto md:max-w-xl">

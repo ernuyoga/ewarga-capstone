@@ -10,13 +10,13 @@
       </div>
       <div v-if="title" class="text-[#3b3969] text-lg font-bold mb-1">{{ title }}</div>
       <div v-if="Array.isArray(text)" class="text-[#6c6a8a] text-sm mb-4">
-        <div class="mb-1">Field berikut wajib diisi:</div>
+        <div v-if="listLabel" class="mb-1 font-semibold">{{ listLabel }}</div>
         <ul class="list-disc list-inside text-left ml-4">
           <li v-for="(item, idx) in text" :key="idx">{{ item }}</li>
         </ul>
       </div>
       <div v-else-if="text" class="text-[#6c6a8a] text-sm mb-4">{{ text }}</div>
-      <SubmitButton :label="`OK (${countdown})`" @submit="close" class="w-full h-10 py-0 text-sm mx-0 mb-4" />
+      <SubmitButton :label="`OK (${countdown})`" @submit="close" class="w-full h-12 py-0 text-sm mx-0 mb-4" />
     </div>
   </div>
 </template>
@@ -30,6 +30,7 @@ const props = defineProps({
   show: Boolean,
   title: String,
   text: [String, Array],
+  listLabel: String,
 });
 const emit = defineEmits(['close']);
 
