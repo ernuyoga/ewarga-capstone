@@ -26,7 +26,7 @@
                                 d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                         <span class="text-green-500 font-semibold text-3xl lg:text-4xl mr-1">{{ dashboard.pertumbuhan
-                            }}%</span>
+                        }}%</span>
                     </div>
                 </div>
             </div>
@@ -81,6 +81,8 @@ import { useAuthStore } from "@/store/auth";
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import tombolTambah from '@/assets/tombol_tambah.svg';
 import { clearAsetFormData } from "@/services/asetservice";
+import { clearUmkmFormData, clearEditUmkmFormData } from "@/services/umkmService";
+import { clearProdukFormData, clearEditProdukFormData } from "@/services/produkService";
 
 const dashboard = ref({
     totalObjek: 0,
@@ -156,6 +158,11 @@ const fetchAsetByName = async (name) => {
 };
 
 onMounted(async () => {
+    clearAsetFormData();
+    clearUmkmFormData();
+    clearEditUmkmFormData();
+    clearProdukFormData();
+    clearEditProdukFormData();
     if (auth.user?.id) {
         const resWarga = await getWargaById(auth.user.id);
         const warga = resWarga.data.data;
@@ -183,6 +190,6 @@ function goToAsetAdd() {
 }
 
 function goBack() {
-    router.back();
+    router.push({ name: "home" });
 }
 </script>

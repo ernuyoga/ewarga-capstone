@@ -2,6 +2,9 @@
     <div class="min-h-screen bg-[#f6f6f6] pb-24">
         <!-- Header -->
         <HeaderForm title="Tambah Objek" @back="handleBack" />
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
+        <PopupMessage :show="showSuccess" :text="`${form.nama || '-'} telah berhasil ditambahkan!`"
+            title="Objek Berhasil ditambah!" type="success" @close="handleSuccessClose" />
 
         <!-- Stepper -->
         <div class="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-4 mx-4 mt-4 md:mx-auto md:max-w-xl">
@@ -64,21 +67,6 @@
                 </div>
             </div>
         </div>
-        <!-- Popup Preview -->
-        <div v-if="previewIdx !== null"
-            class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-            <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
-                <button @click="closePreview" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
-                    &times;
-                </button>
-                <img v-if="form.gambar[previewIdx]?.url" :src="form.gambar[previewIdx].url"
-                    class="max-w-full max-h-[80vh] rounded"
-                    :alt="form.gambar[previewIdx]?.file?.name || `Gambar ${previewIdx + 1}`" />
-                <div class="mt-2 text-center text-sm text-gray-700">
-                    {{ form.gambar[previewIdx]?.file?.name || `Gambar ${previewIdx + 1}` }}
-                </div>
-            </div>
-        </div>
 
         <!-- Button -->
         <div class="fixed bottom-0 left-0 right-0 bg-transparent px-4 pb-4 z-10 flex gap-3 md:max-w-xl md:mx-auto">
@@ -102,15 +90,18 @@ import HeaderForm from '@/components/card/HeaderForm.vue'
 import { postAset, getAsetFormData, clearAsetFormData } from '@/services/asetservice'
 import { useRouter } from 'vue-router'
 import { getAsetMaster } from "@/services/masterService";
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
-const previewIdx = ref(null);
 const jenisList = ref([]);
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showSuccess = ref(false);
 
 onMounted(async () => {
     const saved = getAsetFormData();
     Object.assign(form.value, saved);
 
-    // Ambil master jenis aset
     try {
         const { data } = await getAsetMaster();
         if (data && data.data) {
@@ -122,10 +113,13 @@ onMounted(async () => {
 });
 
 function openPreview(idx) {
-    previewIdx.value = idx;
+    if (form.value.gambar[idx]?.url) {
+        previewSrc.value = form.value.gambar[idx].url
+        showPreview.value = true
+    }
 }
 function closePreview() {
-    previewIdx.value = null;
+    showPreview.value = false
 }
 
 const router = useRouter()
@@ -145,6 +139,11 @@ function handleBack() {
     router.back()
 }
 
+function handleSuccessClose() {
+    showSuccess.value = false
+    router.push({ name: 'dashboard-wilayah' });
+}
+
 async function handleSubmit() {
     try {
         const fotos = [];
@@ -161,7 +160,7 @@ async function handleSubmit() {
         }
         await postAset({ ...form.value, fotos });
         clearAsetFormData();
-        router.push({ name: 'dashboard-wilayah' });
+        showSuccess.value = true
     } catch (e) {
         alert(e?.response?.data?.message || e?.message || 'Gagal menyimpan data aset!');
         console.error(e?.response?.data || e);

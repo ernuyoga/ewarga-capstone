@@ -2,6 +2,8 @@
     <div class="min-h-screen bg-[#f6f6f6] pb-24">
         <!-- Header -->
         <HeaderForm title="Tambah Objek" @back="$router.back()" />
+        <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
+            @close="showWarning = false" />
 
         <!-- Stepper -->
         <div class="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-4 mx-4 mt-4 md:mx-auto md:max-w-xl">
@@ -104,8 +106,11 @@ import { getAsetMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
 import { getWargaById } from "@/services/wargaService";
 import { getAsetEditFormData, setAsetEditFormData } from '@/services/asetservice'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const auth = useAuthStore();
+const showWarning = ref(false)
+const warningText = ref('')
 const router = useRouter()
 const jenisList = ref([]);
 const statusList = ref([]);
@@ -130,7 +135,6 @@ const form = ref({
 onMounted(async () => {
     const saved = getAsetEditFormData();
     Object.assign(form.value, saved);
-    // Ambil master jenis aset
     try {
         const { data } = await getAsetMaster();
         if (data && data.data) {
@@ -142,7 +146,6 @@ onMounted(async () => {
         statusList.value = [];
     }
 
-    // Ambil instansi_id dari user (mirip DashboardUMKM)
     if (!form.value.instansi_id && auth.user?.id) {
         const resWarga = await getWargaById(auth.user.id);
         form.value.instansi_id = resWarga.data.data?.instansi_id || "";
@@ -162,8 +165,15 @@ function selectGambar() {
 }
 
 function handleSubmit() {
-    if (!form.value.nama || !form.value.jenis_id || !form.value.alamat) {
-        alert('Mohon lengkapi data wajib!')
+    const missing = []
+    if (!form.value.nama) missing.push('Nama Objek')
+    if (!form.value.jenis_id) missing.push('Jenis Objek')
+    if (!form.value.alamat) missing.push('Alamat Objek')
+    if (!form.value.pemilik) missing.push('Pemilik Objek')
+
+    if (missing.length) {
+        warningText.value = missing
+        showWarning.value = true
         return
     }
     setAsetFormData(form.value)

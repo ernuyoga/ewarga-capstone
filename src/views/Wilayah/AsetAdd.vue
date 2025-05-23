@@ -2,6 +2,8 @@
     <div class="min-h-screen bg-[#f6f6f6] pb-24">
         <!-- Header -->
         <HeaderForm title="Tambah Objek" @back="$router.back()" />
+        <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
+            @close="showWarning = false" />
 
         <!-- Stepper -->
         <div class="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-4 mx-4 mt-4 md:mx-auto md:max-w-xl">
@@ -35,7 +37,7 @@
                     <select v-model="form.jenis_id" required
                         class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] focus:outline-none focus:ring-2 focus:ring-[#00c48c] text-sm">
                         <option disabled value="">Pilih Jenis Objek</option>
-                        <option v-for="status in statusList" :key="status.id" :value="status.id">{{ status.nama }}
+                        <option v-for="jenis in jenisList" :key="jenis.id" :value="jenis.id">{{ jenis.nama }}
                         </option>
                     </select>
                 </div>
@@ -50,7 +52,8 @@
                 </div>
                 <!-- Pemilik Objek -->
                 <div>
-                    <label class="block font-medium text-gray-700 mb-1">Pemilik Objek</label>
+                    <label class="block font-medium text-gray-700 mb-1">Pemilik Objek<span
+                            class="text-red-500">*</span></label>
                     <button type="button"
                         class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] flex items-center justify-between text-sm text-left"
                         @click="selectPemilik">
@@ -103,7 +106,10 @@ import { useRouter } from 'vue-router'
 import { getAsetMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
 import { getWargaById } from "@/services/wargaService";
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
+const showWarning = ref(false)
+const warningText = ref('')
 const auth = useAuthStore();
 const router = useRouter()
 const jenisList = ref([]);
@@ -144,8 +150,15 @@ watch(form, (val) => {
 }, { deep: true })
 
 function handleSubmit() {
-    if (!form.value.nama || !form.value.jenis_id || !form.value.alamat) {
-        alert('Mohon lengkapi data wajib!')
+    const missing = []
+    if (!form.value.nama) missing.push('Nama Objek')
+    if (!form.value.jenis_id) missing.push('Jenis Objek')
+    if (!form.value.alamat) missing.push('Alamat Objek')
+    if (!form.value.pemilik) missing.push('Pemilik Objek')
+
+    if (missing.length) {
+        warningText.value = missing
+        showWarning.value = true
         return
     }
     setAsetFormData(form.value)

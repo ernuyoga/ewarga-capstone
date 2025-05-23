@@ -2,6 +2,9 @@
     <div class="min-h-screen bg-[#f6f6f6] pb-24">
         <!-- Header -->
         <HeaderForm title="Tambah Objek" @back="handleBack" />
+        <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
+        <PopupMessage :show="showSuccess" :text="`Data dari ${form.nama || '-'} telah berhasil diubah!`"
+            title="Data Objek Berhasil diubah" type="success" @close="handleSuccessClose" />
 
         <!-- Stepper -->
         <div class="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-4 mx-4 mt-4 md:mx-auto md:max-w-xl">
@@ -66,24 +69,6 @@
                 </div>
             </div>
         </div>
-        <!-- Popup Preview -->
-        <div v-if="previewIdx !== null"
-            class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-            <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
-                <button @click="closePreview" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
-                    &times;
-                </button>
-                <img v-if="form.fotos[previewIdx]?.id && form.fotos[previewIdx]?.file_path"
-                    :src="getImageUrl(form.fotos[previewIdx].file_path)" class="max-w-full max-h-[80vh] rounded"
-                    :alt="form.fotos[previewIdx]?.file?.name || `Gambar ${previewIdx + 1}`" />
-                <img v-else-if="form.fotos[previewIdx]?.url" :src="form.fotos[previewIdx].url"
-                    class="max-w-full max-h-[80vh] rounded"
-                    :alt="form.fotos[previewIdx]?.file?.name || `Gambar ${previewIdx + 1}`" />
-                <div class="mt-2 text-center text-sm text-gray-700">
-                    {{ form.fotos[previewIdx]?.file?.name || `Gambar ${previewIdx + 1}` }}
-                </div>
-            </div>
-        </div>
         <!-- Button -->
         <div class="fixed bottom-0 left-0 right-0 bg-transparent px-4 pb-4 z-10 flex gap-3 md:max-w-xl md:mx-auto">
             <button
@@ -107,11 +92,29 @@ import { updateAset, getAsetEditFormData, clearAsetEditFormData } from '@/servic
 import { useRouter, useRoute } from 'vue-router'
 import { getAsetMaster } from "@/services/masterService";
 import { getImageUrl } from '@/lib/axios'
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
-const previewIdx = ref(null);
 const jenisList = ref([]);
 const route = useRoute();
 const router = useRouter()
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showSuccess = ref(false);
+const successMsg = ref('Data berhasil disimpan!');
+
+function openPreview(idx) {
+    const img = form.value.fotos[idx]
+    if (img?.id && img?.file_path) {
+        previewSrc.value = getImageUrl(img.file_path)
+    } else if (img?.url) {
+        previewSrc.value = img.url
+    } else {
+        previewSrc.value = ''
+    }
+    showPreview.value = true
+}
+
 const form = ref({
     nama: '',
     jenis: '',
@@ -121,11 +124,15 @@ const form = ref({
     hapus_foto: [],
 })
 
+function handleSuccessClose() {
+    showSuccess.value = false
+    router.push({ name: 'dashboard-wilayah' });
+}
+
 onMounted(async () => {
     const saved = getAsetEditFormData();
     Object.assign(form.value, saved);
 
-    // Ambil master jenis aset
     try {
         const { data } = await getAsetMaster();
         if (data && data.data) {
@@ -135,13 +142,6 @@ onMounted(async () => {
         jenisList.value = [];
     }
 });
-
-function openPreview(idx) {
-    previewIdx.value = idx;
-}
-function closePreview() {
-    previewIdx.value = null;
-}
 
 function handleEdit() {
     router.push({ name: 'asetadd' })
@@ -167,10 +167,9 @@ async function handleSubmit() {
         }
         form.value.fotos = fotos;
 
-        console.log('Isi form.fotos sebelum submit:', form.value.fotos);
         await updateAset(route.params.id, form.value);
         clearAsetEditFormData();
-        router.push({ name: 'dashboard-wilayah' });
+        showSuccess.value = true
     } catch (e) {
         alert('Gagal menyimpan perubahan aset!');
         console.error('Update aset error:', e, e?.response?.data);

@@ -2,22 +2,23 @@
     <div class="min-h-screen bg-[#f6f6f6] pb-24">
         <!-- Header -->
         <HeaderForm title="Tambah Gambar Objek" @back="handleBack" />
-
+        <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
+        <PopupMessage :show="showWarning" title="Kesalahan Upload Gambar" :text="warningMsg" type="warning"
+            @close="showWarning = false" />
+            
         <!-- Info Box & Upload -->
         <div class="mx-4 md:mx-auto md:max-w-xl mt-4">
             <div class="bg-white rounded-xl p-4">
                 <div class="bg-[#eaf4ff] rounded-xl px-4 py-3 flex items-start gap-2 mb-4">
-                    <!-- ...info... -->
                 </div>
-
                 <!-- Daftar Gambar -->
                 <div v-if="images.length" class="space-y-2 mb-3">
                     <div v-for="(img, idx) in images" :key="idx"
                         class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 mb-1">
                         <img v-if="img.id && img.file_path" :src="getImageUrl(img.file_path)" alt="gambar"
-                            class="w-10 h-10 rounded-lg object-cover mr-2" />
+                            class="w-10 h-10 rounded-lg object-cover mr-2" @click="openPreview(img.url)" />
                         <img v-else-if="img.url" :src="img.url" alt="gambar"
-                            class="w-10 h-10 rounded-lg object-cover mr-2" />
+                            class="w-10 h-10 rounded-lg object-cover mr-2" @click="openPreview(img.url)" />
                         <span class="flex-1 text-sm text-gray-800 truncate">
                             {{ img.file?.name || 'gambar aset' }}
                         </span>
@@ -58,10 +59,21 @@ import HeaderForm from '@/components/card/HeaderForm.vue'
 import { setAsetEditFormData, getAsetEditFormData } from '@/services/asetservice'
 import { useRouter } from 'vue-router'
 import { getImageUrl } from '@/lib/axios'
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const router = useRouter()
 const images = ref([])
 const fileInput = ref(null)
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showWarning = ref(false)
+const warningMsg = ref('')
+
+function openPreview(url) {
+    previewSrc.value = url
+    showPreview.value = true
+}
 
 const triggerFileInput = () => {
     if (images.value.length >= 5) return
@@ -80,19 +92,27 @@ function fileToBase64(file) {
 const handleFiles = async (e) => {
     const files = Array.from(e.target.files)
     for (const file of files) {
-        if (
-            (file.type === 'image/jpeg' ||
-                file.type === 'image/png') &&
-            file.size <= 1.5 * 1024 * 1024 &&
-            images.value.length < 5
-        ) {
-            const base64 = await fileToBase64(file)
-            images.value.push({
-                file: { name: file.name, type: file.type },
-                url: base64,
-                rawFile: file
-            })
+        if (images.value.length >= 5) {
+            showWarning.value = true
+            warningMsg.value = 'Maksimal 5 gambar'
+            break
         }
+        if (file.size > 1 * 1024 * 1024) {
+            showWarning.value = true
+            warningMsg.value = 'Ukuran file tidak boleh lebih dari 1MB'
+            break
+        }
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+            showWarning.value = true
+            warningMsg.value = 'File harus berupa JPG atau PNG'
+            break
+        }
+        const base64 = await fileToBase64(file)
+        images.value.push({
+            file: { name: file.name, type: file.type },
+            url: base64,
+            rawFile: file
+        })
     }
     const oldData = getAsetEditFormData() || {};
     setAsetEditFormData({

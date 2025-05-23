@@ -3,7 +3,8 @@
     <!-- Header -->
     <HeaderForm title="Tambah Gambar Objek" @back="handleBack" />
     <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
-    <Warning :show="showWarning" :message="warningMsg" @close="showWarning = false" />
+    <PopupMessage :show="showWarning" title="Kesalahan Upload Gambar" :text="warningMsg" type="warning"
+      @close="showWarning = false" />
 
     <!-- Info Box & Upload -->
     <div class="mx-4 md:mx-auto md:max-w-xl mt-4">
@@ -65,7 +66,7 @@ import { setAsetFormData, getAsetFormData } from '@/services/asetservice'
 import { useRouter } from 'vue-router'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import Preview from '@/components/card/Preview.vue'
-import Warning from '@/components/card/Warning.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const router = useRouter()
 const images = ref([])
@@ -97,28 +98,31 @@ function fileToBase64(file) {
 const handleFiles = async (e) => {
   const files = Array.from(e.target.files)
   for (const file of files) {
-    if (
-      (file.type === 'image/jpeg' ||
-        file.type === 'image/png') &&
-      file.size <= 1 * 1024 * 1024 &&
-      images.value.length < 5
-    ) {
-      const base64 = await fileToBase64(file)
-      images.value.push({
-        file: { name: file.name, type: file.type },
-        url: base64,
-        rawFile: file
-      })
-    } else if (file.size > 1 * 1024 * 1024) {
-      warningMsg.value = `Ukuran file "${file.name}" melebihi 1 MB!`;
-      showWarning.value = true;
+    if (images.value.length >= 5) {
+      showWarning.value = true
+      warningMsg.value = 'Maksimal 5 gambar'
+      break
     }
+    if (file.size > 1 * 1024 * 1024) {
+      showWarning.value = true
+      warningMsg.value = 'Ukuran file tidak boleh lebih dari 1MB'
+      break
+    }
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      showWarning.value = true
+      warningMsg.value = 'File harus berupa JPG atau PNG'
+      break
+    }
+    const base64 = await fileToBase64(file)
+    images.value.push({
+      file: { name: file.name, type: file.type },
+      url: base64,
+      rawFile: file
+    })
+
   }
-  setAsetFormData({
-    fotos: images.value.map(img => ({
-      file: img.file
-    }))
-  })
+  setAsetFormData(
+    { fotos: images.value })
   e.target.value = ''
 }
 
@@ -130,22 +134,14 @@ const removeImage = (idx) => {
 onMounted(() => {
   const formData = getAsetFormData()
   if (formData.fotos && Array.isArray(formData.fotos)) {
-    images.value = formData.fotos.map(f => ({
-      file: f.file,
-      url: '',
-      rawFile: null
-    }))
+    images.value = formData.fotos
   } else {
     images.value = []
   }
 })
 
 const submitImages = () => {
-  setAsetFormData({
-    gambar: images.value.map(img => ({
-      file: img.file
-    }))
-  })
+  setAsetFormData({ gambar: images.value })
   router.back()
 }
 

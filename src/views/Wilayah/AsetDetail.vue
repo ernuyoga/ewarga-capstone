@@ -175,10 +175,6 @@ const fotoUtama = computed(() => {
     return 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80';
 });
 
-function goBack() {
-    router.back();
-}
-
 function showMap() {
     if (!aset.value.latitude || !aset.value.longitude) return;
     if (window._asetMap) {
@@ -301,5 +297,9 @@ async function handleHapus() {
             alert('Gagal menghapus aset');  
         }
     }
+}
+
+function goBack() {
+    router.push({name: 'dashboard-wilayah'});
 }
 </script>

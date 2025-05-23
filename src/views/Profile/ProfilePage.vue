@@ -1,6 +1,9 @@
 <template>
   <HeaderForm :title="'Profil Warga'" @back="goBack" />
   <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
+  <PopupMessage :show="showSuccess" type="success" title="Profile berhasil diperbarui" :text="changedFields"
+    @close="showSuccess = false" />
+
   <div class="max-w-xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
     <h2 class="text-2xl font-bold text-center mb-6 text-[#03BF8C]">Profil Warga</h2>
     <div class="flex flex-col items-center mb-6">
@@ -94,12 +97,15 @@ import { getImageUrl } from '@/lib/axios'
 import profileIcon from '@/assets/icon_profile.svg'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
 const showPreview = ref(false);
 const previewSrc = ref('');
 const backupForm = ref({})
+const showSuccess = ref(false)
+const changedFields = ref([])
 const form = ref({
   nama: '',
   nik: '',
@@ -168,6 +174,23 @@ async function saveProfile() {
       fotoFile = fileInput.files[0];
     }
   }
+  const changed = []
+  for (const key in form.value) {
+    if (form.value[key] !== backupForm.value[key]) {
+      // Label yang lebih ramah
+      switch (key) {
+        case 'nama': changed.push('Nama Lengkap'); break;
+        case 'nik': changed.push('NIK'); break;
+        case 'no_kk': changed.push('No. KK'); break;
+        case 'no_tlp': changed.push('No. HP'); break;
+        case 'tempat_lahir': changed.push('Tempat Lahir'); break;
+        case 'tgl_lahir': changed.push('Tanggal Lahir'); break;
+        case 'jenis_kelamin': changed.push('Jenis Kelamin'); break;
+        case 'alamat': changed.push('Alamat'); break;
+        case 'foto': changed.push('Foto Profil'); break;
+      }
+    }
+  }
   try {
     await updateWargaForm(auth.user.id, {
       nama: form.value.nama,
@@ -181,6 +204,8 @@ async function saveProfile() {
       foto: fotoFile
     });
     await refreshWarga();
+    changedFields.value = changed.length ? changed : ['Tidak ada perubahan'];
+    showSuccess.value = true;
   } catch (err) {
     let msg = 'Gagal update profil';
     alert(msg);

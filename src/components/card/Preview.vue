@@ -1,7 +1,7 @@
 <template>
     <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
         @click.self="close">
-        <div class="bg-white rounded-xl shadow-lg p-4 relative lg:w-[600px] lg:h-[400px] max-w-full max-h-full flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-4 relative w-[320px] h-[280px] lg:w-[600px] lg:h-[400px] max-w-[600px] max-h-[400px] flex items-center justify-center">
             <div class="relative w-full h-full">
                 <button @click="close"
                     class="absolute top-1 right-0 z-10 text-gray-500 hover:text-gray-700 text-2xl">
