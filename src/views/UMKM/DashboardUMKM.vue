@@ -45,20 +45,24 @@
                                 class="w-full px-2 py-2 pl-4 border border-[#03BF8C] rounded-full bg-gray-50 text-sm text-[#03BF8C] appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                                 v-model="selectedJenis">
                                 <option value="" class="text-gray-500">Moda Usaha</option>
-                                <option v-for="j in jenisList" :key="j.id" :value="j.id" class="text-gray-800">{{ j.nama }}
+                                <option v-for="j in jenisList" :key="j.id" :value="j.id" class="text-gray-800">{{ j.nama
+                                    }}
                                 </option>
                             </select>
-                            <img src="@/assets/v_hijau.svg" alt="Dropdown" class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4" />
+                            <img src="@/assets/v_hijau.svg" alt="Dropdown"
+                                class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4" />
                         </div>
                         <div class="relative flex-1">
                             <select
                                 class="w-full px-2 py-2 pl-4 border border-[#03BF8C] rounded-full bg-gray-50 text-sm text-[#03BF8C] appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                                 v-model="selectedBentuk">
                                 <option value="" class="text-gray-500">Bentuk Usaha</option>
-                                <option v-for="b in bentukList" :key="b.id" :value="b.id" class="text-gray-800">{{ b.nama }}
+                                <option v-for="b in bentukList" :key="b.id" :value="b.id" class="text-gray-800">{{
+                                    b.nama }}
                                 </option>
                             </select>
-                            <img src="@/assets/v_hijau.svg" alt="Dropdown" class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4" />
+                            <img src="@/assets/v_hijau.svg" alt="Dropdown"
+                                class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4" />
                         </div>
                     </div>
                 </div>
@@ -87,9 +91,9 @@
                         <div class="font-semibold text-base lg:text-lg mb-1">{{ umkm.nama }}</div>
                         <div class="flex items-center gap-2 mb-1">
                             <span class="inline-block w-3 h-3 rounded-full"
-                                :class="umkm.jenis?.id === 1 ? 'bg-green-400' : 'bg-gray-400'"></span>
+                                :class="umkm.jenis?.id === 2 ? 'bg-gray-400' : 'bg-green-400'"></span>
                             <span class="text-xs lg:text-sm font-semibold"
-                                :class="umkm.jenis?.id === 1 ? 'text-green-500' : 'text-gray-500'">
+                                :class="umkm.jenis?.id === 2 ? 'text-gray-500' : 'text-green-500'">
                                 {{ umkm.jenis?.nama || '-' }}
                             </span>
                         </div>

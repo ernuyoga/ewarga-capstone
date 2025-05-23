@@ -11,7 +11,7 @@
                 </h2>
             </div>
             <!-- Kanan: slot action -->
-            <div class="flex-shrink-0 ml-4 md:ml-6">
+            <div class="flex-shrink-0 ml-4 md:ml-6 flex items-center justify-center h-full">
                 <div class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                     <slot name="action"></slot>
                 </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
-    <HeaderForm title="Tambah Gambar Umkm" @back="handleBack" />
+    <HeaderForm title="Tambah Gambar Usaha" @back="handleBack" />
 
     <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24 flex flex-col flex-1 justify-between">
       <div>

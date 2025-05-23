@@ -89,7 +89,7 @@
             <div class="flex items-center gap-4">
               <button @click="goToProfile" class="focus:outline-none" title="Lihat Profil">
                 <img :src="warga?.foto_path ? getImageUrl(warga.foto_path) : profileIcon" alt="Profile"
-                  class="w-8 h-8 lg:w-10 lg:h-10 rounded-full hover:ring-2 hover:ring-[#03BF8C] transition cursor-pointer object-cover bg-gray-100" />
+                  class="w-8 h-8 lg:w-10 lg:h-10 rounded-full ring-1 ring-[#03BF8C] hover:shadow-lg transition cursor-pointer object-cover bg-gray-100" />
               </button>
             </div>
           </div>
@@ -139,7 +139,7 @@
               <div class="flex justify-between items-start">
                 <h2 class="text-lg lg:text-xl font-bold text-gray-800">UMKM Pilihan di Sekitar Anda</h2>
                 <button
-                  class="bg-[#E6FFF8] text-[#03BF8C] text-xs lg:text-sm font-bold px-2 py-1 rounded-md min-w-[87.35px] text-center"
+                  class="bg-[#E6FFF8] text-[#03BF8C] text-xs lg:text-sm font-bold px-2 py-1 rounded-md min-w-[88.5px] text-center"
                   @click="goToUmkmDashboard">Lihat Semua</button>
               </div>
               <p class="text-sm lg:text-base text-gray-500 mb-5">Jelajahi pilihan produk dan layanan unggulan dari UMKM
@@ -181,7 +181,7 @@
               <div class="flex justify-between items-start">
                 <h2 class="text-lg lg:text-xl font-bold text-gray-800">Objek di Wilayah Anda</h2>
                 <button
-                  class="bg-[#E6FFF8] text-[#03BF8C] text-xs lg:text-sm font-bold px-2 py-1 rounded-md min-w-[87.35px] text-center"
+                  class="bg-[#E6FFF8] text-[#03BF8C] text-xs lg:text-sm font-bold px-2 py-1 rounded-md min-w-[88.5px] text-center"
                   @click="goToWilayahDashboard">Lihat Semua</button>
               </div>
               <p class="text-sm lg:text-base text-gray-500 mb-5">Jelajahi dan cari tahu objek yang ada di sekitar

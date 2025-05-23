@@ -22,7 +22,7 @@
           <div v-for="warga in filteredWarga" :key="warga.id"
             class="flex items-center px-2 md:px-4 py-2 md:py-3 rounded-lg hover:bg-[#f5f5f5] transition cursor-pointer select-none"
             @click="toggleWarga(warga)">
-            <img :src="warga.foto_path || profileDefault" alt="foto"
+            <img :src="warga.foto_path ? getImageUrl(warga.foto_path) : profileDefault" alt="foto"
               class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover mr-3 border" />
             <div class="flex-1">
               <div class="font-medium text-[#232360] text-sm md:text-base">{{ warga.nama }}</div>
@@ -59,6 +59,7 @@ import { getAllWarga } from '@/services/wargaService'
 import { setUmkmFormData, getUmkmFormData } from '@/services/umkmService'
 import profileDefault from '@/assets/default_profile.jpg' // Tambahkan ini
 import InfoAlert from '@/components/card/InfoAlert.vue'
+import { getImageUrl } from '@/lib/axios.js'
 
 const router = useRouter()
 const search = ref('')

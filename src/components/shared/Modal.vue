@@ -1,6 +1,6 @@
 <template>
     <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-        <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full">
+        <div class="bg-white rounded-xl shadow-lg p-6 m-4 max-w-sm w-full">
             <div class="mb-4">
                 <slot name="title">
                     <div class="text-lg font-bold mb-2">Konfirmasi</div>

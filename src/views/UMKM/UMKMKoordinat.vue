@@ -1,6 +1,6 @@
 <template>
   <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
-    <HeaderForm title="Tambah Koordinat UMKM" @back="handleBack" />
+    <HeaderForm title="Tambah Koordinat Usaha" @back="handleBack" />
 
     <div class="flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24">
       <div id="map" class="w-full flex-1 rounded-b-xl focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
