@@ -84,6 +84,8 @@ export function setAsetFormData(newData) {
 
 export function clearAsetFormData() {
   localStorage.removeItem(ASET_FORM_KEY);
+  localStorage.removeItem('fotos');
+  localStorage.removeItem('gambar');
 }
 
 const ASET_EDIT_FORM_KEY = 'aset_edit_form_data';

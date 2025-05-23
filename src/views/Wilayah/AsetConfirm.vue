@@ -147,7 +147,6 @@ function handleBack() {
 
 async function handleSubmit() {
     try {
-        // Konversi gambar base64 ke File (jika perlu)
         const fotos = [];
         if (form.value.gambar && Array.isArray(form.value.gambar)) {
             for (let i = 0; i < form.value.gambar.length; i++) {

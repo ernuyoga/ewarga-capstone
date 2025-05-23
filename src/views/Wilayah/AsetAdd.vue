@@ -84,7 +84,6 @@
                 </div>
             </form>
         </div>
-
         <!-- Button -->
         <div class="fixed bottom-0 left-0 right-0 bg-transparent px-4 pb-4 z-10">
             <button
@@ -124,8 +123,6 @@ const form = ref({
 onMounted(async () => {
     const saved = getAsetFormData();
     Object.assign(form.value, saved);
-
-    // Ambil master jenis aset
     try {
         const { data } = await getAsetMaster();
         if (data && data.data) {
@@ -136,8 +133,6 @@ onMounted(async () => {
         jenisList.value = [];
         statusList.value = [];
     }
-
-    // Ambil instansi_id dari user (mirip DashboardUMKM)
     if (!form.value.instansi_id && auth.user?.id) {
         const resWarga = await getWargaById(auth.user.id);
         form.value.instansi_id = resWarga.data.data?.instansi_id || "";
