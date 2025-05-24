@@ -1,54 +1,66 @@
 <template>
-    <div class="min-h-screen bg-[#f6f6f6] pb-24">
+    <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Tambah Status Penghuni Objek" @back="router.back()" />
-        <div class="bg-white rounded-xl mx-4 mt-4 p-4">
-            <div class="flex items-start gap-2 mb-4 bg-[#E3F2FD] rounded p-3">
-                <div class="text-[#2196F3] mt-1">
-                    <i class="fa fa-info-circle"></i>
-                </div>
-                <div class="text-xs text-[#2196F3]">
-                    Tiap objek dapat memiliki beberapa penghuni.<br>
+
+        <div class="flex-1 flex flex-col">
+            <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6">
+                <InfoAlert>
+                    Tiap objek dapat memiliki beberapa penghuni.
                     Penghuni aset harus merupakan warga yang sudah terdaftar di aplikasi.
+                </InfoAlert>
+
+                <div class="font-semibold text-[#232360] mt-2 mb-2 text-base md:text-lg">Daftar Penghuni</div>
+                <div class="flex flex-col gap-2 max-h-[420px] overflow-y-auto">
+                    <template v-if="penghuniList.length">
+                        <div v-for="(p, idx) in penghuniList" :key="p.warga_id"
+                            class="flex flex-col items-end px-2 md:px-4 py-2 md:py-3 rounded-lg bg-[#f6f6f6] hover:bg-[#f5f5f5] transition select-none">
+                            <div class="flex items-center w-full">
+                                <img src="@/assets/orang.svg" class="w-4 h-4 lg:w-5 lg:h-5 object-contain mx-2"
+                                    alt="foto" />
+                                <div class="flex-1">
+                                    <div class="font-medium text-[#232360] text-sm md:text-base">{{ p.nama }}</div>
+                                </div>
+                                <div class="relative">
+                                    <select
+                                        class="border rounded px-2 py-2 text-sm min-w-[140px] bg-white  appearance-none"
+                                        v-model="p.aset_m_status_id" @change="ubahStatus(idx, p.aset_m_status_id)">
+                                        <option value="" disabled>Status Penghuni</option>
+                                        <option v-for="s in statusList" :key="s.id" :value="s.id">{{ s.nama }}</option>
+                                    </select>
+                                    <img src="@/assets/v_hitam.svg" alt="dropdown icon"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none" />
+                                </div>
+                                <button @click="hapusPenghuni(idx)"
+                                    class="text-red-500 text-lg flex items-center justify-center h-10 w-10 rounded-full transition"
+                                    title="Hapus">
+                                    <span class="text-xl">&times;</span>
+                                </button>
+                            </div>
+                            <div v-if="!p.aset_m_status_id" class="text-xs text-red-500 mt-1 pr-8">
+                                Status Penghuni Wajib Dilengkapi
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="flex flex-col items-center py-8">
+                            <button @click="tambahPenghuni" class="text-[#00C48C] flex items-center gap-2 font-medium">
+                                <span class="text-xl">+</span> Tambah Penghuni
+                            </button>
+                        </div>
+                    </template>
                 </div>
-            </div>
-            <div v-if="penghuniList.length === 0" class="flex flex-col items-center py-8">
-                <button @click="tambahPenghuni" class="text-[#00C48C] flex items-center gap-2 font-medium">
-                    <i class="fa fa-plus"></i> Tambah Penghuni
+                <button v-if="penghuniList.length" @click="tambahPenghuni"
+                    class="text-[#00C48C] flex items-center gap-2 mt-4 font-medium mx-auto" style="width: fit-content;">
+                    <span class="text-xl">+</span> Tambah Penghuni
                 </button>
             </div>
-            <div v-else>
-                <div v-for="(p, idx) in penghuniList" :key="p.warga_id" class="flex items-center gap-2 mb-2">
-                    <div class="w-full flex-col items-center gap-2">
-                        <div class="flex items-center bg-[#F6F6F6] rounded px-3 py-2 flex-1">
-                            <i class="fa fa-user text-gray-400 mr-2"></i>
-                            <span class="text-sm font-medium">{{ p.nama || 'Nama Penghuni' }}</span>
-                        </div>
-                        <div v-if="!p.aset_m_status_id" class="text-xs text-red-500 ml-8 mb-2">
-                            Status Penghuni Wajib Dilengkapi
-                        </div>
-                    </div>
-                    <select class="border rounded px-2 py-2 text-sm min-w-[140px] bg-white" v-model="p.aset_m_status_id"
-                        @change="ubahStatus(idx, p.aset_m_status_id)">
-                        <option value="" disabled>Status Penghuni</option>
-                        <option v-for="s in statusList" :key="s.id" :value="s.id">{{ s.nama }}</option>
-                    </select>
-                    <button @click="hapusPenghuni(idx)"
-                        class="text-red-500 text-lg flex items-center justify-center h-10 w-10 hover:bg-red-50 rounded-full transition"
-                        title="Hapus">
-                        <i class="fa fa-times">X</i>
-                    </button>
-                </div>
-                <button @click="tambahPenghuni" class="text-[#00C48C] flex items-center gap-2 mt-4 font-medium mx-auto"
-                    style="width: fit-content;">
-                    <i class="fa fa-plus">+</i> Tambah Penghuni
+            <div class="mt-auto mb-4 mx-4 md:mx-8 lg:mx-16 xl:mx-24">
+                <button
+                    class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 rounded-2xl text-base shadow transition"
+                    :disabled="!bolehSimpan" @click="simpanPenghuni">
+                    SIMPAN
                 </button>
             </div>
-        </div>
-        <div class="fixed bottom-0 left-0 w-full px-4 pb-4 bg-transparent">
-            <button class="w-full bg-[#00C48C] text-white py-3 rounded-full font-bold text-base"
-                :disabled="!bolehSimpan" @click="simpanPenghuni">
-                SIMPAN
-            </button>
         </div>
     </div>
 </template>
@@ -60,12 +72,14 @@ import { setAsetPenghuniData, getAsetPenghuniData, clearAsetPenghuniData } from 
 import { getAsetMaster } from '@/services/masterService';
 import { updateAsetPenghuni } from '@/services/penghuniService';
 import HeaderForm from '@/components/card/HeaderForm.vue';
+import InfoAlert from '@/components/card/InfoAlert.vue'
+import { getImageUrl } from '@/lib/axios.js';
+import profileDefault from '@/assets/default_profile.jpg'
 
 const route = useRoute();
 const router = useRouter();
 const penghuniList = ref([]);
 const statusList = ref([]);
-const initialPenghuni = ref([]);
 const loading = ref(false);
 
 onMounted(async () => {
@@ -75,9 +89,7 @@ onMounted(async () => {
         statusList.value = masterRes?.data?.data?.status || [];
         const data = getAsetPenghuniData();
         penghuniList.value = Array.isArray(data) ? data : [];
-        initialPenghuni.value = JSON.parse(JSON.stringify(penghuniList.value));
-    } catch (error) {
-    }
+    } catch (error) { }
     loading.value = false;
 });
 

@@ -5,101 +5,91 @@
         <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
             listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
-        <!-- Stepper -->
-        <div class="flex items-center gap-4 bg-white rounded-xl shadow px-6 py-4 mx-4 mt-4 md:mx-auto md:max-w-xl">
-            <div
-                class="w-14 h-14 rounded-full flex items-center justify-center bg-[#e6fff5] text-[#00c48c] text-xl font-bold">
-                1/2
-            </div>
-            <div>
-                <div class="text-base md:text-lg font-bold text-gray-800">Pengisian Data</div>
-                <div class="text-xs md:text-sm text-gray-400">Selanjutnya : Konfirmasi Data</div>
-            </div>
-        </div>
+        <!-- Stepper Header -->
+        <StepperHeader step-label="1/2" title="Pengisian Data" subtitle="Selanjutnya: Konfirmasi Data" />
 
         <!-- Form Card -->
-        <div class="bg-white rounded-xl shadow px-6 py-6 mx-4 mt-6 md:mx-auto md:max-w-xl">
-            <form @submit.prevent="handleSubmit" class="space-y-5">
-                <!-- Nama Objek -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">
-                        Nama Objek<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.nama" type="text" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] focus:outline-none focus:ring-2 focus:ring-[#00c48c] text-sm"
-                        placeholder="Masukkan nama objek" />
-                </div>
-                <!-- Jenis Objek -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">
-                        Jenis Objek<span class="text-red-500">*</span>
-                    </label>
-                    <select v-model="form.jenis_id" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] focus:outline-none focus:ring-2 focus:ring-[#00c48c] text-sm">
-                        <option disabled value="">Pilih Jenis Objek</option>
-                        <option v-for="jenis in jenisList" :key="jenis.id" :value="jenis.id">{{ jenis.nama }}
-                        </option>
+        <form @submit.prevent="handleSubmit"
+            class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6 flex flex-col gap-3">
+            <!-- Nama Objek -->
+            <div>
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
+                    Nama Objek<span class="text-[#ff5a5f]">*</span>
+                </label>
+                <input v-model="form.nama" type="text" required
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+                    placeholder="Masukkan nama objek" />
+            </div>
+            <!-- Jenis Objek -->
+            <div>
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
+                    Jenis Objek<span class="text-[#ff5a5f]">*</span>
+                </label>
+                <div class="relative">
+                    <select v-model="form.jenis_id" required :class="[
+                        'w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]',
+                        form.jenis_id ? 'text-[#232360]' : 'text-gray-400'
+                    ]">
+                        <option disabled value="" class="text-gray-400">Pilih Jenis Objek</option>
+                        <option v-for="jenis in jenisList" :key="jenis.id" :value="jenis.id" class="text-[#232360]">{{
+                            jenis.nama }}</option>
                     </select>
+                    <img src="@/assets/v_hitam.svg" alt="dropdown icon"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
                 </div>
-                <!-- Alamat Objek -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">
-                        Alamat Objek<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.alamat" type="text" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] focus:outline-none focus:ring-2 focus:ring-[#00c48c] text-sm"
-                        placeholder="Masukkan alamat objek" />
+            </div>
+            <!-- Alamat Objek -->
+            <div>
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
+                    Alamat Objek<span class="text-[#ff5a5f]">*</span>
+                </label>
+                <input v-model="form.alamat" type="text" required
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+                    placeholder="Masukkan alamat objek" />
+            </div>
+            <!-- Pemilik Objek -->
+            <div>
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
+                    Pemilik Objek<span class="text-[#ff5a5f]">*</span>
+                </label>
+                <div class="relative">
+                    <div @click="selectPemilik" class="relative cursor-pointer">
+                        <input type="text"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-white cursor-pointer"
+                            readonly :value="form.pemilik" placeholder="Pilih Pemilik" />
+                        <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
+                    </div>
                 </div>
-                <!-- Pemilik Objek -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">Pemilik Objek<span
-                            class="text-red-500">*</span></label>
-                    <button type="button"
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] flex items-center justify-between text-sm text-left"
-                        @click="selectPemilik">
-                        <span class="truncate">{{ form.pemilik || 'Pilih Pemilik' }}</span>
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+            </div>
+            <!-- Gambar Objek -->
+            <div>
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
+                    Gambar Objek
+                </label>
+                <div class="relative">
+                    <div @click="selectGambar" class="relative cursor-pointer">
+                        <input type="text"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 pr-8 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-white cursor-pointer"
+                            readonly :value="gambarLabel" placeholder="Pilih Gambar" />
+                        <img src="@/assets/v_kanan.svg" alt="kanan icon"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
+                    </div>
                 </div>
-                <!-- Gambar Objek -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">Gambar Objek</label>
-                    <button type="button"
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 bg-[#fafafa] flex items-center justify-between text-sm text-left"
-                        @click="selectGambar">
-                        <span class="truncate">
-                            <!-- Ubah label jika gambar sudah dipilih -->
-                            <template v-if="form.fotos && Array.isArray(form.fotos) && form.fotos.length">
-                                {{ `${form.fotos.length} Gambar Aset` }}
-                            </template>
-                            <template v-else>
-                                Pilih Gambar
-                            </template>
-                        </span>
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <!-- Button -->
-        <div class="fixed bottom-0 left-0 right-0 bg-transparent px-4 pb-4 z-10">
-            <button
-                class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 rounded-2xl text-base shadow transition"
-                @click="handleSubmit">
-                SELANJUTNYA
-            </button>
-        </div>
+            </div>
+            <!-- Tombol Selanjutnya -->
+            <div>
+                <button type="submit"
+                    class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 mt-2 rounded-2xl text-base shadow transition">
+                    SELANJUTNYA
+                </button>
+            </div>
+        </form>
     </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import { setAsetFormData, getAsetFormData } from '@/services/asetservice'
 import { useRouter } from 'vue-router'
@@ -107,6 +97,7 @@ import { getAsetMaster } from "@/services/masterService";
 import { useAuthStore } from "@/store/auth";
 import { getWargaById } from "@/services/wargaService";
 import PopupMessage from '@/components/shared/PopupMessage.vue'
+import StepperHeader from '@/components/card/StepperHeader.vue'
 
 const showWarning = ref(false)
 const warningText = ref('')
@@ -124,6 +115,13 @@ const form = ref({
     pemilik_id: '',
     instansi_id: '',
     fotos: [],
+})
+
+const gambarLabel = computed(() => {
+    if (form.value.fotos && Array.isArray(form.value.fotos) && form.value.fotos.length) {
+        return `${form.value.fotos.length} Gambar Aset`
+    }
+    return ''
 })
 
 onMounted(async () => {

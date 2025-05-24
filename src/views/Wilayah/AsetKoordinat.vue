@@ -1,21 +1,21 @@
 <template>
-  <div class="min-h-screen bg-[#f6f6f6]">
-    <HeaderForm title="Tambah Koordinat Objek" @back="router.back()" />
-    <div class="mx-4 mt-4">
-      <div class="rounded-xl overflow-hidden mb-4">
-        <div id="map" class="w-full h-96"></div>
+  <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
+    <HeaderForm title="Tambah Koordinat Objek" @back="handleBack" />
+
+    <div class="flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24">
+      <div id="map" class="w-full flex-1 rounded-b-xl focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
+        style="height: 350px;"></div>
+      <div class="p-2 md:p-4">
+        <div class="mb-2 text-center text-gray-600 text-sm md:text-base">
+          <div v-if="lat && lng">
+            <span>{{ lat }}, {{ lng }}</span>
+          </div>
+          <div v-else>
+            Silakan pilih lokasi pada peta
+          </div>
+        </div>
+        <SubmitButton :label="'PILIH LOKASI'" :disabled="!lat || !lng || loading" @submit="pilihLokasi" />
       </div>
-      <div class="mb-4">
-        <div class="text-sm text-gray-500">Latitude: {{ lat }}</div>
-        <div class="text-sm text-gray-500">Longitude: {{ lng }}</div>
-      </div>
-      <button
-        class="w-full bg-[#4f4f8f] text-white py-3 rounded-xl font-bold"
-        @click="handleSimpan"
-        :disabled="loading"
-      >
-        PILIH LOKASI
-      </button>
     </div>
   </div>
 </template>
@@ -24,8 +24,8 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import HeaderForm from '@/components/card/HeaderForm.vue'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
+import SubmitButton from '@/components/card/SubmitButton.vue'
+import L from '@/plugins/leaflet'
 import { getAsetLokasi, updateAsetLokasi } from '@/services/asetservice'
 
 const route = useRoute()
@@ -34,7 +34,6 @@ const id = route.params.id
 const lat = ref(null)
 const lng = ref(null)
 const loading = ref(false)
-let map, marker
 
 onMounted(async () => {
   // Fetch lokasi aset
@@ -80,24 +79,25 @@ onMounted(async () => {
 function initMap(lokasi) {
   lat.value = lokasi.lat
   lng.value = lokasi.lng
-  map = L.map('map').setView([lat.value, lng.value], 16)
+  const map = L.map('map').setView([lat.value, lng.value], 15)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map)
-  marker = L.marker([lat.value, lng.value], { draggable: true }).addTo(map)
-  marker.on('dragend', e => {
-    const pos = e.target.getLatLng()
+  const marker = L.marker([lat.value, lng.value], { draggable: true }).addTo(map)
+  marker.on('dragend', () => {
+    const pos = marker.getLatLng()
     lat.value = pos.lat
     lng.value = pos.lng
   })
-  map.on('click', e => {
+  map.on('click', (e) => {
     lat.value = e.latlng.lat
     lng.value = e.latlng.lng
     marker.setLatLng(e.latlng)
   })
 }
 
-async function handleSimpan() {
+async function pilihLokasi() {
+  if (!lat.value || !lng.value) return
   loading.value = true
   try {
     await updateAsetLokasi(id, lat.value, lng.value)
@@ -106,5 +106,9 @@ async function handleSimpan() {
     alert('Gagal menyimpan koordinat!')
   }
   loading.value = false
+}
+
+function handleBack() {
+  router.back()
 }
 </script>

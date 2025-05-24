@@ -1,41 +1,47 @@
 <template>
     <div class="min-h-screen bg-[#f6f6f6]">
+        <!-- Header Skeleton -->
+        <div v-if="loading" class="px-4 md:px-8 lg:px-16 xl:px-24 pt-4">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-gray-200 rounded-full animate-pulse"></div>
+                    <div class="h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+                <div class="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+        </div>
         <!-- Header -->
-        <HeaderForm title="Detail Objek Wilayah" @back="goBack">
+        <HeaderForm v-else title="Detail Objek Wilayah" @back="goBack">
             <template #action>
-                <div v-if="auth.user?.is_pengurus" class="relative">
+                <div v-if="auth.user?.is_pengurus" class="inline-block relative">
                     <button @click="toggleMenu">
-                        <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-6 h-6" />
+                        <img :src="tombolTitikTiga" alt="Titik Tiga" class="w-6 h-6 mt-1" />
                     </button>
-                    <!-- Popup Menu -->
-                    <div v-if="showMenu" ref="menuRef"
-                        class="absolute right-0 mt-2 z-50 bg-white rounded-xl shadow-lg py-2 w-48" @mousedown.stop>
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#00c48c] font-semibold"
-                            @click="handleUbah">
-                            <span class="material-icons text-base">edit</span> Ubah
+                    <div v-if="showMenu" class="absolute right-0 mt-2 z-50 bg-white rounded-b-xl shadow-lg py-2 w-48">
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100" @click="handleUbah">
+                            <img src="@/assets/edit_icon.svg" alt="Edit UMKM" class="w-5 h-5 mr-1" />
+                            Ubah Aset
                         </button>
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#4f4f8f] font-semibold"
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100"
                             @click="handleAturKoordinat">
-                            <span class="material-icons text-base">my_location</span> Atur Koordinat
+                            <img src="@/assets/koordinat.svg" alt="Atur Koordinat" class="w-5 h-5 mr-1" />
+                            Atur Koordinat
                         </button>
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#4f4f8f] font-semibold"
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100"
                             @click="handleAturPenghuni">
-                            <span class="material-icons text-base">groups</span> Atur Penghuni
+                            <img src="@/assets/penghuni.svg" alt="Atur Penghuni" class="w-5 h-5 mr-1" />
+                            Atur Penghuni
                         </button>
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-[#ff4d4f] font-semibold"
-                            @click="handleHapus">
-                            <span class="material-icons text-base">delete</span> Hapus
+                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
+                            @click="showDeleteModal = true">
+                            <img src="@/assets/delete_icon.svg" alt="Hapus Aset" class="w-5 h-5 mr-1" />
+                            Hapus Aset
                         </button>
                     </div>
                 </div>
             </template>
         </HeaderForm>
 
-        <!-- Container Responsive -->
         <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24">
             <!-- Skeleton Loader -->
             <div v-if="loading" class="bg-white rounded-xl shadow my-4 animate-pulse">
@@ -81,34 +87,86 @@
                 <!-- Foto -->
                 <img :src="fotoUtama" class="w-full h-56 lg:h-72 rounded-t-xl object-cover" />
 
-                <div class="px-4 lg:px-6 py-4 lg:py-6">
-                    <!-- Informasi Aset -->
-                    <section class="px-1 lg:px-2 py-1 lg:py-2">
-                        <div class="text-lg lg:text-xl font-bold mb-2">{{ aset.nama }}</div>
-                        <div class="text-sm lg:text-base text-gray-600 font-semibold mb-2">
-                            {{ aset.jenis?.nama || '-' }} | {{ aset.warga?.nama || '-' }}
+                <div class="px-4 lg:px-6 py-4 pt-0 lg:py-4">
+                    <!-- Info Aset -->
+                    <section
+                        class="px-1 lg:px-2 py-1 lg:py-2 flex flex-col lg:flex-row lg:items-start lg:justify-between">
+                        <!-- Mobile: Foto tambahan tetap di bawah -->
+                        <div class="block lg:hidden px-0 py-2">
+                            <div class="flex gap-2 overflow-x-auto justify-center">
+                                <div v-for="(foto, idx) in (aset.fotos || []).slice(0, 5)" :key="foto.id || idx"
+                                    class="flex-shrink-0 flex justify-center items-center">
+                                    <img :src="getImageUrl(foto.file_path)"
+                                        class="w-14 h-14 object-cover rounded-lg border"
+                                        :alt="foto.nama || `Foto ${idx + 1}`" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-sm lg:text-base text-gray-500 truncate">{{ aset.alamat || '-' }}</div>
+
+                        <div class="flex w-full">
+                            <!-- Kiri: Info aset -->
+                            <div class="flex-1 flex flex-col justify-center min-w-0" style="flex-basis: 50%;">
+                                <div class="text-xl lg:text-2xl font-bold mb-2 mt-2 lg:mt-0 truncate">{{ aset.nama }}
+                                </div>
+                                <div
+                                    class="text-sm lg:text-base text-gray-500 font-semibold mb-2 flex items-center gap-1">
+                                    <span>{{ aset.jenis?.nama || '-' }}</span>
+                                    <span class="mx-1">|</span>
+                                    <span>{{ aset.warga?.nama || '-' }}</span>
+                                </div>
+                                <div class="text-sm lg:text-base text-gray-500">{{ aset.alamat || '-' }}</div>
+                            </div>
+                            <!-- Kanan: Foto tambahan -->
+                            <div class="hidden lg:flex items-center justify-center ml-8"
+                                style="flex-basis: 50%; overflow: hidden;">
+                                <div class="flex flex-nowrap gap-2">
+                                    <div v-for="(foto, idx) in (aset.fotos || []).slice(0, 5)" :key="foto.id || idx"
+                                        class="flex-shrink-0">
+                                        <img :src="getImageUrl(foto.file_path)"
+                                            class="w-24 h-24 object-cover rounded-lg border"
+                                            :alt="foto.nama || `Foto ${idx + 1}`" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </section>
 
                     <!-- Garis pemisah -->
-                    <div class="border-t border-gray-200 mt-4 mb-8"></div>
+                    <div class="border-t border-gray-200 mt-2 mb-4"></div>
 
-                    <div class="flex flex-col md:flex-row gap-6 lg:gap-10">
+                    <!-- Responsive layout -->
+                    <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
+                        <!-- Kiri: Koordinat -->
                         <div class="flex-1">
-                            <!-- Koordinat -->
                             <section class="px-1 lg:px-2 mb-4">
                                 <div class="font-bold text-base lg:text-lg mb-2">Koordinat Objek</div>
-                                <div class="rounded-lg overflow-hidden mb-2">
-                                    <div id="map" class="w-full h-40 lg:h-64"></div>
+                                <div v-if="aset.latitude && aset.longitude" class="rounded-lg overflow-hidden mb-2">
+                                    <div id="map" class="w-full h-40 lg:h-64"
+                                        :style="{ zIndex: previewIdx === null ? 10 : 0 }">
+                                    </div>
+                                </div>
+                                <div v-else
+                                    class="flex flex-col items-center justify-center py-6 bg-white rounded-lg border mb-2">
+                                    <img src="@/assets/koordinat_with_bg.svg" alt="Koordinat" class="w-24 h-24 mb-4" />
+                                    <div class="font-bold text-base text-[#2B2350] mb-3 text-center">Koordinat objek
+                                        belum
+                                        diatur</div>
+                                    <button
+                                        class="flex items-center gap-2 px-6 py-2 rounded-full bg-[#03BF8C] text-white font-medium text-base hover:bg-[#00b07b] transition-all"
+                                        @click="handleAturKoordinat">
+                                        <img src="@/assets/tambah_putih.svg" alt="Tambah" class="w-4 h-4" />
+                                        Atur Koordinat
+                                    </button>
                                 </div>
                                 <div class="text-xs lg:text-sm text-gray-500">
-                                    {{ aset.latitude }}, {{ aset.longitude }}
+                                    <template v-if="aset.latitude && aset.longitude">
+                                        {{ aset.latitude }}, {{ aset.longitude }}
+                                    </template>
                                 </div>
                             </section>
                         </div>
+                        <!-- Kanan: Penghuni -->
                         <div class="flex-1">
-                            <!-- Penghuni -->
                             <section class="px-1 lg:px-2 mb-8">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="font-bold text-base lg:text-lg">Penghuni Objek</div>
@@ -116,18 +174,31 @@
                                         class="bg-green-100 text-green-500 text-xs lg:text-sm font-bold px-2 py-1 rounded-lg hover:bg-green-200"
                                         @click="lihatSemuaPenghuni">Lihat Semua</button>
                                 </div>
-                                <div v-if="penghuniList.length === 0" class="text-base lg:text-lg text-gray-400">Tidak
-                                    ada
-                                    penghuni.
+                                <div v-if="penghuniList.length === 0"
+                                    class="flex flex-col items-center justify-center py-6 bg-white rounded-lg border mb-2">
+                                    <img src="@/assets/empty.svg" alt="Belum Ada Penghuni" class="w-24 h-24 mb-4" />
+                                    <div class="font-bold text-base text-[#2B2350] mb-3 text-center">
+                                        Belum Ada Penghuni Objek yang ditambahkan
+                                    </div>
+                                    <button
+                                        class="flex items-center gap-2 px-6 py-2 rounded-full bg-[#03BF8C] text-white font-medium text-base hover:bg-[#00b07b] transition-all"
+                                        @click="handleAturPenghuni">
+                                        <img src="@/assets/tambah_putih.svg" alt="Tambah" class="w-4 h-4" />
+                                        Atur Penghuni
+                                    </button>
                                 </div>
-                                <div v-for="(penghuni, index) in penghuniList.slice(0, 3)" :key="index"
-                                    class="flex items-center gap-4 mb-3 bg-[#ffffff] border rounded-lg px-4 py-3">
-                                    <!-- <img :src="penghuni.foto_path ? `${import.meta.env.VITE_API_BASE_URL || ''}/${penghuni.foto_path}` : fotoDefault"
-                                    class="w-10 lg:w-12 h-10 lg:h-12 rounded-full object-cover" /> -->
-                                    <div class="text-sm lg:text-base">
-                                        <div class="font-semibold text-sm lg:text-base">{{ penghuni.nama }}</div>
-                                        <div class="text-gray-500">{{ penghuni.status }}</div>
-                                        <div class="text-blue-600">{{ penghuni.no_tlp || '—' }}</div>
+                                <div v-else>
+                                    <div v-for="(penghuni, index) in penghuniList.slice(0, 3)" :key="index"
+                                        class="flex items-center gap-4 mb-3 bg-[#ffffff] border rounded-lg px-4 py-3">
+                                        <img :src="getImageUrl(penghuni.foto_path)"
+                                            class="w-12 h-12 lg:w-14 lg:h-14 rounded-full object-cover border"
+                                            :alt="penghuni.nama"
+                                            @error="e => e.target.src = 'https://via.placeholder.com/150'" />
+                                        <div class="text-sm lg:text-base">
+                                            <div class="font-semibold text-sm lg:text-base">{{ penghuni.nama }}</div>
+                                            <div class="text-gray-500">{{ penghuni.status }}</div>
+                                            <div class="text-blue-600">{{ penghuni.no_tlp || '—' }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
@@ -136,20 +207,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Hapus -->
+        <ModalHapus :show="showDeleteModal" @cancel="showDeleteModal = false" @confirm="handleHapus">
+            <template #title></template>
+            <div class="text-center">Apakah Anda yakin ingin menghapus aset ini? Tindakan ini tidak dapat dibatalkan.
+            </div>
+        </ModalHapus>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAsetById } from '@/services/wilayahService';
 import { getPenghuniByAset, setAsetPenghuniData, clearAsetPenghuniData, deleteAset } from '@/services/penghuniService';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import L from '@/plugins/leaflet.js'
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import tombolTitikTiga from '@/assets/titik_tiga.png';
 import { setAsetEditFormData } from '@/services/asetservice';
 import { useAuthStore } from "@/store/auth";
+import ModalHapus from "@/components/shared/ModalHapus.vue";
+import { getImageUrl } from '@/lib/axios';
+
 const auth = useAuthStore();
 
 const route = useRoute();
@@ -158,44 +238,56 @@ const aset = ref({});
 const penghuniList = ref([]);
 const loading = ref(true);
 const showMenu = ref(false);
-const menuRef = ref(null);
+const showDeleteModal = ref(false);
+const previewIdx = computed(() => showDeleteModal.value ? 1 : null);
 
-function toggleMenu() {
+function toggleMenu(e) {
+    if (e) e.stopPropagation();
     showMenu.value = !showMenu.value;
 }
-
+function closeMenu() {
+    showMenu.value = false;
+}
 function handleClickOutside(event) {
-    if (showMenu.value && menuRef.value && !menuRef.value.contains(event.target)) {
+    if (showMenu.value && !event.target.closest('.relative')) {
         showMenu.value = false;
     }
 }
 
 const fotoUtama = computed(() => {
     if (aset.value.fotos && aset.value.fotos.length > 0) {
-        return `${import.meta.env.VITE_API_BASE_URL || ''}/${aset.value.fotos[0].file_path}`;
+        return getImageUrl(aset.value.fotos[0].file_path);
     }
-    return 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80';
+    return new URL('@/assets/map.svg', import.meta.url).href;
 });
 
-function showMap() {
+function showMap(retry = 0) {
     if (!aset.value.latitude || !aset.value.longitude) return;
+    // Cek apakah elemen map sudah ada di DOM
+    const mapEl = document.getElementById('map');
+    if (!mapEl) {
+        // Retry max 10x dengan delay 100ms
+        if (retry < 10) {
+            setTimeout(() => showMap(retry + 1), 100);
+        }
+        return;
+    }
     if (window._asetMap) {
         window._asetMap.remove();
         window._asetMap = null;
     }
-
     const map = L.map('map').setView([aset.value.latitude, aset.value.longitude], 16);
     window._asetMap = map;
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
     }).addTo(map);
-
     L.marker([aset.value.latitude, aset.value.longitude]).addTo(map);
 }
 
-onMounted(async () => {
+onMounted(() => {
     document.addEventListener('mousedown', handleClickOutside);
+});
+onMounted(async () => {
     loading.value = true;
     const id = route.params.id;
     if (!id) return;
@@ -205,7 +297,7 @@ onMounted(async () => {
         if (data && data.data) {
             aset.value = data.data;
         }
-        // Ambil penghuni aset
+        // Ambil penghuni aset (ambil data lengkap warga)
         const penghuniRes = await getPenghuniByAset(id);
         if (penghuniRes && Array.isArray(penghuniRes.data)) {
             penghuniList.value = penghuniRes.data.map(item => ({
@@ -219,11 +311,16 @@ onMounted(async () => {
         console.error(error);
     }
     loading.value = false;
-    setTimeout(showMap, 300);
 });
-
 onBeforeUnmount(() => {
     document.removeEventListener('mousedown', handleClickOutside);
+});
+
+watch(aset, async (val) => {
+    if (val.latitude && val.longitude) {
+        await nextTick();
+        setTimeout(showMap, 100);
+    }
 });
 
 function lihatSemuaPenghuni() {
@@ -290,18 +387,16 @@ async function handleAturPenghuni() {
 }
 
 async function handleHapus() {
-    showMenu.value = false;
-    if (confirm('Yakin ingin menghapus aset ini?')) {
-        try {
-            await deleteAset(aset.value.id);
-            router.push({ name: 'dashboard-wilayah' });
-        } catch (e) {
-            alert('Gagal menghapus aset');  
-        }
+    showDeleteModal.value = false;
+    try {
+        await deleteAset(aset.value.id);
+        router.push({ name: 'dashboard-wilayah' });
+    } catch (e) {
+        alert('Gagal menghapus aset');
     }
 }
 
 function goBack() {
-    router.push({name: 'dashboard-wilayah'});
+    router.push({ name: 'dashboard-wilayah' });
 }
 </script>

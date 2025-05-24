@@ -1,24 +1,27 @@
 <template>
-    <div class="min-h-screen bg-[#f6f6f6] pb-24">
+    <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <!-- Header -->
         <HeaderForm title="Tambah Gambar Objek" @back="handleBack" />
         <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
         <PopupMessage :show="showWarning" title="Kesalahan Upload Gambar" :text="warningMsg" type="warning"
             @close="showWarning = false" />
-            
+
         <!-- Info Box & Upload -->
-        <div class="mx-4 md:mx-auto md:max-w-xl mt-4">
-            <div class="bg-white rounded-xl p-4">
-                <div class="bg-[#eaf4ff] rounded-xl px-4 py-3 flex items-start gap-2 mb-4">
-                </div>
+        <div class="flex-1 flex flex-col">
+            <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6">
+                <InfoAlert>
+                    Maksimal 5 gambar. Format JPG/PNG, ukuran maksimal 1MB per gambar.
+                </InfoAlert>
                 <!-- Daftar Gambar -->
                 <div v-if="images.length" class="space-y-2 mb-3">
                     <div v-for="(img, idx) in images" :key="idx"
                         class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 mb-1">
                         <img v-if="img.id && img.file_path" :src="getImageUrl(img.file_path)" alt="gambar"
-                            class="w-10 h-10 rounded-lg object-cover mr-2" @click="openPreview(img.url)" />
+                            class="w-10 h-10 rounded-lg object-cover mr-2 cursor-pointer"
+                            @click="openPreview(img.url || getImageUrl(img.file_path))" />
                         <img v-else-if="img.url" :src="img.url" alt="gambar"
-                            class="w-10 h-10 rounded-lg object-cover mr-2" @click="openPreview(img.url)" />
+                            class="w-10 h-10 rounded-lg object-cover mr-2 cursor-pointer"
+                            @click="openPreview(img.url)" />
                         <span class="flex-1 text-sm text-gray-800 truncate">
                             {{ img.file?.name || 'gambar aset' }}
                         </span>
@@ -40,15 +43,14 @@
                         @change="handleFiles" />
                 </div>
             </div>
-        </div>
 
-        <!-- Button -->
-        <div class="fixed bottom-0 left-0 right-0 bg-transparent px-4 pb-4 z-10 md:max-w-xl md:mx-auto">
-            <button
-                class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 rounded-2xl text-base shadow transition"
-                @click="submitImages">
-                SIMPAN
-            </button>
+            <div class="mt-auto mb-4 mx-4 md:mx-8 lg:mx-16 xl:mx-24">
+                <button
+                    class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 rounded-2xl text-base shadow transition"
+                    @click="submitImages">
+                    SIMPAN
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -56,6 +58,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
+import InfoAlert from '@/components/card/InfoAlert.vue'
 import { setAsetEditFormData, getAsetEditFormData } from '@/services/asetservice'
 import { useRouter } from 'vue-router'
 import { getImageUrl } from '@/lib/axios'

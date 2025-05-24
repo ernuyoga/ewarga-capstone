@@ -1,61 +1,51 @@
 <template>
-  <div class="min-h-screen bg-[#f6f6f6] pb-24">
-    <!-- Header -->
+  <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
     <HeaderForm title="Tambah Gambar Objek" @back="handleBack" />
     <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
     <PopupMessage :show="showWarning" title="Kesalahan Upload Gambar" :text="warningMsg" type="warning"
       @close="showWarning = false" />
 
-    <!-- Info Box & Upload -->
-    <div class="mx-4 md:mx-auto md:max-w-xl mt-4">
-      <div class="bg-white rounded-xl p-4">
-        <div class="bg-[#eaf4ff] rounded-xl px-4 py-3 flex items-start gap-2 mb-4">
-          <svg class="w-5 h-5 mt-1 text-[#2e5eaa]" fill="none" stroke="currentColor" stroke-width="2"
-            viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01" />
-          </svg>
-          <span class="text-sm text-[#2e5eaa] leading-snug">
-            Gambar dapat ditambahkan dalam format JPG, JPEG, PNG, dengan ukuran maksimal 1,5 MB per file.
+    <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24 flex flex-col flex-1 justify-between">
+      <div>
+        <div class="bg-white rounded-xl mt-4 p-4 md:p-6">
+          <InfoAlert>
+            Gambar dapat ditambahkan dalam format JPG, JPEG, dan PNG, dengan ukuran maksimal 1,5 MB per file.
             Dapat menambahkan maksimal 5 gambar. Gambar yang ditambahkan pertama akan menjadi gambar profil objek.
-          </span>
-        </div>
+          </InfoAlert>
 
-        <!-- Daftar Gambar -->
-        <div v-if="images.length" class="space-y-2 mb-3">
+          <!-- Daftar file yang diupload -->
           <div v-for="(img, idx) in images" :key="idx"
-            class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 mb-1">
-            <img v-if="img.url" :src="img.url" alt="gambar" class="w-10 h-10 rounded-lg object-cover mr-2"
-              @click="openPreview(img.url)" />
-            <span class="flex-1 text-sm text-gray-800 truncate">
-              {{ img.file?.name || 'gambar aset' }}
+            class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 md:px-4 md:py-3 mb-3">
+            <img v-if="img.url" :src="img.url" class="w-12 h-12 object-cover rounded mr-2"
+              :alt="img.file?.name || `Foto ${idx + 1}`" @click="openPreview(img.url)" />
+            <span class="flex-1 text-sm md:text-base text-gray-800 truncate">
+              {{ img.file?.name ? img.file.name : `Foto ${idx + 1}` }}
             </span>
-            <button @click="removeImage(idx)" class="ml-2 text-gray-400 hover:text-red-500 text-lg" aria-label="Hapus">
+            <button @click="removeImage(idx)" class="ml-2 text-gray-400 hover:text-red-500 text-lg md:text-xl"
+              aria-label="Hapus">
               &times;
             </button>
           </div>
-        </div>
 
-        <!-- Tombol tambah gambar -->
-        <div class="flex justify-center mt-2">
-          <button @click="triggerFileInput"
-            class="flex items-center gap-2 text-[#00c48c] font-medium bg-transparent border-none py-2 px-4 rounded-lg hover:bg-[#e6faf5] transition text-base"
-            :disabled="images.length >= 5">
-            <span class="text-xl">+</span> Tambah Gambar
-          </button>
-          <input ref="fileInput" type="file" accept="image/png, image/jpeg" multiple style="display: none"
-            @change="handleFiles" />
+          <!-- Tombol tambah gambar -->
+          <div class="flex justify-center mt-2">
+            <button @click="triggerFileInput"
+              class="flex items-center gap-2 text-[#03BF8C] font-medium bg-transparent border-none p-1 rounded-lg transition text-base md:text-lg"
+              :disabled="images.length >= 5">
+              <span class="text-xl md:text-2xl">+</span> Tambah Gambar
+            </button>
+            <input ref="fileInput" type="file" accept="image/png, image/jpeg" multiple style="display: none"
+              @change="handleFiles" />
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Button -->
-    <div class="fixed bottom-0 left-0 right-0 bg-transparent px-4 pb-4 z-10 md:max-w-xl md:mx-auto">
-      <button
-        class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 rounded-2xl text-base shadow transition"
-        @click="submitImages">
-        SIMPAN
-      </button>
+      <div class="mt-4 mb-4">
+        <button
+          class="w-full bg-[#00c48c] hover:bg-[#00b07b] text-white font-bold py-3 rounded-2xl text-base shadow transition"
+          @click="submitImages">
+          SIMPAN
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +57,7 @@ import { useRouter } from 'vue-router'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import Preview from '@/components/card/Preview.vue'
 import PopupMessage from '@/components/shared/PopupMessage.vue'
+import InfoAlert from '@/components/card/InfoAlert.vue'
 
 const router = useRouter()
 const images = ref([])
@@ -103,9 +94,9 @@ const handleFiles = async (e) => {
       warningMsg.value = 'Maksimal 5 gambar'
       break
     }
-    if (file.size > 1 * 1024 * 1024) {
+    if (file.size > 1.5 * 1024 * 1024) {
       showWarning.value = true
-      warningMsg.value = 'Ukuran file tidak boleh lebih dari 1MB'
+      warningMsg.value = 'Ukuran file tidak boleh lebih dari 1,5MB'
       break
     }
     if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
@@ -119,16 +110,14 @@ const handleFiles = async (e) => {
       url: base64,
       rawFile: file
     })
-
   }
-  setAsetFormData(
-    { fotos: images.value })
+  setAsetFormData({ fotos: images.value })
   e.target.value = ''
 }
 
 const removeImage = (idx) => {
   images.value.splice(idx, 1)
-  setAsetFormData({ gambar: images.value })
+  setAsetFormData({ fotos: images.value })
 }
 
 onMounted(() => {
@@ -141,7 +130,7 @@ onMounted(() => {
 })
 
 const submitImages = () => {
-  setAsetFormData({ gambar: images.value })
+  setAsetFormData({ fotos: images.value })
   router.back()
 }
 
