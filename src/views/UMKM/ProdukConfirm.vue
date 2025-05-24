@@ -1,6 +1,9 @@
 <template>
     <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Tambah Produk Baru" @back="goBack" />
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
+        <PopupMessage :show="showSuccess" type="success" title="Produk Berhasil Ditambah!"
+            :text="`Produk ${produkData.nama || '-'} telah berhasil ditambahkan!`" @close="handleSuccessClose" />
 
         <!-- StepperHeader -->
         <StepperHeader step-label="2/2" title="Konfirmasi Data" subtitle="Selanjutnya: Selesai" />
@@ -32,25 +35,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Popup Preview -->
-            <div v-if="previewIdx !== null"
-                class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
-                    <button @click="closePreview"
-                        class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
-                        &times;
-                    </button>
-                    <img v-if="produkData.fotos[previewIdx]?.url" :src="produkData.fotos[previewIdx].url"
-                        class="max-w-full max-h-[80vh] rounded"
-                        :alt="produkData.fotos[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`" />
-                    <div v-else class="w-64 h-64 flex items-center justify-center text-gray-400 text-4xl">
-                        <i class="icon-image"></i>
-                    </div>
-                    <div class="mt-2 text-center text-sm text-gray-700">
-                        {{ produkData.fotos[previewIdx]?.file?.name || `Foto ${previewIdx + 1}` }}
-                    </div>
-                </div>
-            </div>
             <!-- Keterangan -->
             <div>
                 <div class="text-xs md:text-sm text-gray-400 mb-1">Keterangan</div>
@@ -78,6 +62,8 @@
 import { ref, onMounted } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import StepperHeader from '@/components/card/StepperHeader.vue'
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 import { useRouter } from 'vue-router'
 import { getProdukFormData, setProdukFormData, clearProdukFormData, postProduk } from '@/services/produkService'
 import { getWargaById } from "@/services/wargaService";
@@ -87,6 +73,9 @@ const router = useRouter()
 const produkData = ref({})
 const auth = useAuthStore();
 const instansiId = ref(null);
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showSuccess = ref(false)
 
 onMounted(async () => {
     produkData.value = getProdukFormData()
@@ -107,13 +96,18 @@ function handleEdit() {
     router.push({ name: 'addproduk' })
 }
 
-const previewIdx = ref(null);
-
 function openPreview(idx) {
-    previewIdx.value = idx;
+    previewSrc.value = produkData.value.fotos[idx]?.url || ''
+    showPreview.value = true
 }
+
 function closePreview() {
-    previewIdx.value = null;
+    showPreview.value = false
+}
+
+function handleSuccessClose() {
+    showSuccess.value = false
+    router.push({ name: 'umkm-detail', params: { id: produkData.value.umkm_id } })
 }
 
 async function handleSubmit() {
@@ -145,7 +139,7 @@ async function handleSubmit() {
     try {
         await postProduk(fd)
         clearProdukFormData()
-        router.push({ name: 'dashboard-umkm' })
+        showSuccess.value = true
     } catch (e) {
         if (e.response && e.response.data) {
             alert('Gagal menyimpan produk:\n' + JSON.stringify(e.response.data.errors || e.response.data, null, 2))

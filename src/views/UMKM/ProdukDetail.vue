@@ -3,7 +3,7 @@
         <!-- Header -->
         <HeaderForm title="Detail Produk" @back="goBack">
             <template #action>
-                <div class="inline-block relative">
+                <div v-if="isPengurus || isPemilik" class="inline-block relative">
                     <button @click="toggleMenu">
                         <img :src="titikTiga" alt="Menu" class="w-6 h-6 mt-1" />
                     </button>
@@ -24,6 +24,7 @@
                 </div>
             </template>
         </HeaderForm>
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
 
         <!-- Card Detail Produk -->
         <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24">
@@ -56,7 +57,8 @@
                 <!-- Gambar Produk Utama -->
                 <template v-else>
                     <img :src="produk && produk.fotos && produk.fotos.length > 0 ? getImageUrl(produk.fotos[0].file_path) : ''"
-                        alt="Foto Produk" class="w-full h-56 lg:h-72 rounded-t-xl object-cover border-b" />
+                        alt="Foto Produk" class="w-full h-56 lg:h-72 rounded-t-xl object-cover border-b"
+                        @click="produk && produk.fotos && produk.fotos.length > 0 ? openPreview(getImageUrl(produk.fotos[0].file_path)) : null" />
 
                     <!-- Foto tambahan (semua layar, di bawah foto utama) -->
                     <div v-if="produk && produk.fotos && produk.fotos.length > 1" class="px-2 py-2">
@@ -65,7 +67,8 @@
                                 class="flex-shrink-0 flex justify-center items-center">
                                 <img :src="getImageUrl(foto.file_path)"
                                     class="w-14 h-14 lg:w-28 lg:h-28 object-cover rounded-lg border"
-                                    :alt="foto.nama || `Foto ${idx + 2}`" />
+                                    :alt="foto.nama || `Foto ${idx + 2}`"
+                                    @click="openPreview(getImageUrl(foto.file_path))" />
                             </div>
                         </div>
                     </div>
@@ -83,7 +86,7 @@
                                     </div>
                                 </div>
                                 <div class="text-sm lg:text-base text-gray-500 font-semibold mb-4">{{ produk?.umkm?.nama
-                                    }}
+                                }}
                                 </div>
                                 <div class="font-bold text-base lg:text-lg mb-1 mt-2">Deskripsi</div>
                                 <div class="text-sm lg:text-base text-gray-700" v-html="produk?.keterangan"></div>
@@ -105,13 +108,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import { getProdukById, setEditProdukFormData, mapProdukDetailToForm, deleteProduk } from '@/services/produkService'
 import titikTiga from '@/assets/titik_tiga.png'
 import { getImageUrl } from '@/lib/axios'
 import ModalHapus from '../../components/shared/ModalHapus.vue'
+import { useAuthStore } from "@/store/auth";
+import Preview from '@/components/card/Preview.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -120,10 +125,26 @@ const showMenu = ref(false)
 const showDeleteModal = ref(false)
 const deleting = ref(false)
 const loading = ref(true) // Tambahkan state loading
+const auth = useAuthStore();
+const isPengurus = computed(() => auth.user?.is_pengurus);
+const showPreview = ref(false)
+const previewSrc = ref('')
+const isPemilik = computed(() => {
+    if (!auth.user?.umkms || !produk.value?.umkm_id) return false;
+    return auth.user.umkms.includes(produk.value.umkm_id);
+});
 
 function formatRupiah(value) {
     if (!value) return ''
     return 'Rp' + value.toLocaleString('id-ID')
+}
+
+function openPreview(url) {
+    previewSrc.value = url
+    showPreview.value = true
+}
+function closePreview() {
+    showPreview.value = false
 }
 
 onMounted(async () => {
@@ -140,7 +161,11 @@ onMounted(async () => {
 })
 
 function goBack() {
-    router.back();
+    if (produk.value && produk.value.umkm_id) {
+        router.push({ name: 'umkm-detail', params: { id: produk.value.umkm_id } });
+    } else {
+        router.back();
+    }
 }
 
 function toggleMenu(e) {

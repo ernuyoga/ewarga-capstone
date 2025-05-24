@@ -13,7 +13,7 @@
         <!-- Header -->
         <HeaderForm v-else title="Detail UMKM" @back="goToDashboardUmkm">
             <template #action>
-                <div class="inline-block relative">
+                <div v-if="isPengurus || isPemilik" class="inline-block relative">
                     <button @click="toggleMenu">
                         <img :src="titikTiga" alt="Menu" class="w-6 h-6 mt-1" />
                     </button>
@@ -30,7 +30,8 @@
                             <img src="@/assets/edit_icon.svg" alt="Edit UMKM" class="w-5 h-5 mr-1" />
                             Ubah UMKM
                         </button>
-                        <button class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
+                        <button v-if="isPengurus"
+                            class="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
                             @click="handleHapusUmkm">
                             <img src="@/assets/delete_icon.svg" alt="Hapus UMKM" class="w-5 h-5 mr-1" />
                             Hapus UMKM
@@ -39,6 +40,7 @@
                 </div>
             </template>
         </HeaderForm>
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
 
         <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24">
             <!-- Skeleton Loader -->
@@ -70,7 +72,8 @@
             <!-- Content -->
             <div v-else class="bg-white rounded-xl shadow my-4">
                 <!-- Foto -->
-                <img :src="fotoUtama" class="w-full h-56 lg:h-72 rounded-t-xl object-cover" />
+                <img :src="fotoUtama" class="w-full h-56 lg:h-72 rounded-t-xl object-cover"
+                    @click="openPreview(fotoUtama)" />
 
                 <!-- Foto tambahan (mobile only) -->
                 <div class="block lg:hidden px-2 py-2">
@@ -78,7 +81,8 @@
                         <div v-for="(foto, idx) in (umkm.fotos || []).slice(0, 5)" :key="foto.id || idx"
                             class="flex-shrink-0 flex justify-center items-center">
                             <img :src="getImageUrl(foto.file_path)" class="w-14 h-14 object-cover rounded-lg border"
-                                :alt="foto.nama || `Foto ${idx + 1}`" />
+                                :alt="foto.nama || `Foto ${idx + 1}`"
+                                @click="openPreview(getImageUrl(foto.file_path))" />
                         </div>
                     </div>
                 </div>
@@ -106,7 +110,8 @@
                             <div v-for="(foto, idx) in (umkm.fotos || []).slice(0, 5)" :key="foto.id || idx"
                                 class="flex-shrink-0 flex justify-center items-center">
                                 <img :src="getImageUrl(foto.file_path)" class="w-28 h-28 object-cover rounded-lg border"
-                                    :alt="foto.nama || `Foto ${idx + 1}`" />
+                                    :alt="foto.nama || `Foto ${idx + 1}`"
+                                    @click="openPreview(getImageUrl(foto.file_path))" />
                             </div>
                         </div>
                     </section>
@@ -146,7 +151,8 @@
                             <section class="px-1 lg:px-2 mb-4 block lg:hidden">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="font-bold text-base lg:text-lg">Produk</div>
-                                    <button @click="goToAddProduk" class="flex items-center justify-center w-4 h-4 p-0">
+                                    <button v-if="isPengurus || isPemilik" @click="goToAddProduk"
+                                        class="flex items-center justify-center w-4 h-4 p-0">
                                         <img src="@/assets/tombol_tambah.svg" alt="Tambah Produk" class="w-5 h-5" />
                                     </button>
                                 </div>
@@ -187,7 +193,8 @@
                             <section class="px-1 lg:px-2 mb-4">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="font-bold text-base lg:text-lg">Produk</div>
-                                    <button @click="goToAddProduk" class="flex items-center justify-center w-4 h-4 p-0">
+                                    <button v-if="isPengurus || isPemilik" @click="goToAddProduk"
+                                        class="flex items-center justify-center w-4 h-4 p-0">
                                         <img src="@/assets/tombol_tambah.svg" alt="Tambah Produk" class="w-5 h-5" />
                                     </button>
                                 </div>
@@ -250,6 +257,8 @@ import { setEditUmkmFormData } from '@/services/umkmService'
 import { deleteUmkm } from "@/services/umkmService";
 import { getImageUrl } from '@/lib/axios'; // Tambahkan ini
 import ModalHapus from "../../components/shared/ModalHapus.vue";
+import { useAuthStore } from "@/store/auth";
+import Preview from '@/components/card/Preview.vue'
 
 const defaultImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
 const route = useRoute();
@@ -262,6 +271,22 @@ const showMenu = ref(false);
 const showDeleteModal = ref(false);
 const deleting = ref(false);
 const previewIdx = computed(() => showDeleteModal.value ? 1 : null);
+const auth = useAuthStore();
+const isPengurus = computed(() => auth.user?.is_pengurus);
+const showPreview = ref(false)
+const previewSrc = ref('')
+const isPemilik = computed(() => {
+    if (!auth.user?.umkms || !umkm.value?.id) return false;
+    return auth.user.umkms.includes(umkm.value.id);
+});
+
+function openPreview(url) {
+    previewSrc.value = url
+    showPreview.value = true
+}
+function closePreview() {
+    showPreview.value = false
+}
 
 onMounted(() => {
     document.addEventListener('click', closeMenu);

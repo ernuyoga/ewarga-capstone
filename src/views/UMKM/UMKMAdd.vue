@@ -3,6 +3,8 @@
     <div class="min-h-screen bg-[#f6f6f6]">
         <!-- Header -->
         <HeaderForm title="Tambah UMKM Baru" @back="goToUmkmDashboard" />
+        <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
+            listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
         <!-- Container Responsive -->
         <div>
@@ -15,7 +17,7 @@
                     <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                         Nama Usaha<span class="text-[#ff5a5f]">*</span>
                     </label>
-                    <input type="text" v-model="namaUsaha"
+                    <input type="text" v-model="namaUsaha" maxlength="255"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]" />
                 </div>
                 <div>
@@ -70,7 +72,7 @@
                     <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                         Alamat Usaha<span class="text-[#ff5a5f]">*</span>
                     </label>
-                    <input type="text" v-model="alamat"
+                    <input type="text" v-model="alamat" 
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                         placeholder="Masukkan Alamat Usaha" />
                 </div>
@@ -134,19 +136,20 @@
 </template>
 
 <script setup>
-console.log(JSON.parse(localStorage.getItem('umkm_form_data')));
 import { ref, onMounted, watch } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import SubmitButton from '@/components/card/SubmitButton.vue'
 import { useRouter } from 'vue-router'
 import { getUmkmMaster } from "@/services/masterService"
-import { setUmkmFormData, clearUmkmFormData, getUmkmFormData } from "@/services/umkmService"
+import { setUmkmFormData, getUmkmFormData } from "@/services/umkmService"
 import StepperHeader from '@/components/card/StepperHeader.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const router = useRouter()
 const gambarUsahaLabel = ref('')
 const pemilikLabel = ref('')
-
+const showWarning = ref(false)
+const warningText = ref('')
 const jenisList = ref([])
 const bentukList = ref([])
 const selectedJenis = ref("")
@@ -221,22 +224,19 @@ function goToKoordinatForm() {
 }
 
 const handleNext = () => {
-    // localStorage.setItem('umkm_form_data', JSON.stringify([]));
-    // Validasi field wajib
-    if (
-        !namaUsaha.value ||
-        !selectedJenis.value ||
-        !selectedBentuk.value ||
-        !pemilikLabel.value ||
-        !alamat.value ||
-        !lokasiLat.value ||
-        !lokasiLng.value ||
-        !gambarUsahaLabel.value
-    ) {
-        alert('Mohon lengkapi semua data wajib terlebih dahulu!');
-        return;
+    const missing = []
+    if (!namaUsaha.value) missing.push('Nama Usaha')
+    if (!selectedJenis.value) missing.push('Moda Usaha')
+    if (!selectedBentuk.value) missing.push('Bentuk Usaha')
+    if (!pemilikLabel.value) missing.push('Pemilik Usaha')
+    if (!alamat.value) missing.push('Alamat Usaha')
+    if (!lokasiLat.value || !lokasiLng.value) missing.push('Lokasi Usaha')
+
+    if (missing.length) {
+        warningText.value = missing
+        showWarning.value = true
+        return
     }
-    // Jika valid, arahkan ke halaman konfirmasi
     router.push({ name: 'confirmation' });
 };
 </script>

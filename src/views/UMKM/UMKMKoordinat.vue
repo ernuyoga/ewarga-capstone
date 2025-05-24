@@ -38,28 +38,47 @@ onMounted(() => {
   const defaultLng = 112.6326
 
   const formData = getUmkmFormData()
-  lat.value = formData.lokasi_lat || defaultLat
-  lng.value = formData.lokasi_lng || defaultLng
+  const initialLat = formData.lokasi_lat
+  const initialLng = formData.lokasi_lng
 
-  const map = L.map('map').setView([lat.value, lng.value], 15)
+  function initMap(latInit, lngInit) {
+    lat.value = latInit
+    lng.value = lngInit
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map)
+    const map = L.map('map').setView([lat.value, lng.value], 15)
 
-  const marker = L.marker([lat.value, lng.value], { draggable: true }).addTo(map)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map)
 
-  marker.on('dragend', () => {
-    const pos = marker.getLatLng()
-    lat.value = pos.lat
-    lng.value = pos.lng
-  })
+    const marker = L.marker([lat.value, lng.value], { draggable: true }).addTo(map)
 
-  map.on('click', (e) => {
-    lat.value = e.latlng.lat
-    lng.value = e.latlng.lng
-    marker.setLatLng(e.latlng)
-  })
+    marker.on('dragend', () => {
+      const pos = marker.getLatLng()
+      lat.value = pos.lat
+      lng.value = pos.lng
+    })
+
+    map.on('click', (e) => {
+      lat.value = e.latlng.lat
+      lng.value = e.latlng.lng
+      marker.setLatLng(e.latlng)
+    })
+  }
+  if (initialLat && initialLng) {
+    initMap(initialLat, initialLng)
+  } else if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        initMap(pos.coords.latitude, pos.coords.longitude)
+      },
+      () => {
+        initMap(defaultLat, defaultLng)
+      }
+    )
+  } else {
+    initMap(defaultLat, defaultLng)
+  }
 })
 
 function pilihLokasi() {

@@ -1,6 +1,9 @@
 <template>
   <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
     <HeaderForm title="Tambah Gambar Usaha" @back="handleBack" />
+    <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
+    <PopupMessage :show="showWarning" title="Kesalahan Upload Gambar" :text="warningMsg" type="warning"
+      @close="showWarning = false" />
 
     <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24 flex flex-col flex-1 justify-between">
       <div>
@@ -14,7 +17,7 @@
           <div v-for="(img, idx) in images" :key="idx"
             class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 md:px-4 md:py-3 mb-3">
             <!-- Icon file -->
-            <img v-if="img.url && img.file.type !== 'application/pdf'" :src="img.url"
+            <img v-if="img.url && img.file.type !== 'application/pdf'" :src="img.url" @click="openPreview(img.url)"
               class="w-12 h-12 object-cover rounded mr-2" :alt="img.file.name" />
             <svg v-else class="w-5 h-5 text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path
@@ -57,10 +60,21 @@ import SubmitButton from '../../components/card/SubmitButton.vue';
 import { useRouter } from 'vue-router'
 import { setUmkmFormData, getUmkmFormData } from '@/services/umkmService'
 import InfoAlert from '@/components/card/InfoAlert.vue'
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const router = useRouter()
 const images = ref([])
 const fileInput = ref(null);
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showWarning = ref(false)
+const warningMsg = ref('')
+
+function openPreview(url) {
+  previewSrc.value = url;
+  showPreview.value = true;
+}
 
 const triggerFileInput = () => {
   if (images.value.length >= 5) return;
@@ -79,15 +93,24 @@ function fileToBase64(file) {
 const handleFiles = async (e) => {
   const files = Array.from(e.target.files);
   for (const file of files) {
-    if (
-      (file.type === 'image/jpeg' ||
-        file.type === 'image/png') &&
-      file.size <= 1.5 * 1024 * 1024 &&
-      images.value.length < 5
-    ) {
-      const base64 = await fileToBase64(file);
-      images.value.push({ file: { name: file.name, type: file.type }, url: base64 });
+    if (images.value.length >= 5) {
+      showWarning.value = true
+      warningMsg.value = 'Maksimal 5 gambar'
+      break
     }
+    if (file.size > 1 * 1024 * 1024) {
+      showWarning.value = true
+      warningMsg.value = 'Ukuran file tidak boleh lebih dari 1MB'
+      break
+    }
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      showWarning.value = true
+      warningMsg.value = 'File harus berupa JPG atau PNG'
+      break
+    }
+    const base64 = await fileToBase64(file);
+    images.value.push({ file: { name: file.name, type: file.type }, url: base64 });
+
   }
   setUmkmFormData({
     fotos: images.value
@@ -110,6 +133,11 @@ onMounted(() => {
         url: ''
       })
     }
+  }
+  if (formData.fotos && Array.isArray(formData.fotos)) {
+    images.value = formData.fotos
+  } else {
+    images.value = []
   }
 });
 

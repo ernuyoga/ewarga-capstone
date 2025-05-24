@@ -2,6 +2,8 @@
     <div class="min-h-screen bg-[#f6f6f6] flex flex-col">
         <!-- Header -->
         <HeaderForm title="Ubah Produk" @back="goBack" />
+        <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
+            listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
         <!-- StepperHeader -->
         <StepperHeader step-label="1/2" title="Pengisian Data" subtitle="Selanjutnya: Konfirmasi Data" />
@@ -13,7 +15,7 @@
                 <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Nama Produk<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <input type="text" v-model="namaProduk"
+                <input type="text" v-model="namaProduk" maxlength="255"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                     required />
             </div>
@@ -24,7 +26,7 @@
                 </label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">Rp</span>
-                    <input type="number" v-model="harga" min="0"
+                    <input type="number" v-model="harga" min="0" maxlength="9" :max="999999999" @input="onHargaInput"
                         class="w-full border border-gray-200 rounded-lg px-9 py-2 lg:px-9 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C] hide-number-arrow"
                         required />
                 </div>
@@ -47,7 +49,7 @@
             <!-- Keterangan -->
             <div>
                 <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">Keterangan</label>
-                <textarea v-model="keterangan"
+                <textarea v-model="keterangan" maxlength="255"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                     rows="3" placeholder="Masukkan Keterangan ..."></textarea>
             </div>
@@ -66,9 +68,10 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getEditProdukFormData, setEditProdukFormData } from '@/services/produkService'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import StepperHeader from '@/components/card/StepperHeader.vue'
-import { getEditProdukFormData, setEditProdukFormData } from '@/services/produkService'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -77,6 +80,13 @@ const harga = ref("")
 const keterangan = ref("")
 const gambarProdukLabel = ref("")
 const fotos = ref([])
+const showWarning = ref(false)
+const warningText = ref([])
+
+function onHargaInput(e) {
+    let val = e.target.value.replace(/\D/g, '').slice(0, 9)
+    harga.value = val
+}
 
 onMounted(() => {
     const formData = getEditProdukFormData();
@@ -101,9 +111,16 @@ function goToImageUploader() {
 }
 
 function handleNext() {
-    if (!namaProduk.value || !harga.value || fotos.value.length === 0) {
-        alert('Nama produk, harga produk, dan gambar produk wajib diisi!');
-        return;
+    const missing = []
+    if (!namaProduk.value) missing.push('Nama Produk')
+    if (!harga.value) missing.push('Harga Produk')
+    if (fotos.value.length === 0) missing.push('Gambar Produk')
+    if (!keterangan.value) missing.push('Keterangan')
+
+    if (missing.length) {
+        warningText.value = missing
+        showWarning.value = true
+        return
     }
     router.push({ name: 'produkeditconfirmation', params: { id: route.params.id } });
 }

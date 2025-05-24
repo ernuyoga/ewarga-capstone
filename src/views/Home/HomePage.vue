@@ -238,6 +238,10 @@ import { getAllUmkm } from '@/services/umkmService'
 import { getAllAsetByInstansi } from '@/services/wilayahService' // Tambahkan ini
 import { getImageUrl } from '@/lib/axios' // Tambahkan ini
 import profileIcon from '@/assets/icon_profile.svg'
+import { clearAsetFormData, clearAsetEditFormData } from "@/services/asetservice";
+import { clearUmkmFormData, clearEditUmkmFormData } from "@/services/umkmService";
+import { clearProdukFormData, clearEditProdukFormData } from "@/services/produkService";
+import { clearAsetPenghuniData } from "@/services/penghuniService";
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -254,6 +258,13 @@ const wargaStatus = computed(() => {
 })
 
 onMounted(async () => {
+  clearAsetFormData();
+  clearAsetEditFormData();
+  clearUmkmFormData();
+  clearEditUmkmFormData();
+  clearProdukFormData();
+  clearEditProdukFormData();
+  clearAsetPenghuniData();
   isLoading.value = true
   if (auth.user?.id) {
     // Ambil data warga

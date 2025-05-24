@@ -1,6 +1,9 @@
 <template>
     <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Konfirmasi Edit Data UMKM" @back="handleBack" />
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
+        <PopupMessage :show="showSuccess" :text="`${formData.nama_usaha || '-'} telah berhasil diubah!`"
+            title="Data UMKM Berhasil diubah" type="success" @close="handleSuccessClose" />
 
         <!-- Stepper & Judul -->
         <StepperHeader step-label="2/2" title="Konfirmasi Data" subtitle="Selanjutnya: Selesai" />
@@ -57,33 +60,6 @@
                 </div>
             </div>
 
-            <!-- Popup Preview -->
-            <div v-if="previewIdx !== null"
-                class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
-                    <button @click="closePreview"
-                        class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
-                        &times;
-                    </button>
-                    <img v-if="formData.gambar[previewIdx]?.url" :src="formData.gambar[previewIdx].url"
-                        class="max-w-full max-h-[80vh] rounded"
-                        :alt="formData.gambar[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`" />
-                    <img v-else-if="formData.gambar[previewIdx]?.file_path"
-                        :src="`https://api.ewarga.rionaru.site/storage/${formData.gambar[previewIdx].file_path}`"
-                        class="max-w-full max-h-[80vh] rounded"
-                        :alt="formData.gambar[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`" />
-                    <div v-else class="w-64 h-64 flex items-center justify-center text-gray-400 text-4xl">
-                        <i class="icon-image"></i>
-                    </div>
-                    <div class="mt-2 text-center text-sm text-gray-700">
-                        {{
-                            formData.gambar[previewIdx]?.file?.name ||
-                            formData.gambar[previewIdx]?.nama ||
-                            `Foto ${previewIdx + 1}`
-                        }}
-                    </div>
-                </div>
-            </div>
             <!-- Kontak Usaha -->
             <div>
                 <div class="text-xs md:text-sm text-gray-400 mb-1">Kontak Usaha</div>
@@ -114,16 +90,17 @@
 </template>
 
 <script setup>
-import api from "@/lib/axios";
 import { clearEditUmkmFormData, getEditUmkmFormData } from "@/services/umkmService";
 import { ref, onMounted } from "vue";
-import HeaderForm from "@/components/card/HeaderForm.vue";
-import SubmitButton from "@/components/card/SubmitButton.vue";
 import { useRouter, useRoute } from "vue-router";
 import { getUmkmMaster } from "@/services/masterService";
 import { getAllWarga } from "@/services/wargaService";
 import { updateUmkm } from "@/services/umkmService";
+import HeaderForm from "@/components/card/HeaderForm.vue";
+import SubmitButton from "@/components/card/SubmitButton.vue";
+import Preview from "@/components/card/Preview.vue";
 import StepperHeader from "@/components/card/StepperHeader.vue";
+import PopupMessage from "@/components/shared/PopupMessage.vue";
 import L from '@/plugins/leaflet'
 
 const router = useRouter();
@@ -133,16 +110,17 @@ const jenisList = ref([]);
 const bentukList = ref([]);
 const kontakList = ref([]);
 const pemilikNames = ref([]);
+const showPreview = ref(false);
+const previewSrc = ref("");
+const showSuccess = ref(false);
 
 onMounted(async () => {
     formData.value = getEditUmkmFormData();
-    // Ambil master untuk mapping nama jenis & bentuk
     const { data } = await getUmkmMaster();
     jenisList.value = data?.data?.jenis || [];
     bentukList.value = data?.data?.bentuk || [];
     kontakList.value = data?.data?.kontak || [];
 
-    // Ambil nama pemilik dari master warga
     if (formData.value.pemilik && formData.value.pemilik.length > 0) {
         try {
             const wargaRes = await getAllWarga();
@@ -156,7 +134,6 @@ onMounted(async () => {
         }
     }
 
-    // Tampilkan peta lokasi jika tersedia
     if (formData.value.lokasi_lat && formData.value.lokasi_lng) {
         const map = L.map('map').setView([formData.value.lokasi_lat, formData.value.lokasi_lng], 16)
 
@@ -175,10 +152,18 @@ function getJenisKontakNama(id) {
 const previewIdx = ref(null);
 
 function openPreview(idx) {
-    previewIdx.value = idx;
+    const foto = formData.value.gambar[idx];
+    if (foto?.url) {
+        previewSrc.value = foto.url;
+    } else if (foto?.file_path) {
+        previewSrc.value = `https://api.ewarga.rionaru.site/storage/${foto.file_path}`;
+    } else {
+        previewSrc.value = "";
+    }
+    showPreview.value = true;
 }
 function closePreview() {
-    previewIdx.value = null;
+    showPreview.value = false;
 }
 
 function getJenisNama(id) {
@@ -198,9 +183,13 @@ function handleEdit() {
     router.push({ name: "umkmedit", params: { id: route.params.id } });
 }
 
+function handleSuccessClose() {
+    showSuccess.value = false;
+    router.push({ name: "dashboard-umkm" });
+}
+
 async function handleSubmit() {
     try {
-        // Ambil data dari formData
         const fd = new FormData();
         fd.append("nama", formData.value.nama_usaha);
         fd.append("instansi_id", formData.value.instansi_id);
@@ -209,11 +198,9 @@ async function handleSubmit() {
         fd.append("keterangan", formData.value.keterangan || "");
         fd.append("alamat", formData.value.alamat);
 
-        // Lokasi
         fd.append("lokasi[0][latitude]", formData.value.lokasi_lat);
         fd.append("lokasi[0][longitude]", formData.value.lokasi_lng);
 
-        // Pemilik/Warga
         if (
             formData.value.pemilik &&
             Array.isArray(formData.value.pemilik)
@@ -223,7 +210,6 @@ async function handleSubmit() {
             });
         }
 
-        // Kontak
         if (formData.value.kontak && Array.isArray(formData.value.kontak)) {
             formData.value.kontak.forEach((k, idx) => {
                 fd.append(`kontak[${idx}][umkm_m_kontak_id]`, k.umkm_m_kontak_id);
@@ -231,7 +217,6 @@ async function handleSubmit() {
             });
         }
 
-        // Foto baru (tanpa id)
         if (formData.value.gambar && Array.isArray(formData.value.gambar)) {
             let fotoIdx = 0;
             for (let i = 0; i < formData.value.gambar.length; i++) {
@@ -246,18 +231,16 @@ async function handleSubmit() {
             }
         }
 
-        // Hapus foto lama
         if (formData.value.hapus_foto && Array.isArray(formData.value.hapus_foto)) {
             formData.value.hapus_foto.forEach((id, idx) => {
                 fd.append(`hapus_foto[${idx}]`, id);
             });
         }
 
-        // PUT ke API
         await updateUmkm(route.params.id, fd);
 
         clearEditUmkmFormData();
-        router.push({ name: "dashboard-umkm" });
+        showSuccess.value = true;
     } catch (err) {
         alert("Gagal simpan perubahan UMKM! Pastikan data sudah benar.");
         console.error(err);

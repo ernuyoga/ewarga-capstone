@@ -2,6 +2,8 @@
     <div class="min-h-screen bg-[#f6f6f6]">
         <!-- Header -->
         <HeaderForm title="Ubah UMKM" @back="goBack" />
+        <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
+            listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
         <!-- Stepper & Judul -->
         <StepperHeader step-label="1/2" title="Pengisian Data" subtitle="Selanjutnya: Konfirmasi Data" />
@@ -12,7 +14,7 @@
                 <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Nama Usaha<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <input type="text" v-model="namaUsaha"
+                <input type="text" v-model="namaUsaha" maxlength="255"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]" />
             </div>
             <div>
@@ -131,6 +133,7 @@ import SubmitButton from '@/components/card/SubmitButton.vue'
 import { getUmkmMaster } from "@/services/masterService"
 import { setEditUmkmFormData, getEditUmkmFormData } from '@/services/umkmService'
 import StepperHeader from '@/components/card/StepperHeader.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 console.log('Isi localStorage edit_umkm_form_data:', getEditUmkmFormData());
 const route = useRoute()
@@ -148,7 +151,9 @@ const lokasiLng = ref("")
 const gambarUsahaLabel = ref("")
 const pemilikLabel = ref("")
 const kontakLabel = ref("")
-console.log(getEditUmkmFormData());
+const showWarning = ref(false)
+const warningText = ref([])
+
 function goToKontakForm() {
     router.push({ name: 'umkmeditkontak' })
 }
@@ -206,18 +211,19 @@ watch([namaUsaha, selectedJenis, selectedBentuk, alamat, lokasiLat, lokasiLng, k
 })
 
 const handleNext = () => {
-    if (
-        !namaUsaha.value ||
-        !selectedJenis.value ||
-        !selectedBentuk.value ||
-        !pemilikLabel.value ||
-        !alamat.value ||
-        !lokasiLat.value ||
-        !lokasiLng.value ||
-        !gambarUsahaLabel.value
-    ) {
-        alert('Mohon lengkapi semua data wajib terlebih dahulu!');
-        return;
+    const missing = []
+    if (!namaUsaha.value) missing.push('Nama Usaha')
+    if (!selectedJenis.value) missing.push('Moda Usaha')
+    if (!selectedBentuk.value) missing.push('Bentuk Usaha')
+    if (!pemilikLabel.value) missing.push('Pemilik Usaha')
+    if (!alamat.value) missing.push('Alamat Usaha')
+    if (!lokasiLat.value || !lokasiLng.value) missing.push('Lokasi Usaha')
+    if (!gambarUsahaLabel.value) missing.push('Gambar Usaha')
+
+    if (missing.length) {
+        warningText.value = missing
+        showWarning.value = true
+        return
     }
     router.push({ name: 'umkmeditconfirmation', params: { id: route.params.id } });
 }

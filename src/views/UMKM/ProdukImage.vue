@@ -1,6 +1,9 @@
 <template>
     <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Tambah Gambar Produk" @back="handleBack" />
+        <Preview :show="showPreview" :src="previewSrc" @close="showPreview = false" />
+        <PopupMessage :show="showWarning" title="Kesalahan Upload Gambar" :text="warningMsg" type="warning"
+            @close="showWarning = false" />
 
         <div class="mx-4 md:mx-8 lg:mx-16 xl:mx-24 flex flex-col flex-1 justify-between">
             <div>
@@ -18,7 +21,8 @@
                         class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 md:px-4 md:py-3 mb-3">
                         <!-- Preview gambar -->
                         <img v-if="img.url && img.file.type !== 'application/pdf'" :src="img.url"
-                            class="w-12 h-12 object-cover rounded mr-2" :alt="img.file.name" />
+                            class="w-12 h-12 object-cover rounded mr-2" :alt="img.file.name"
+                            @click="openPreview(img.url)" />
                         <svg v-else class="w-5 h-5 text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path
                                 d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm0 2h12v10H4V5zm2 2a1 1 0 100 2 1 1 0 000-2zm0 4a1 1 0 100 2 1 1 0 000-2zm4-4a1 1 0 100 2 1 1 0 000-2zm0 4a1 1 0 100 2 1 1 0 000-2z" />
@@ -60,12 +64,23 @@
 import { ref, onMounted } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import InfoAlert from '@/components/card/InfoAlert.vue'
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 import { useRouter } from 'vue-router'
 import { setProdukFormData, getProdukFormData } from '@/services/produkService'
 
 const router = useRouter()
 const images = ref([])
 const fileInput = ref(null)
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showWarning = ref(false)
+const warningMsg = ref('')
+
+function openPreview(url) {
+    previewSrc.value = url
+    showPreview.value = true
+}
 
 const triggerFileInput = () => {
     if (images.value.length >= 5) return
@@ -84,15 +99,24 @@ function fileToBase64(file) {
 const handleFiles = async (e) => {
     const files = Array.from(e.target.files)
     for (const file of files) {
-        if (
-            (file.type === 'image/jpeg' ||
-                file.type === 'image/png') &&
-            file.size <= 1.5 * 1024 * 1024 &&
-            images.value.length < 5
-        ) {
-            const base64 = await fileToBase64(file)
-            images.value.push({ file: { name: file.name, type: file.type }, url: base64 })
+        if (images.value.length >= 5) {
+            showWarning.value = true
+            warningMsg.value = 'Maksimal 5 gambar'
+            break
         }
+        if (file.size > 1 * 1024 * 1024) {
+            showWarning.value = true
+            warningMsg.value = 'Ukuran file tidak boleh lebih dari 1MB'
+            break
+        }
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+            showWarning.value = true
+            warningMsg.value = 'File harus berupa JPG atau PNG'
+            break
+        }
+        const base64 = await fileToBase64(file)
+        images.value.push({ file: { name: file.name, type: file.type }, url: base64 })
+
     }
     setProdukFormData({
         fotos: images.value

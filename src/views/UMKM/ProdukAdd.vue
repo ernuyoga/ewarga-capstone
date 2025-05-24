@@ -2,6 +2,8 @@
     <div class="min-h-screen bg-[#f6f6f6] flex flex-col">
         <!-- Header -->
         <HeaderForm title="Tambah Produk Baru" @back="goBack" />
+        <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
+            listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
         <!-- StepperHeader -->
         <StepperHeader step-label="1/2" title="Pengisian Data" subtitle="Selanjutnya: Konfirmasi Data" />
@@ -14,7 +16,7 @@
                 <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Nama Produk<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <input v-model="nama" type="text"
+                <input v-model="nama" type="text" maxlength="255"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                     required />
             </div>
@@ -25,7 +27,7 @@
                 </label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">Rp</span>
-                    <input v-model="harga" type="number" min="0"
+                    <input v-model="harga" type="number" min="0" maxlength="9" :max="999999999" @input="onHargaInput"
                         class="w-full border border-gray-200 rounded-lg px-9 py-2 lg:px-9 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C] hide-number-arrow"
                         required />
                 </div>
@@ -47,8 +49,9 @@
             </div>
             <!-- Keterangan -->
             <div>
-                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">Keterangan</label>
-                <textarea v-model="keterangan"
+                <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">Keterangan<span
+                        class="text-[#ff5a5f]">*</span></label>
+                <textarea v-model="keterangan" maxlength="255"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                     rows="3" placeholder="Masukkan Keterangan ..."></textarea>
             </div>
@@ -68,6 +71,7 @@
 import { ref, watch, onMounted } from 'vue'
 import HeaderForm from '@/components/card/HeaderForm.vue'
 import StepperHeader from '@/components/card/StepperHeader.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 import { setProdukFormData, getProdukFormData } from '@/services/produkService'
 import { useRouter } from 'vue-router'
 
@@ -78,6 +82,13 @@ const produkData = getProdukFormData()
 const nama = ref(produkData.nama || '')
 const harga = ref(produkData.harga || '')
 const keterangan = ref(produkData.keterangan || '')
+const showWarning = ref(false)
+const warningText = ref([])
+
+function onHargaInput(e) {
+    let val = e.target.value.replace(/\D/g, '').slice(0, 9)
+    harga.value = val
+}
 
 function goToImageUploader() {
     router.push({ name: 'produkimage' })
@@ -109,9 +120,16 @@ function goBack() {
 function handleNext() {
     const produkData = getProdukFormData()
     const count = produkData.gambar_count || (produkData.fotos ? produkData.fotos.length : 0)
-    if (!nama.value || !harga.value || count === 0) {
-        alert('Nama produk, harga produk, dan gambar produk wajib diisi!');
-        return;
+    const missing = []
+    if (!nama.value) missing.push('Nama Produk')
+    if (!harga.value) missing.push('Harga Produk')
+    if (count === 0) missing.push('Gambar Produk')
+    if (!keterangan.value) missing.push('Keterangan')
+
+    if (missing.length) {
+        warningText.value = missing
+        showWarning.value = true
+        return
     }
     router.push({ name: 'produkconfirm' })
 }

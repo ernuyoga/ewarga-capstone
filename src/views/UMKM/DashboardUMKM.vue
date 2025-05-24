@@ -3,7 +3,7 @@
         <!-- Header -->
         <HeaderForm title="Dashboard UMKM" @back="goToHomePage">
             <template #action>
-                <button @click="handleAdd">
+                <button v-if="auth.user?.is_pengurus" @click="handleAdd">
                     <img :src="tombolTambah" alt="Tambah" class="w-4 h-4 lg:w-5 lg:h-5" />
                 </button>
             </template>
@@ -46,7 +46,7 @@
                                 v-model="selectedJenis">
                                 <option value="" class="text-gray-500">Moda Usaha</option>
                                 <option v-for="j in jenisList" :key="j.id" :value="j.id" class="text-gray-800">{{ j.nama
-                                    }}
+                                }}
                                 </option>
                             </select>
                             <img src="@/assets/v_hijau.svg" alt="Dropdown"
@@ -119,7 +119,10 @@ import { useRouter } from "vue-router";
 import tombolTambah from '@/assets/tombol_tambah.svg';
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import { getImageUrl } from '@/lib/axios';
-import { clearUmkmFormData } from '@/services/umkmService';
+import { clearAsetFormData, clearAsetEditFormData,  } from "@/services/asetservice";
+import { clearUmkmFormData, clearEditUmkmFormData } from "@/services/umkmService";
+import { clearProdukFormData, clearEditProdukFormData } from "@/services/produkService";
+import {clearAsetPenghuniData} from "@/services/penghuniService";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -187,6 +190,13 @@ async function fetchUmkm() {
 }
 
 onMounted(async () => {
+    clearAsetFormData();
+    clearAsetEditFormData();
+    clearUmkmFormData();
+    clearEditUmkmFormData();
+    clearProdukFormData();
+    clearEditProdukFormData();
+    clearAsetPenghuniData();
     if (auth.user?.id) {
         const resWarga = await getWargaById(auth.user.id);
         warga.value = resWarga.data.data;
@@ -212,7 +222,6 @@ function goBack() {
 }
 
 function handleAdd() {
-    clearUmkmFormData();
     router.push({ name: "addumkm" });
 }
 </script>

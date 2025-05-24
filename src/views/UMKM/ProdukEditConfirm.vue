@@ -1,6 +1,14 @@
 <template>
     <div class="w-full min-h-screen flex flex-col bg-[#fafafa]">
         <HeaderForm title="Ubah Produk" @back="goBack" />
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
+        <PopupMessage
+            :show="showSuccess"
+            type="success"
+            title="Produk Berhasil Diubah!"
+            :text="`Produk ${produkData.nama || '-'} telah berhasil diubah!`"
+            @close="handleSuccessClose"
+        />
 
         <!-- StepperHeader -->
         <StepperHeader step-label="2/2" title="Konfirmasi Data" subtitle="Selanjutnya: Selesai" />
@@ -34,30 +42,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Popup Preview -->
-            <div v-if="previewIdx !== null"
-                class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
-                    <button @click="closePreview"
-                        class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
-                        &times;
-                    </button>
-                    <img v-if="produkData.fotos[previewIdx]?.url" :src="produkData.fotos[previewIdx].url"
-                        class="max-w-full max-h-[80vh] rounded"
-                        :alt="produkData.fotos[previewIdx]?.file?.name || `Foto ${previewIdx + 1}`" />
-                    <img v-else-if="produkData.fotos[previewIdx]?.file_path"
-                        :src="getImageUrl(produkData.fotos[previewIdx].file_path)"
-                        class="max-w-full max-h-[80vh] rounded"
-                        :alt="produkData.fotos[previewIdx]?.nama || `Foto ${previewIdx + 1}`" />
-                    <div v-else class="w-64 h-64 flex items-center justify-center text-gray-400 text-4xl">
-                        <i class="icon-image"></i>
-                    </div>
-                    <div class="mt-2 text-center text-sm text-gray-700">
-                        {{ produkData.fotos[previewIdx]?.file?.name || produkData.fotos[previewIdx]?.nama || `Foto
-                        ${previewIdx + 1}` }}
-                    </div>
-                </div>
-            </div>
             <!-- Keterangan -->
             <div>
                 <div class="text-xs md:text-sm text-gray-400 mb-1">Keterangan</div>
@@ -83,16 +67,20 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import HeaderForm from '@/components/card/HeaderForm.vue'
-import StepperHeader from '@/components/card/StepperHeader.vue'
-import { getEditProdukFormData, setEditProdukFormData, clearEditProdukFormData, putProduk } from '@/services/produkService'
+import { getEditProdukFormData, clearEditProdukFormData, putProduk } from '@/services/produkService'
 import { getImageUrl } from '@/lib/axios'
 import { useRouter, useRoute } from 'vue-router'
+import HeaderForm from '@/components/card/HeaderForm.vue'
+import StepperHeader from '@/components/card/StepperHeader.vue'
+import Preview from '@/components/card/Preview.vue'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const router = useRouter()
 const route = useRoute()
 const produkData = ref({})
-const previewIdx = ref(null)
+const showPreview = ref(false)
+const previewSrc = ref('')
+const showSuccess = ref(false)
 
 onMounted(() => {
     produkData.value = getEditProdukFormData()
@@ -102,15 +90,30 @@ function goBack() {
     router.back()
 }
 
+
 function handleEdit() {
     router.push({ name: 'produkedit', params: { id: produkData.value.id } })
 }
 
 function openPreview(idx) {
-    previewIdx.value = idx;
+    const foto = produkData.value.fotos[idx]
+    if (foto?.url) {
+        previewSrc.value = foto.url
+    } else if (foto?.file_path) {
+        previewSrc.value = getImageUrl(foto.file_path)
+    } else {
+        previewSrc.value = ''
+    }
+    showPreview.value = true
 }
+
 function closePreview() {
-    previewIdx.value = null;
+    showPreview.value = false
+}
+
+function handleSuccessClose() {
+    showSuccess.value = false
+    router.push({ name: 'produk-detail', params: { id: route.params.id } })
 }
 
 async function handleSubmit() {
@@ -151,7 +154,7 @@ async function handleSubmit() {
     try {
         await putProduk(produkData.value.id, fd)
         clearEditProdukFormData()
-        router.push({ name: 'produk-detail', params: { id: route.params.id } })
+        showSuccess.value = true
     } catch (e) {
         if (e.response && e.response.data) {
             alert('Gagal menyimpan perubahan produk:\n' + JSON.stringify(e.response.data.errors || e.response.data, null, 2))
