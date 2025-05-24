@@ -102,7 +102,7 @@
                                 </span>
                                 | {{ umkm.bentuk?.nama || '-' }}
                             </div>
-                            <div class="text-sm lg:text-base text-gray-500 truncate">{{ umkm.alamat || '-' }}</div>
+                            <div class="text-sm lg:text-base text-gray-500">{{ umkm.alamat || '-' }}</div>
                             <div class="text-xs lg:text-sm text-gray-400 mt-2">{{ umkm.keterangan }}</div>
                         </div>
                         <!-- Foto tambahan (desktop only) -->
@@ -127,12 +127,16 @@
                             <section class="px-1 lg:px-2 mb-8">
                                 <div class="font-bold text-base lg:text-lg mb-2">Kontak Usaha</div>
                                 <ul class="text-sm lg:text-base text-gray-700 mb-4">
-                                    <li v-for="kontak in umkm.kontaks" :key="kontak.id">
+                                    <li
+                                        v-for="kontak in umkm.kontaks"
+                                        :key="kontak.id"
+                                        class="break-all whitespace-pre-line"
+                                    >
                                         • {{ kontak.jenis_kontak }}: {{ kontak.kontak }}
                                     </li>
-                                    <li v-if="!umkm.kontaks || umkm.kontaks.length === 0" class="text-gray-400">Tidak
-                                        ada
-                                        kontak.</li>
+                                    <li v-if="!umkm.kontaks || umkm.kontaks.length === 0" class="text-gray-400">
+                                        Tidak ada kontak.
+                                    </li>
                                 </ul>
                             </section>
                             <!-- Koordinat (desktop & mobile) -->
@@ -171,7 +175,7 @@
                                     @click="goToProdukDetail(produk.id)">
                                     <div class="flex-1 min-w-0 flex flex-col justify-between h-full py-2 pl-3">
                                         <div>
-                                            <div class="font-semibold text-sm lg:text-base mb-1">{{ produk.nama }}</div>
+                                            <div class="font-semibold text-sm lg:text-base mb-1 truncate">{{ produk.nama }}</div>
                                             <div class="text-xs text-gray-500 mb-1 truncate">
                                                 {{ produk.keterangan && produk.keterangan.length > 80
                                                     ? produk.keterangan.slice(0, 80) + '...'
@@ -213,7 +217,11 @@
                                     @click="goToProdukDetail(produk.id)">
                                     <div class="flex-1 min-w-0 flex flex-col justify-between h-full py-3 pl-4">
                                         <div>
-                                            <div class="font-semibold text-sm lg:text-base mb-1">{{ produk.nama }}</div>
+                                            <div class="font-semibold text-sm lg:text-base mb-1 truncate">
+                                                {{ produk.nama && produk.nama.length > 80
+                                                    ? produk.nama.slice(0, 80) + '...'
+                                                    : produk.nama }}
+                                            </div>
                                             <div class="text-xs text-gray-500 mb-1 truncate">
                                                 {{ produk.keterangan && produk.keterangan.length > 80
                                                     ? produk.keterangan.slice(0, 80) + '...'

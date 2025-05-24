@@ -30,8 +30,8 @@
             </div>
             <label class="inline-flex items-center">
               <input type="checkbox" class="hidden" :checked="selectedIds.includes(warga.id)" tabindex="-1" readonly />
-              <div class="w-5 h-5 md:w-6 md:h-6 rounded border border-gray-300 flex items-center justify-center"
-                :class="selectedIds.includes(warga.id) ? 'bg-[#03BF8C]' : 'bg-white'">
+              <div class="w-5 h-5 md:w-6 md:h-6 rounded border border-gray-300 flex items-center justify-center cursor-pointer"
+                :class="selectedIds.includes(warga.id) ? 'bg-[#03BF8C]' : 'bg-white'" @click="toggleWarga(warga)">
                 <svg v-if="selectedIds.includes(warga.id)" class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none"
                   stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />

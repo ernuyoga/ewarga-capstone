@@ -48,7 +48,7 @@
                 <div class="text-xs md:text-sm text-gray-400 mb-1">Gambar Usaha</div>
                 <div class="flex gap-2 flex-wrap">
                     <div v-for="(foto, idx) in formData.gambar || []" :key="idx"
-                        class="w-16 h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden cursor-pointer"
+                        class="w-14 h-14 lg:w-16 lg:h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden cursor-pointer"
                         @click="openPreview(idx)">
                         <img v-if="foto.file_path" :src="`https://api.ewarga.rionaru.site/storage/${foto.file_path}`"
                             class="object-cover w-full h-full"
@@ -64,7 +64,7 @@
             <div>
                 <div class="text-xs md:text-sm text-gray-400 mb-1">Kontak Usaha</div>
                 <div>
-                    <ul class="text-sm md:text-base">
+                    <ul class="text-sm md:text-base break-all whitespace-pre-line">
                         <li v-for="(kontak, idx) in formData.kontak || []" :key="idx">
                             <b>• {{ getJenisKontakNama(kontak.umkm_m_kontak_id) }}:</b> {{ kontak.kontak }}
                         </li>
