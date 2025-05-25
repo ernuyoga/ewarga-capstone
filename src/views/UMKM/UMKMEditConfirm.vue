@@ -183,10 +183,20 @@ function handleEdit() {
     router.push({ name: "umkmedit", params: { id: route.params.id } });
 }
 
+// ...existing code...
+
 function handleSuccessClose() {
     showSuccess.value = false;
-    router.push({ name: "dashboard-umkm" });
+    // Ambil query from dari localStorage atau default ke dashboard
+    const from = sessionStorage.getItem('umkmDetailSource') || 'dashboard';
+    router.push({ 
+        name: "umkm-detail", 
+        params: { id: route.params.id },
+        query: { from: from }
+    });
 }
+
+// ...existing code...
 
 async function handleSubmit() {
     try {

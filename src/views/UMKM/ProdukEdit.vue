@@ -126,8 +126,14 @@ function handleNext() {
 }
 
 function goBack() {
-    const produkData = getEditProdukFormData();
-    const umkmId = produkData.umkm_id;
-    router.push({ name: 'umkm-detail', params: { id: umkmId } });
+    // Kembali ke ProdukDetail yang sedang diedit
+    router.push({
+        name: 'produk-detail',
+        params: { id: route.params.id },
+        query: {
+            from: route.query.from || 'dashboard',
+            umkmId: getEditProdukFormData().umkm_id
+        }
+    });
 }
 </script>

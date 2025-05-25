@@ -212,7 +212,11 @@ function goToHomePage() {
 }
 
 function goToUmkmDetail(id) {
-    router.push({ name: "umkm-detail", params: { id } });
+    router.push({ 
+        name: "umkm-detail", 
+        params: { id },
+        query: { from: 'dashboard' }
+    });
 }
 
 watch([selectedJenis, selectedBentuk], fetchUmkm);

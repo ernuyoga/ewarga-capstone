@@ -309,7 +309,11 @@ function goToWilayahDashboard() {
 }
 
 function goToUmkmDetail(id) {
-  router.push({ name: "umkm-detail", params: { id } });
+  router.push({ 
+    name: "umkm-detail", 
+    params: { id },
+    query: { from: 'home' }
+  });
 }
 
 function goToAsetDetail(id) {

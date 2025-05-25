@@ -127,11 +127,8 @@
                             <section class="px-1 lg:px-2 mb-8">
                                 <div class="font-bold text-base lg:text-lg mb-2">Kontak Usaha</div>
                                 <ul class="text-sm lg:text-base text-gray-700 mb-4">
-                                    <li
-                                        v-for="kontak in umkm.kontaks"
-                                        :key="kontak.id"
-                                        class="break-all whitespace-pre-line"
-                                    >
+                                    <li v-for="kontak in umkm.kontaks" :key="kontak.id"
+                                        class="break-all whitespace-pre-line">
                                         • {{ kontak.jenis_kontak }}: {{ kontak.kontak }}
                                     </li>
                                     <li v-if="!umkm.kontaks || umkm.kontaks.length === 0" class="text-gray-400">
@@ -175,7 +172,9 @@
                                     @click="goToProdukDetail(produk.id)">
                                     <div class="flex-1 min-w-0 flex flex-col justify-between h-full py-2 pl-3">
                                         <div>
-                                            <div class="font-semibold text-sm lg:text-base mb-1 truncate">{{ produk.nama }}</div>
+                                            <div class="font-semibold text-sm lg:text-base mb-1 truncate">{{ produk.nama
+                                                }}
+                                            </div>
                                             <div class="text-xs text-gray-500 mb-1 truncate">
                                                 {{ produk.keterangan && produk.keterangan.length > 80
                                                     ? produk.keterangan.slice(0, 80) + '...'
@@ -354,6 +353,11 @@ const filteredProduk = computed(() => {
 });
 
 async function handleEditUmkm() {
+    // Simpan query from untuk digunakan setelah edit selesai
+    if (route.query.from) {
+        sessionStorage.setItem('umkmDetailSource', route.query.from);
+    }
+
     const umkmData = umkm.value
     let gambarArr = []
     if (Array.isArray(umkmData.fotos)) {
@@ -415,11 +419,26 @@ watch(umkm, (val) => {
 });
 
 function goToDashboardUmkm() {
-    router.push({ name: "dashboard-umkm" });
+    const from = route.query.from;
+
+    if (from === 'home') {
+        router.push({ name: "home" });
+    } else {
+        // Default ke dashboard UMKM jika tidak ada query atau dari dashboard
+        router.push({ name: "dashboard-umkm" });
+    }
 }
 
 function goToProdukDetail(id) {
-    router.push({ name: 'produk-detail', params: { id } });
+    // Pertahankan query parameter from saat navigasi ke produk detail
+    router.push({
+        name: 'produk-detail',
+        params: { id },
+        query: {
+            from: route.query.from || 'dashboard',
+            umkmId: umkm.value.id  // Tambahkan umkmId
+        }
+    });
 }
 
 function goToAddProduk() {

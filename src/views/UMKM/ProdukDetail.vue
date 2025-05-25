@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-[#f6f6f6]">
         <!-- Header -->
-        <HeaderForm title="Detail Produk" @back="goBack">
+        <HeaderForm title="Detail Produk" @back="goBackToUmkm">
             <template #action>
                 <div v-if="isPengurus || isPemilik" class="inline-block relative">
                     <button @click="toggleMenu">
@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                                 <div class="text-sm lg:text-base text-gray-500 font-semibold mb-4">{{ produk?.umkm?.nama
-                                }}
+                                    }}
                                 </div>
                                 <div class="font-bold text-base lg:text-lg mb-1 mt-2">Deskripsi</div>
                                 <div class="text-sm lg:text-base text-gray-700" v-html="produk?.keterangan"></div>
@@ -160,11 +160,24 @@ onMounted(async () => {
     loading.value = false // Set loading selesai
 })
 
-function goBack() {
-    if (produk.value && produk.value.umkm_id) {
-        router.push({ name: 'umkm-detail', params: { id: produk.value.umkm_id } });
+function goBackToUmkm() {
+    // Ambil umkmId dari query parameter atau dari data produk
+    const umkmId = route.query.umkmId || produk.value?.umkm_id;
+    const from = route.query.from;
+
+    if (umkmId) {
+        router.push({
+            name: "umkm-detail",
+            params: { id: umkmId },
+            query: { from: from || 'dashboard' }
+        });
     } else {
-        router.back();
+        // Fallback jika tidak ada umkmId
+        if (from === 'home') {
+            router.push({ name: "home" });
+        } else {
+            router.push({ name: "dashboard-umkm" });
+        }
     }
 }
 
@@ -180,7 +193,15 @@ async function handleEditProduk() {
     if (res.status && res.data) {
         setEditProdukFormData(mapProdukDetailToForm(res.data));
     }
-    router.push({ name: 'produkedit', params: { id } });
+    // Teruskan query parameter saat navigasi ke edit
+    router.push({
+        name: 'produkedit',
+        params: { id },
+        query: {
+            from: route.query.from || 'dashboard',
+            umkmId: route.query.umkmId || produk.value?.umkm_id
+        }
+    });
 }
 
 async function confirmDeleteProduk() {
@@ -188,7 +209,8 @@ async function confirmDeleteProduk() {
     try {
         await deleteProduk(produk.value.id);
         showDeleteModal.value = false;
-        router.push({ name: "umkm-detail", params: { id: produk.value.umkm_id } });
+        // Gunakan fungsi yang sama untuk konsistensi
+        goBackToUmkm();
     } catch (e) {
         alert("Gagal menghapus produk.");
     }
