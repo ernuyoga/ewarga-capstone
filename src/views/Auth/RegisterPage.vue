@@ -1,5 +1,9 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-[#f6f6f6] relative overflow-hidden">
+    <!-- PopupMessage -->
+    <PopupMessage :show="showPopup" type="warning" title="Registrasi gagal" :text="popupText"
+      @close="showPopup = false" />
+
     <!-- Background Image -->
     <img src="@/assets/kota.svg" alt="Kota Background"
       class="absolute inset-0 w-full h-full object-cover object-bottom z-0 pointer-events-none select-none"
@@ -22,21 +26,32 @@
           <input v-model="email" type="email" placeholder="Masukkan email"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50"
             required />
+          <span v-if="email && !email.includes('@')" class="text-xs text-red-500 mt-1 block">
+            Email harus mengandung tanda @
+          </span>
         </div>
         <div>
           <label class="block text-sm font-medium text-white mb-1">Password</label>
           <input v-model="password" type="password" placeholder="Masukkan password"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50"
             required />
+          <span v-if="password && password.length < 8" class="text-xs text-red-500 mt-1 block">
+            Password minimal 8 karakter
+          </span>
         </div>
         <div>
           <label class="block text-sm font-medium text-white mb-1">Konfirmasi Password</label>
           <input v-model="passwordConfirmation" type="password" placeholder="Masukkan ulang password"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50"
             required />
+          <span v-if="passwordConfirmation && passwordConfirmation !== password"
+            class="text-xs text-red-500 mt-1 block">
+            Konfirmasi password tidak sama
+          </span>
         </div>
         <button type="submit"
-          class="w-full bg-[#03BF8C] hover:bg-[#029e73] text-white py-2 rounded-lg font-semibold transition duration-200">
+          class="w-full bg-[#03BF8C] hover:bg-[#029e73] text-white py-2 rounded-lg font-semibold transition duration-200"
+          :disabled="!email.includes('@') || password.length < 8 || passwordConfirmation !== password">
           Daftar
         </button>
       </form>
@@ -55,6 +70,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { register as registerApi } from "@/services/authService";
 import { useAuthStore } from '@/store/auth'
+import PopupMessage from '@/components/shared/PopupMessage.vue'
 
 const router = useRouter();
 const name = ref("");
@@ -63,7 +79,25 @@ const password = ref("");
 const passwordConfirmation = ref("");
 const auth = useAuthStore()
 
+const showPopup = ref(false)
+const popupText = ref('')
+
 const handleRegister = async () => {
+  if (!email.value.includes('@')) {
+    popupText.value = 'Email harus mengandung tanda @'
+    showPopup.value = true
+    return
+  }
+  if (password.value.length < 8) {
+    popupText.value = 'Password minimal 8 karakter'
+    showPopup.value = true
+    return
+  }
+  if (password.value !== passwordConfirmation.value) {
+    popupText.value = 'Konfirmasi password tidak sama'
+    showPopup.value = true
+    return
+  }
   try {
     await registerApi({
       name: name.value,
@@ -91,7 +125,8 @@ const handleRegister = async () => {
     } else if (res?.message) {
       message = res.message
     }
-    alert(message)
+    popupText.value = message
+    showPopup.value = true
   }
 }
 
