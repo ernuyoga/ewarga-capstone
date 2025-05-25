@@ -1,29 +1,77 @@
 <template>
-    <div class="container">
-        <div class="card">
-            <h1 class="title">Lengkapi Profil</h1>
-            <div class="form-group">
-                <select v-model="instansi_id" class="input">
-                    <option value="" disabled>Pilih Instansi</option>
-                    <option v-for="instansi in instansiList" :key="instansi.id" :value="instansi.id">
-                        {{ instansi.nama }} - RT {{ instansi.rt }} / RW {{ instansi.rw }}
-                    </option>
-                </select>
-                <input v-model="nama" type="text" placeholder="Nama Lengkap"
-                    class="input bg-gray-100 cursor-not-allowed" readonly />
-                <input v-model="nik" type="text" placeholder="NIK" class="input" />
-                <input v-model="no_kk" type="text" placeholder="No KK" class="input" />
-                <input v-model="no_tlp" type="text" placeholder="No Telepon" class="input" />
-                <input v-model="tempat_lahir" type="text" placeholder="Tempat Lahir" class="input" />
-                <input v-model="tgl_lahir" type="date" class="input" />
-                <select v-model="jenis_kelamin" class="input">
-                    <option value="" disabled>Pilih Jenis Kelamin</option>
-                    <option value="L">Laki-laki</option>
-                    <option value="P">Perempuan</option>
-                </select>
-                <textarea v-model="alamat" placeholder="Alamat Lengkap" class="input"></textarea>
-                <button @click="submitForm" class="button">Simpan Profil</button>
-            </div>
+    <div class="min-h-screen bg-[#f6f6f6] flex items-center justify-center">
+        <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 my-8 p-4 md:p-6 w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center text-[#232360] mb-6">Profil</h1>
+            <form @submit.prevent="submitForm" class="flex flex-col gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">Instansi</label>
+                    <div class="relative">
+                        <select v-model="instansi_id"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10">
+                            <option value="" disabled>Pilih Instansi</option>
+                            <option v-for="instansi in instansiList" :key="instansi.id" :value="instansi.id">
+                                {{ instansi.nama }} - RT {{ instansi.rt }} / RW {{ instansi.rw }}
+                            </option>
+                        </select>
+                        <img src="@/assets/v_hitam.svg" alt="dropdown"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">Nama Lengkap</label>
+                    <input v-model="nama" type="text" readonly
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-100 cursor-not-allowed" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">NIK</label>
+                    <input v-model="nik" type="text" placeholder="NIK"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">No KK</label>
+                    <input v-model="no_kk" type="text" placeholder="No KK"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">No Telepon</label>
+                    <input v-model="no_tlp" type="text" placeholder="No Telepon"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">Tempat Lahir</label>
+                    <input v-model="tempat_lahir" type="text" placeholder="Tempat Lahir"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">Tanggal Lahir</label>
+                    <input v-model="tgl_lahir" type="date"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">Jenis Kelamin</label>
+                    <div class="relative">
+                        <select v-model="jenis_kelamin"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10">
+                            <option value="" disabled>Pilih Jenis Kelamin</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                        <img src="@/assets/v_hitam.svg" alt="dropdown"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#232360] mb-1">Alamat Lengkap</label>
+                    <textarea v-model="alamat" placeholder="Alamat Lengkap"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 resize-none"></textarea>
+                </div>
+                <div class="mt-2">
+                    <button type="submit"
+                        class="w-full bg-[#03BF8C] hover:bg-[#029e73] text-white py-3 rounded-lg font-semibold text-base transition duration-200">
+                        Simpan Profil
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </template>
@@ -90,29 +138,3 @@ const submitForm = async () => {
     }
 };
 </script>
-
-<style scoped>
-.container {
-    @apply min-h-screen flex items-center justify-center bg-gray-100;
-}
-
-.card {
-    @apply bg-white shadow-lg rounded-xl p-8 w-full max-w-md;
-}
-
-.title {
-    @apply text-2xl font-semibold text-center text-gray-700 mb-6;
-}
-
-.form-group {
-    @apply space-y-4;
-}
-
-.input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400;
-}
-
-.button {
-    @apply w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200;
-}
-</style>

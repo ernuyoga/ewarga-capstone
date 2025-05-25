@@ -1,20 +1,37 @@
 <template>
-  <div class="container">
-    <div class="card">
-      <h1 class="title">Login VPS</h1>
+  <div class="min-h-screen flex items-center justify-center bg-[#f6f6f6] relative overflow-hidden">
+    <!-- Background Image -->
+    <img src="@/assets/kota.svg" alt="Kota Background"
+      class="absolute inset-0 w-full h-full object-cover object-bottom z-0 pointer-events-none select-none"
+      draggable="false" />
+    <!-- Card -->
+    <div
+      class="shadow-lg rounded-3xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 p-6 md:p-8 w-full max-w-md flex flex-col items-center z-10 backdrop-blur-[2px]">
+      <!-- Logo atas -->
+      <img src="@/assets/eWarga_logo.svg" alt="eWarga Logo" class="w-24 h-24 mb-8" />
 
-      <div class="form-group">
-        <input v-model="email" type="email" placeholder="Email" class="input" @keyup.enter="handleLogin" />
-        <input v-model="password" type="password" placeholder="Password" class="input" @keyup.enter="handleLogin" />
-
-        <button @click="handleLogin" class="button">
-          Login
+      <form @submit.prevent="handleLogin" class="w-full flex flex-col gap-4">
+        <div>
+          <label class="block text-sm font-medium text-white mb-1">Email</label>
+          <input v-model="email" type="email" placeholder="Masukkan email"
+            class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50"
+            autocomplete="username" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white mb-1">Password</label>
+          <input v-model="password" type="password" placeholder="Masukkan password"
+            class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50"
+            autocomplete="current-password" required />
+        </div>
+        <button type="submit"
+          class="w-full bg-[#03BF8C] hover:bg-[#029e73] text-white py-2 rounded-lg font-semibold transition duration-200">
+          Masuk
         </button>
-      </div>
+      </form>
 
-      <div class="mt-6 text-center text-sm text-gray-600">
+      <div class="mt-6 text-center text-sm text-white">
         Belum punya akun?
-        <button @click="goToRegister" class="text-blue-600 hover:underline font-medium ml-1">
+        <button @click="goToRegister" class="text-[#03BF8C] hover:underline font-medium ml-1">
           Daftar sekarang
         </button>
       </div>
@@ -54,29 +71,3 @@ const goToRegister = () => {
   router.push('/register')
 }
 </script>
-
-<style scoped>
-.container {
-  @apply min-h-screen flex items-center justify-center bg-gray-100;
-}
-
-.card {
-  @apply bg-white shadow-lg rounded-xl p-8 w-full max-w-md;
-}
-
-.title {
-  @apply text-2xl font-semibold text-center text-gray-700 mb-6;
-}
-
-.form-group {
-  @apply space-y-4;
-}
-
-.input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400;
-}
-
-.button {
-  @apply w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200;
-}
-</style>

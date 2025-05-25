@@ -29,7 +29,7 @@
     <PopupMessage :show="showSuccess" type="success" title="Profile berhasil diperbarui" :text="changedFields"
       listLabel="Data yang diperbarui:" @close="showSuccess = false" />
 
-    <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 mt-4 p-4 md:p-6">
+    <div class="bg-white rounded-xl mx-4 md:mx-8 lg:mx-16 xl:mx-24 my-4 p-4 md:p-6">
       <div class="flex flex-col items-center mb-6">
         <div class="relative">
           <img :src="form.foto ? form.foto : (form.foto_path ? getImageUrl(form.foto_path) : profileIcon)"
@@ -51,7 +51,7 @@
           <input type="text" v-model="form.nama" maxlength="255"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10"
             required />
-          <img src="@/assets/edit_icon.svg" alt="edit"
+          <img src="@/assets/edit_tua.svg" alt="edit"
             class="absolute right-3 top-9 lg:top-10 w-4 h-4 opacity-70 pointer-events-none" />
         </div>
         <div class="relative">
@@ -59,28 +59,28 @@
           <input type="text" v-model="form.nik" maxlength="16"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10"
             required />
-          <img src="@/assets/edit_icon.svg" alt="edit"
+          <img src="@/assets/edit_tua.svg" alt="edit"
             class="absolute right-3 top-9 lg:top-10 w-4 h-4 opacity-70 pointer-events-none" />
         </div>
         <div class="relative">
           <label class="block text-sm font-medium text-[#232360] mb-1">No. KK</label>
           <input type="text" v-model="form.no_kk" maxlength="16"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10" />
-          <img src="@/assets/edit_icon.svg" alt="edit"
+          <img src="@/assets/edit_tua.svg" alt="edit"
             class="absolute right-3 top-9 lg:top-10 w-4 h-4 opacity-70 pointer-events-none" />
         </div>
         <div class="relative">
           <label class="block text-sm font-medium text-[#232360] mb-1">No. HP</label>
           <input type="tel" v-model="form.no_tlp" maxlength="13"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10" />
-          <img src="@/assets/edit_icon.svg" alt="edit"
+          <img src="@/assets/edit_tua.svg" alt="edit"
             class="absolute right-3 top-9 lg:top-10 w-4 h-4 opacity-70 pointer-events-none" />
         </div>
         <div class="relative">
           <label class="block text-sm font-medium text-[#232360] mb-1">Tempat Lahir</label>
           <input type="text" v-model="form.tempat_lahir" maxlength="60"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10" />
-          <img src="@/assets/edit_icon.svg" alt="edit"
+          <img src="@/assets/edit_tua.svg" alt="edit"
             class="absolute right-3 top-9 lg:top-10 w-4 h-4 opacity-70 pointer-events-none" />
         </div>
         <div class="relative">
@@ -103,7 +103,7 @@
           <label class="block text-sm font-medium text-[#232360] mb-1">Alamat</label>
           <input type="text" v-model="form.alamat" maxlength="255"
             class="w-full border border-gray-200 rounded-lg px-3 py-2 md:py-3 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C] bg-gray-50 pr-10" />
-          <img src="@/assets/edit_icon.svg" alt="edit"
+          <img src="@/assets/edit_tua.svg" alt="edit"
             class="absolute right-3 top-9 lg:top-10 w-4 h-4 opacity-70 pointer-events-none" />
         </div>
         <div>
