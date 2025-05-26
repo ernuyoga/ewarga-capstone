@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-[#f6f6f6] pb-24">
         <!-- Header -->
-        <HeaderForm title="Tambah Objek" @back="$router.back()" />
+        <HeaderForm title="Tambah Objek" @back="goToDashboardWilayah" />
         <PopupMessage :show="showWarning" type="warning" title="Lengkapi data terlebih dahulu" :text="warningText"
             listLabel="Field berikut wajib diisi:" @close="showWarning = false" />
 
@@ -16,7 +16,7 @@
                 <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Nama Objek<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <input v-model="form.nama" type="text" required
+                <input v-model="form.nama" type="text" 
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                     placeholder="Masukkan nama objek" />
             </div>
@@ -26,7 +26,7 @@
                     Jenis Objek<span class="text-[#ff5a5f]">*</span>
                 </label>
                 <div class="relative">
-                    <select v-model="form.jenis_id" required :class="[
+                    <select v-model="form.jenis_id"  :class="[
                         'w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base appearance-none focus:outline-none focus:ring-1 focus:ring-[#03BF8C]',
                         form.jenis_id ? 'text-[#232360]' : 'text-gray-400'
                     ]">
@@ -43,7 +43,7 @@
                 <label class="block text-sm lg:text-base font-medium text-[#232360] mb-1">
                     Alamat Objek<span class="text-[#ff5a5f]">*</span>
                 </label>
-                <input v-model="form.alamat" type="text" required
+                <input v-model="form.alamat" type="text" 
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base focus:outline-none focus:ring-1 focus:ring-[#03BF8C]"
                     placeholder="Masukkan alamat objek" />
             </div>
@@ -123,6 +123,10 @@ const gambarLabel = computed(() => {
     }
     return ''
 })
+
+function goToDashboardWilayah() {
+    router.push({ name: 'dashboard-wilayah' })
+}
 
 onMounted(async () => {
     const saved = getAsetFormData();

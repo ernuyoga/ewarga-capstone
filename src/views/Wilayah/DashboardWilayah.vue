@@ -76,10 +76,11 @@ import { getWargaById } from "@/services/wargaService";
 import { useAuthStore } from "@/store/auth";
 import HeaderForm from '@/components/card/HeaderForm.vue';
 import tombolTambah from '@/assets/tombol_tambah.svg';
-import mapDefault from '@/assets/map.svg'; // Tambahkan ini
-import { clearAsetFormData } from "@/services/asetservice";
+import mapDefault from '@/assets/map.svg';
+import { clearAsetFormData, clearAsetEditFormData,  } from "@/services/asetservice";
 import { clearUmkmFormData, clearEditUmkmFormData } from "@/services/umkmService";
 import { clearProdukFormData, clearEditProdukFormData } from "@/services/produkService";
+import {clearAsetPenghuniData} from "@/services/penghuniService";
 import { getImageUrl } from '@/lib/axios';
 
 const dashboard = ref({
@@ -157,10 +158,12 @@ const fetchAsetByName = async (name) => {
 
 onMounted(async () => {
     clearAsetFormData();
+    clearAsetEditFormData();
     clearUmkmFormData();
     clearEditUmkmFormData();
     clearProdukFormData();
     clearEditProdukFormData();
+    clearAsetPenghuniData();
     if (auth.user?.id) {
         const resWarga = await getWargaById(auth.user.id);
         const warga = resWarga.data.data;

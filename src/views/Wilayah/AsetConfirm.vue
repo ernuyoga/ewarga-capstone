@@ -52,17 +52,6 @@
             </div>
         </div>
 
-        <!-- Popup Preview -->
-        <div v-if="showPreview" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-            <div class="relative bg-white rounded-xl p-2 max-w-[90vw] max-h-[90vh] flex flex-col items-center">
-                <button @click="closePreview" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-red-500">
-                    &times;
-                </button>
-                <img v-if="previewSrc" :src="previewSrc" class="max-w-full max-h-[80vh] rounded"
-                    :alt="'Preview Gambar'" />
-            </div>
-        </div>
-
         <!-- Button -->
         <div class="flex gap-3 px-4 md:px-8 lg:px-16 xl:px-24 mt-4 mb-4">
             <button

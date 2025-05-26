@@ -1,5 +1,6 @@
 <template>
     <div class="min-h-screen bg-[#f6f6f6]">
+        <Preview :show="showPreview" :src="previewSrc" @close="closePreview" />
         <!-- Header Skeleton -->
         <div v-if="loading" class="px-4 md:px-8 lg:px-16 xl:px-24 pt-4">
             <div class="flex items-center justify-between mb-4">
@@ -85,7 +86,8 @@
             <!-- Content -->
             <div v-else class="bg-white rounded-xl shadow my-4">
                 <!-- Foto -->
-                <img :src="fotoUtama" class="w-full h-56 lg:h-72 rounded-t-xl object-cover" />
+                <img :src="fotoUtama" class="w-full h-56 lg:h-72 rounded-t-xl object-cover"
+                    @click="openPreview(fotoUtama)" />
 
                 <div class="px-4 lg:px-6 py-4 pt-0 lg:py-4">
                     <!-- Info Aset -->
@@ -98,7 +100,8 @@
                                     class="flex-shrink-0 flex justify-center items-center">
                                     <img :src="getImageUrl(foto.file_path)"
                                         class="w-14 h-14 object-cover rounded-lg border"
-                                        :alt="foto.nama || `Foto ${idx + 1}`" />
+                                        :alt="foto.nama || `Foto ${idx + 1}`"
+                                        @click="openPreview(getImageUrl(foto.file_path))" />
                                 </div>
                             </div>
                         </div>
@@ -124,7 +127,8 @@
                                         class="flex-shrink-0">
                                         <img :src="getImageUrl(foto.file_path)"
                                             class="w-24 h-24 object-cover rounded-lg border"
-                                            :alt="foto.nama || `Foto ${idx + 1}`" />
+                                            :alt="foto.nama || `Foto ${idx + 1}`"
+                                            @click="openPreview(getImageUrl(foto.file_path))" />
                                     </div>
                                 </div>
                             </div>
@@ -229,6 +233,7 @@ import { setAsetEditFormData } from '@/services/asetservice';
 import { useAuthStore } from "@/store/auth";
 import ModalHapus from "@/components/shared/ModalHapus.vue";
 import { getImageUrl } from '@/lib/axios';
+import Preview from '@/components/card/Preview.vue'
 
 const auth = useAuthStore();
 
@@ -240,18 +245,26 @@ const loading = ref(true);
 const showMenu = ref(false);
 const showDeleteModal = ref(false);
 const previewIdx = computed(() => showDeleteModal.value ? 1 : null);
+const showPreview = ref(false)
+const previewSrc = ref('')
 
 function toggleMenu(e) {
     if (e) e.stopPropagation();
     showMenu.value = !showMenu.value;
 }
-function closeMenu() {
-    showMenu.value = false;
-}
+
 function handleClickOutside(event) {
     if (showMenu.value && !event.target.closest('.relative')) {
         showMenu.value = false;
     }
+}
+
+function openPreview(url) {
+    previewSrc.value = url
+    showPreview.value = true
+}
+function closePreview() {
+    showPreview.value = false
 }
 
 const fotoUtama = computed(() => {
@@ -308,7 +321,6 @@ onMounted(async () => {
             penghuniList.value = [];
         }
     } catch (error) {
-        console.error(error);
     }
     loading.value = false;
 });
