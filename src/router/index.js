@@ -254,14 +254,34 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+function checkAuth() {
+  const data = localStorage.getItem('auth');
+  if (data) {
+    const { loginTime } = JSON.parse(data);
+    const now = Date.now();
+    const oneHour = 60 * 60 * 1000;
+    if (now - loginTime > oneHour) {
+      localStorage.removeItem('auth');
+      return false;
+    }
+  }
+  return true;
+}
+
+router.beforeEach((to, from, next) => {
   const auth = useAuthStore();
+
+  if (!checkAuth()) {
+    next("/login");
+    return;
+  }
 
   if (to.meta.requiresAuth && !auth.token) {
     next("/login");
-  } else {
-    next();
+    return;
   }
+
+  next();
 });
 
 export default router;
