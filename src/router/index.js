@@ -254,34 +254,33 @@ const router = createRouter({
   routes,
 });
 
-function checkAuth() {
-  const data = localStorage.getItem('auth');
-  if (data) {
-    const { loginTime } = JSON.parse(data);
+function checkLoginExpired() {
+  const loginTime = localStorage.getItem('loginTime');
+  if (loginTime) {
     const now = Date.now();
-    const oneHour = 60 * 60 * 1000;
-    if (now - loginTime > oneHour) {
-      localStorage.removeItem('auth');
-      return false;
+    const twoHours = 2 * 60 * 60 * 1000;
+    if (now - Number(loginTime) > twoHours) {
+      const auth = useAuthStore();
+      auth.logout();
+      return true;
     }
   }
-  return true;
+  return false; // belum expired
 }
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore();
 
-  if (!checkAuth()) {
+  if (checkLoginExpired() && to.name !== 'login') {
     next("/login");
     return;
   }
 
   if (to.meta.requiresAuth && !auth.token) {
     next("/login");
-    return;
+  } else {
+    next();
   }
-
-  next();
 });
 
 export default router;

@@ -17,6 +17,7 @@ export const useAuthStore = defineStore("auth", {
 
       localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("loginTime", Date.now().toString());
     },
     async logout() {
       try {
@@ -28,6 +29,7 @@ export const useAuthStore = defineStore("auth", {
       this.token = null;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("loginTime");
     },
   },
 });
