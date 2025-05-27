@@ -218,10 +218,6 @@
               </div>
             </section>
           </div>
-
-          <!-- Logout Button -->
-          <button @click="handleLogout"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-base lg:text-lg font-bold text-white py-3 rounded-lg transition">Logout</button>
         </div>
       </div>
     </div>
@@ -309,8 +305,8 @@ function goToWilayahDashboard() {
 }
 
 function goToUmkmDetail(id) {
-  router.push({ 
-    name: "umkm-detail", 
+  router.push({
+    name: "umkm-detail",
     params: { id },
     query: { from: 'home' }
   });
